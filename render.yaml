@@ -9,4 +9,6 @@ services:
       - key: FLASK_ENV
         value: production
       - key: PYTHON_VERSION
-        value: 3.11
+        value: 3.11.6
+      - key: SECRET_KEY
+        value: please-set-a-secure-secret-key
