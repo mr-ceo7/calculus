@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Notes Generated</title>
+    <!-- MathJax for rendering math -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.65);
+            --glass-active: rgba(56, 189, 248, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #eab308;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Layout --- */
+        header {
+            padding: 1rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* --- Main Content Area --- */
+        #content-viewport {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 1rem;
+            padding-bottom: 6rem;
+            /* Space for bottom nav */
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* --- Cards & Text --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p,
+        li {
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Special Elements --- */
+        .definition-box {
+            border-left: 4px solid var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .definition-title {
+            color: var(--accent);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .theorem-box {
+            border-left: 4px solid var(--warning);
+            background: rgba(234, 179, 8, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .theorem-title {
+            color: var(--warning);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .example-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="header-title">Generative Notes</h1>
+        <div class="subtitle">AI-Powered Conversion</div>
+    </header>
+
+    <div id="content-viewport">
+        <!-- AI GENERATED CONTENT GOES HERE -->
+        <div id="tab-1" class="tab-section active">
+<section class="glass-panel"><h2>Full Notes</h2>
+<p>Programming</p>
+<h3>Programming encompasses three things:</h3>
+<p> a computation model, which is a formal system that defines a language and</p>
+<p>how sentences of the language (e.g., expressions and statements) are</p>
+<p>executed by an abstract machine.</p>
+<p> a set of programming techniques and design principles used to write</p>
+<p>programs in the language of the computation model. We will sometimes call</p>
+<p>this a programming model. A programming model is always built on top of a</p>
+<p>computation model.</p>
+<p> a set of reasoning techniques to let you reason about programs, to increase</p>
+<p>confidence that they behave correctly and to calculate their efficiency.</p>
+<p>Defining practical programming languages</p>
+<p>Programming languages have three main components</p>
+<p> Syntax</p>
+<p> Semantics</p>
+<p> Pragmatics</p>
+<p>Syntax</p>
+<p>The syntax of a language defines what are the legal programs, i.e., programs that</p>
+<p>can be successfully executed. Legal programs are programs that conform to the</p>
+<p>rules defined by the language grammar.</p>
+<p>Grammar</p>
+<p>A grammar is a set of rules that defines how to make ‘sentences’ out of ‘words’.</p>
+<p>Grammars can be used for natural languages, like English or Swahili, as well as for</p>
+<p>artificial languages, like programming languages. For programming languages,</p>
+<p>‘sentences’ are usually called ‘statements’ and ‘words’ are usually called ‘tokens’.</p>
+<p>Just as words are made of letters, tokens are made of characters. This gives us two</p>
+<h3>levels of structure:</h3>
+<p> statement (‘sentence’) = sequence of tokens (‘words’)</p>
+<p> token (‘word’) = sequence of characters (‘letters’)</p>
+<p>Grammars are useful both for defining statements and tokens. For example the</p>
+<p>sequence of statements may be typed (on a keyboard) to define factorial function:</p>
+<p>fun { Fact N }</p>
+<p>if N == 0 then 1</p>
+<p>else N*{ Fact N-1} end</p>
+<p>end</p>
+<p>The raw entry would be a list that looks something like this:</p>
+<p>[f u n’ ’{’ ’F a c t ’ ’ N’ ’}’ ’ ’\n’ ’ ’ i f ’ ’ N’ ’= ’ ’=’ ‘0 ’ ’ t h e n ’ ’ 1 ’\n’ ’ ’ e l s e’ ’ N ’</p>
+<p>‘*’ ’{’ ’F a c t ’ ’ N’ ’−’ ‘1’ ’} ’ ’ e n d ’\n’ ‘ ‘e n d] where ‘ ‘represents the space and´\</p>
+<p>n´ represents the newline.</p>
+<p>This is first transformed into a sequence of tokens as shown:</p>
+<p>[’fun’ ’{’ ’Fact’ ’N’ ’}’ ’if’ ’N’ ’==’ ’0’ ’then’  ’else’ ’N’ ’*’ ’{’ ’Fact’ ’N’ ’−’ ’1’ ’}’ ’end’</p>
+<p>’end’]</p>
+<p>Whereas the sequences are “flat”, we build a parse tree that shows the structure of</p>
+<h3>the statement as shown below:</h3>
+<p>A program that accepts a sequence of characters and returns a sequence of tokens</p>
+<p>is called a tokenizer or lexical analyzer. A program that accepts a sequence of</p>
+<p>tokens and returns a parse tree is called a parser.</p>
+<p>Extended Backus-Naur Form</p>
+<p>One of the most common notations for defining grammars is called Extended</p>
+<p>Backus-Naur Form (EBNF for short), after its inventors John Backus and Peter Naur.</p>
+<p>The EBNF notation distinguishes terminal symbols and nonterminal symbols. A</p>
+<p>terminal symbol is simply a token. A nonterminal symbol represents a sequence of</p>
+<p>tokens. The nonterminal is defined by means of a grammar rule, which shows how</p>
+<p>to expand it into tokens. For example, the following rule defines the nonterminal</p>
+<h3><digit>:</h3>
+<p><digit> ::= 0 | 1| 2| 3| 4| 5| 6| 7| 8| 9</p>
+<p>The symbol “|” is read as “or”; it means to pick one of the alternatives.</p>
+<p>Grammar rules can themselves refer to other nonterminals. For example, we can</p>
+<div class="definition-box"><span class="definition-title">define  a nonterminal</span>
+</div>
+<h3><int> that defines how to write positive integers:</h3>
+<p><int> ::= <digit>{<digit>}</p>
+<p>This rule says that an integer is a digit followed by zero or more digits. The braces</p>
+<p>“{... }” mean to repeat whatever is inside any number of times, including zero.</p>
+<p>Context-free and context-sensitive grammars</p>
+<p>Any well-defined set of statements is called a formal language, or language for</p>
+<p>short. For example, the set of all possible statements generated by a grammar and</p>
+<p>one nonterminal symbol is a language. Techniques to define grammars can be</p>
+<p>classified according to how expressive they are, i.e., what kinds of languages they</p>
+<p>can generate. For example, the EBNF notation given above defines a class of</p>
+<p>grammars called context-free grammars. They are so-called because the expansion</p>
+<p>of a nonterminal, e.g.,<digit>, is always the same no matter where it is used.</p>
+<p>-</p>
+<p>1N</p>
+<p>0N FactN</p>
+<p>*1==</p>
+<p>ifNFact</p>
+<p>fu</p>
+<p>n</p>
+<p>For most practical programming languages, there is usually no context-free</p>
+<p>grammar that generates all legal programs and no others. For example, in many</p>
+<p>languages a variable has to be declared before it is used. This condition cannot be</p>
+<p>expressed in a context-free grammar because the nonterminal that uses the</p>
+<p>variable must only allow using already-declared variables. This is a context</p>
+<p>dependency. A grammar that contains a nonterminal whose use depends on the</p>
+<p>context where it is used is called a context-sensitive grammar.</p>
+<p>The syntax of most practical programming languages is therefore defined in two</p>
+<p>parts: as a context-free grammar supplemented with a set of extra conditions</p>
+<p>imposed by the language. The context free grammar has an important locality</p>
+<p>property: a nonterminal symbol can be understood by examining only the rules</p>
+<p>needed to define it; the (possibly much more numerous) rules that use it can be</p>
+<p>ignored. The context-free grammar is corrected by imposing a set of extra</p>
+<p>conditions, like the declare-before-use restriction on variables. Taking these</p>
+<p>conditions into account gives a context-sensitive grammar.</p>
+<p>Ambiguity</p>
+<p>Context-free grammars can be ambiguous, i.e., there can be several parse trees that</p>
+<p>correspond to a given token sequence. Ambiguity is usually an undesirable property</p>
+<p>of a grammar since it makes</p>
+<p>it unclear exactly what program is being written. One convenient approach to</p>
+<p>remove ambiguity is to add extra conditions. These conditions restrict the parser so</p>
+<p>that only one parse tree is possible. We say that they disambiguate the grammar.</p>
+<p>For expressions with binary operators such as the arithmetic expressions, the usual</p>
+<p>approach is to add two conditions, precedence and associativity:</p>
+<p> Precedence is a condition on an expression with different operators, like</p>
+<p>2*3+4. Each operator is given a precedence level. Operators with high</p>
+<p>precedences are put as deep in the parse tree as possible, i.e., as far away</p>
+<p>from the root as possible. If * has higher precedence than +, then the parse</p>
+<p>tree (2*3)+4 is chosen over the alternative 2*(3+4).If * is deeper in the tree</p>
+<p>than +,then we say that * binds tighter than +.</p>
+<p> Associativity is a condition on an expression with the same operator, like 2-3-</p>
+<p>4. In this case, precedence is not enough to disambiguate because all</p>
+<p>operators have the same precedence. We have to choose between the trees</p>
+<p>(2-3)-4 and 2-(3-4). Associativity determines whether the leftmost or the</p>
+<p>rightmost operator binds tighter. If the associativity of - is left, then the</p>
+<p>tree(2-3)-4 is chosen. If the associativity of  - is right, then the other tree 2-(3-</p>
+<p>4) is chosen.</p>
+<p>Language semantics</p>
+<p>The semantics of a language defines what a program does when it executes. Ideally,</p>
+<p>the semantics should be defined in a simple mathematical structure that lets us</p>
+<p>reason about the program (including its correctness, execution time, and memory</p>
+<p>use) without introducing any irrelevant details. Two approaches to semantics can be</p>
+<p>identified; the interpreter approach and the kernel language approach.</p>
+<p>The interpreter approach</p>
+<p>In this approach, the language semantics is defined by giving an interpreter for the</p>
+<p>language. New language features are defined by extending the interpreter. An</p>
+<p>interpreter is a program written in language L1 that accepts programs written in</p>
+<p>another language L2 and executes them. When L1 and  L2 are the same language L,</p>
+<p>then we have a metacircular interpreter. Adding new language features, e.g., for</p>
+<p>concurrency and lazy evaluation, gives a new language L0 which is implemented by</p>
+<p>extending the interpreter for L.</p>
+<p>The interpreter approach has the advantage that it shows a self-contained</p>
+<p>implementation of the linguistic abstractions. However it does not in general</p>
+<p>preserve the execution-time complexity of programs (the number of operations</p>
+<p>needed as a function of input size). A second difficulty is that the basic concepts</p>
+<p>interact with each other in the interpreter, which makes them harder to understand.</p>
+<p>The kernel language approach</p>
+<p>In this approach, all language constructs are defined in terms of translations into a</p>
+<p>core language known as the kernel language. The kernel language approach</p>
+<h3>consists of two parts:</h3>
+<p>1. Define a very simple language, called the kernel language. This language</p>
+<p>should be easy to reason in and be faithful to the space and time efficiency of</p>
+<p>the implementation. The kernel language and the data structures it</p>
+<p>manipulates together form the kernel computation model.</p>
+<p>2. Define a translation scheme from the full programming language to the kernel</p>
+<p>language. Each grammatical construct in the full language is translated into</p>
+<p>the kernel language. The translation should be as simple as possible.</p>
+<p>There are two kinds of translation, namely linguistic abstraction and syntactic sugar.</p>
+<p>Linguistic abstraction</p>
+<p>Both programming languages and natural languages can evolve to meet their</p>
+<p>needs. When using a programming language, at some point we may feel the need to</p>
+<p>extend the language, i.e., to add a new linguistic construct. The new construct is</p>
+<p>both an abstraction and an addition to the language syntax. We therefore call it a</p>
+<p>linguistic abstraction. A practical programming language consists of a set of</p>
+<p>linguistic abstractions.</p>
+<p>There are two phases to defining a linguistic abstraction. First, define a new</p>
+<p>grammatical construct. Second, define its translation into the kernel language. The</p>
+<p>kernel language is not changed.</p>
+<p>Linguistic abstractions are useful for more than just increasing the expressiveness of</p>
+<p>a program. They can also improve other properties such as correctness, security,</p>
+<p>and efficiency. By hiding the abstraction’s implementation from the programmer,</p>
+<p>the linguistic support makes it impossible to use the abstraction in the wrong way.</p>
+<p>The compiler can use this information to give more efficient code.</p>
+<p>Syntactic sugar</p>
+<p>It is often convenient to provide a short-cut notation for frequently-occurring idioms.</p>
+<p>This notation is part of the language syntax and is defined by grammar rules. This</p>
+<p>notation is called syntactic sugar. Syntactic sugar is analogous to linguistic</p>
+<p>abstraction in that its meaning is defined precisely by translating it into the full</p>
+<p>language. But it should not be confused with linguistic abstraction: it does not</p>
+<p>provide a new abstraction, but just reduces program size and improves program</p>
+<p>readability. Here is an example of syntactic sugar that is based on the local</p>
+<p>statement.  Local variables can always be defined by using the statement local X in</p>
+<p>... end. When this statement is used inside another, it is convenient to have</p>
+<p>syntactic sugar that lets us leave out the keywords local and end.  So instead of:</p>
+<p>if N==1 then [1]</p>
+<p>else</p>
+<p>local L in</p>
+<p>...</p>
+<p>end</p>
+<p>end</p>
+<h3>We can write:</h3>
+<p>if N==1 then [1]</p>
+<p>else L in</p>
+<p>...</p>
+<p>end</p>
+<p>which is both shorter and more readable than the full notation.</p>
+<p>Formal semantics</p>
+<p>The kernel language approach lets us define the semantics of the kernel language in</p>
+<p>any way we want. There are four widely-used approaches to language semantics:</p>
+<p> An operational semantics shows how a statement executes in terms of an</p>
+<p>abstract machine. This approach always works well, since at the end of the</p>
+<p>day all languages execute on a computer.</p>
+<p> An axiomatic semantics defines a statement’s semantics as the relation</p>
+<p>between the input state (the situation before executing the statement) and</p>
+<p>the output state (the situation after executing the statement). This relation is</p>
+<p>given as a logical assertion. This is a good way to reason about statement</p>
+<p>sequences, since the output assertion of each statement is the input assertion</p>
+<p>of the next. It therefore works well with stateful models, since a state is a</p>
+<p>sequence of values.</p>
+<p> A denotational semantics defines a statement as a function over an abstract</p>
+<p>domain. This works well for declarative models, but can be applied to other</p>
+<p>models as well. It gets complicated when applied to concurrent languages.</p>
+<p> A logical semantics defines a statement as a model of a logical theory. This</p>
+<p>works well for declarative and relational computation models, but is hard to</p>
+<p>apply to other models.</p>
+<p>Translation approaches to semantics of programming languages</p>
+<p>There are three ways that the translation approach has been used for defining</p>
+<h3>programming languages:</h3>
+<p> The kernel language approach, which is intended for the programmer. Its</p>
+<p>concepts correspond directly to programming concepts.</p>
+<p> The foundational approach which is intended for the mathematician.</p>
+<p>Examples are the Turing machine, the λ calculus (underlying functional</p>
+<p>programming), first-order logic (underlying logic programming), and the π</p>
+<p>calculus (to model concurrency). Because these calculi are intended for</p>
+<p>formal mathematical study, they have as few elements as possible.</p>
+<p> The machine approach which is intended for the implementor. Programs are</p>
+<p>translated into an idealized machine, which is traditionally called an abstract</p>
+<p>machine or a virtual machine. It is relatively easy to translate idealized</p>
+<p>machine code into real machine code.</p>
+</section></div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <!-- AI GENERATED NAV GOES HERE -->
+        
+        <div class="nav-item active" onclick="switchTab(1, 'Full Notes')">
+            <span class="nav-icon">●</span>
+            <span>Full Notes</span>
+        </div>
+        
+    </nav>
+
+    <script>
+        // --- Sound Engine ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+                gainNode.gain.setValueAtTime(0.05, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            }
+        }
+
+        // --- Tab Logic ---
+        function switchTab(id, title) {
+            playSound('tap');
+            document.getElementById('header-title').innerText = title;
+            document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('tab-' + id);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Try to find the nav item that was clicked (or match by index if generated)
+            // For generated navs, we might pass 'this' or rely on index
+            const navItems = document.querySelectorAll('.nav-item');
+            if (navItems[id - 1]) navItems[id - 1].classList.add('active');
+
+            document.getElementById('content-viewport').scrollTop = 0;
+        }
+    </script>
+</body>
+
+</html>
