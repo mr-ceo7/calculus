@@ -1,0 +1,6833 @@
+UNIVERSITY OF NAIROBI
+COLLEGE OF BIOLOGICAL AND PHYSICAL SCIENCES
+
+SCHOOL OF MATHEMATICS LECTURE NOTES
+
+SMA 103: CALCULUS I
+
+WRITTEN BY:
+
+Dr. Bernard Mutuku Nzimbi
+
+REVIEWED BY:
+
+School of Mathematics, University of Nairobi
+P.O. Box 30197, Nairobi, KENYA.
+Email:nzimbi@uonbi.ac.ke
+EDITED BY:
+Dr. B.M. Nzimbi
+
+c
+Copyright⃝2014
+Benz Inc. All rights reserved.
+
+Author: Dr. B.M. Nzimbi, PhD
+School of Mathematics
+College of Biological and Physical Sciences
+University of Nairobi
+P.O. Box 30197, Nairobi, KENYA.
+e-mail(s): nzimbi@uonbi.ac.ke, bnzimbi@daad-alumni.de
+2010 Mathematics Subject Classiﬁcation: 26A03,26A06,26A09,26A12,26A24,26A36.
+c
+Copyright ⃝2014
+Benz, Inc. All rights reserved. Printed in Kenya.
+
+Figure 1: Photo of Author in Syracuse, NY, USA 2004.
+
+ii
+
+Contents
+Prefacevi Acknowledgementsvii
+1 PRELIMINARIES FOR CALCULUS
+1.1 Elementary Set Theory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.1.1 Notation and Terminology . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.1.2 Some Special Number Sets . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1.1.3 Fundamental Operations on Sets . . . . . . . . . . . . . . . . . . . . . . .
+
+1
+1
+2
+3
+4
+
+2 LIMITS AND CONTINUITY OF FUNCTIONS
+2.1 Functions and their Graphs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.1.1 Domain and Range of Functions . . . . . . . . . . . . . . . . . . . . . . . .
+2.1.2 Some Elementary Functions . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2 Limits of Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2.1 Informal Deﬁnition of a Limit . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2.2 Formal (ϵ − δ) Deﬁnition of a Limit . . . . . . . . . . . . . . . . . . . . . .
+2.3 Properties of Limits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.3.1 Right-Hand Limits and Left-Hand Limits . . . . . . . . . . . . . . . . . . .
+2.3.2 Limits at Inﬁnity and Inﬁnite Limits . . . . . . . . . . . . . . . . . . . . .
+2.3.3 Limits at Inﬁnity for Rational Functions . . . . . . . . . . . . . . . . . . .
+2.3.4 The Sandwich or Squeeze Theorem . . . . . . . . . . . . . . . . . . . . . .
+2.3.5 Techniques of Evaluating Indeterminate Limits . . . . . . . . . . . . . . . .
+2.4 Continuous Functions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.4.1 continuity Test and Points of Discontinuity . . . . . . . . . . . . . . . . . .
+2.4.2 Formal (ϵ − δ) Deﬁnition of Continuity . . . . . . . . . . . . . . . . . . . .
+2.4.3 Types of Discontinuities . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2.4.4 Right Continuity and Left Continuity . . . . . . . . . . . . . . . . . . . . .
+2.4.5 Algebraic Properties of Continuous Functions . . . . . . . . . . . . . . . .
+2.5 Exercises and Some Solved Problems . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5
+5
+6
+7
+8
+8
+9
+10
+12
+14
+16
+18
+19
+20
+20
+20
+21
+22
+22
+23
+
+3 DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+3.1 Tangent Lines and Their Slopes . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.1 Tangent Lines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.1.2 The Slope of a Curve . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2 The Derivative . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2.1 Right Derivative and Left Derivative . . . . . . . . . . . . . . . . . . . . .
+3.2.2 Leibniz Notation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.2.3 Diﬀerentiability and Continuity . . . . . . . . . . . . . . . . . . . . . . . .
+3.3 Diﬀerentiation Rules . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+27
+27
+27
+29
+30
+30
+30
+31
+32
+
+iii
+
+iv
+
+CONTENTS
+3.4
+
+Derivatives of Trigonometric and Inverse Trigonometric Functions . . . . . . . . .
+3.4.1 Derivative of Sine and Cosine . . . . . . . . . . . . . . . . . . . . . . . . .
+3.4.2 Derivatives of other Basic Trigonometric Functions . . . . . . . . . . . . .
+3.5 Derivatives of Exponential and Logarithmic Functions . . . . . . . . . . . . . . . .
+3.6 Derivatives of Hyperbolic and Inverse Hyperbolic Functions . . . . . . . . . . . . .
+3.7 Derivatives and Indeterminate limits of type 00 and ∞
+. . . . . . . . . . . . . . . .
+∞
+3.7.1 L’Hôpital’s First Rule for the Indeterminate form 00 . . . . . . . . . . . . .
+3.7.2 L’Hôpital’s Second Rule for the Indeterminate form ∞
+. . . . . . . . . . .
+∞
+∞ 0 ∞
+0
+3.7.3 Indeterminate forms 0.∞, ∞ − ∞, 1 , 0 , 0 , ∞ . . . . . . . . . . . . . .
+3.8 Diﬀerentiation of Implicit and Parametric Functions . . . . . . . . . . . . . . . . .
+3.8.1 Implicit Diﬀerentiation . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.8.2 Logarithmic Diﬀerentiation . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.8.3 Parametric Diﬀerentiation . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.8.4 Diﬀerentiating Inverse Functions using Implicit Diﬀerentiation . . . . . . .
+3.9 Linear Approximations and Diﬀerentials . . . . . . . . . . . . . . . . . . . . . . .
+3.9.1 Diﬀerentials . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.9.2 Linearizations are Linear Replacement Formulas . . . . . . . . . . . . . . .
+3.9.3 Average and Instantaneous Rates of Change . . . . . . . . . . . . . . . . .
+3.10 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+37
+37
+38
+39
+40
+41
+41
+42
+43
+44
+44
+45
+46
+47
+48
+48
+49
+50
+51
+
+4 ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS 55
+4.1 Anti-Derivatives . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+4.1.1 Indeﬁnite Integral of a Function . . . . . . . . . . . . . . . . . . . . . . . . 55
+4.1.2 Integration Formulas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+4.1.3 Rules for Indeﬁnite Integrals . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+4.2 Techniques of Integration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+4.2.1 Integration by Substitution . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+4.2.2 Integration by Parts . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 58
+4.2.3 Integration of Rational Functions . . . . . . . . . . . . . . . . . . . . . . . 61
+4.2.4 Inverse Substitutions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+4.2.5 Inverse Hyperbolic Substitutions . . . . . . . . . . . . . . . . . . . . . . . 67
+4.2.6 Other Inverse Substitutions . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+4.3 The Deﬁnite Integral . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
+4.3.1 Properties of the Deﬁnite Integral . . . . . . . . . . . . . . . . . . . . . . . 70
+4.4 Applications of the Deﬁnite Integral . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+4.4.1 Area and the Deﬁnite Integral . . . . . . . . . . . . . . . . . . . . . . . . . 71
+4.5 Exercises and Some Solved Problems . . . . . . . . . . . . . . . . . . . . . . . . . 74
+
+CONTENTS
+
+v
+
+About the Author
+B.M. Nzimbi is a Senior Lecturer in Pure Mathematics at the University of Nairobi. Dr. Nzimbi
+received his B.sc in Mathematics and Computer Science from the University of Nairobi (1995),
+Msc(Pure Mathematics) from the University of Nairobi (1999), Msc(Mathematics) from Syracuse
+University (New York, USA) (2004), and his PhD in Pure Mathematics from the University of
+Nairobi (2009), where he wrote his research thesis in the area of Operator Theory under the direction of Prof. J.M. Khalagai. Before joining the University of Nairobi, he held a position at
+Catholic University of Eastern Africa (CUEA), where he was a part-time lecturer.
+Dr. Nzimbi has authored, co-authored and published numerous articles/research papers in professional and refereed journals in the areas of Operator Theory and Diﬀerential Geometry. He is the
+author of the textbooks ”Linear Algebra I” and ”Linear Algebra II”, which are extensively used
+in the Outreach and Distance Learning(ODL) programme at the University of Nairobi.
+
+vi
+
+CONTENTS
+
+Preface
+This volume aims to present calculus in an intuitive yet intellectually satisfying way and to illustrate the many applications of calculus to the pure sciences and management sciences. The
+only co-requisite for mastering the material in the book are SMA 101: Basic Mathematics and an
+interest in mathematics and a willingness occasionally to suspend disbelief when a familiar idea
+occurs in an unfamiliar guise. But only an exceptional student would proﬁt from reading the book
+unless he/she has previously acquired a fair working knowledge of elementary set theory, algebra
+and geometry. This book is a development of various courses designed for ﬁrst year students of
+science at the University of Nairobi, whose preparation has been some rudimentary knowledge of
+set theory, algebra and geometry.
+What is Calculus?
+Algebra and geometry are useful tools for describing relationships between static quantities. However, they do not involve concepts appropriate for describing how quantity changes. For this we
+need new mathematical operations that transcend or go beyond algebra and geometry. We require
+operations that measure the way related quantities change.
+Calculus provides the tools for describing motion quantitatively. It introduces two new operations
+called diﬀerentiation and integration which are inverses of each other: what diﬀerentiation does,
+integration undoes. The process of diﬀerentiation is closely tied to the geometric problem of ﬁnding tangent lines. Integration is related to the geometric problem of ﬁnding areas of regions with
+curved boundaries. These two concepts deﬁned in terms of the concept of a limit. This will be
+developed in Chapter 1, and marks the beginning of calculus.
+Origins of Calculus
+Calculus was invented independently by two 17th-century mathematicians: Isaac Newton and
+Gottfried Wilhelm Leibniz.
+Objectives
+At the end of this course unit the learner will be able to:
+ Understand a the concept of a limit of a function and how to compute the same.
+ Appreciate the concept of a continuous function.
+ Appreciate and apply the concepts of derivatives and antiderivatives.
+
+CONTENTS
+
+vii
+
+Acknowledgements
+This book could not have been written without direct and indirect assistance from many sources.
+I had the good fortune of interacting with a number of special people and institutions. I seize this
+opportunity to express my gratitude to all of them. It is a pleasure to acknowledge with great
+pleasure the encouragement I received for this project from my former students and colleagues at
+the University of Nairobi and beyond. I wish to acknowledge, with thanks, my colleagues who
+have encouraged me to acquire expert knowledge of the typesetting software LATEX. As always, I
+am grateful to the University of Nairobi, whose facilities have made it possible to write this book.
+They have also provided an environment that helped me develop academically and professionally
+and given me the resources needed to make this book a success. I am also thankful to the School
+of Mathematics for giving me the opportunity to teach calculus for years, which has indeed helped
+this project to take shape. I would also like to thank the Open and Distance Learning(ODL)
+Programme for giving me the opportunity at several review sessions at Multimedia University,
+Mbagathi and Kenya Wildlife Training Institute, Naivasha to organize and typeset this book. In
+these circumstances it would have been extraordinarily slothful not to produce a book. I read the
+galleys myself and checked the calculations in the text. If the book contains any errors or stylistic
+misjudgement or shortcomings, they are entirely mine! Last, but not least, I am grateful to my
+family for their continuing and unwavering support. To them I dedicate this book.
+Dr. Bernard Mutuku Nzimbi
+Nairobi, September 2014
+
+Chapter 1
+PRELIMINARIES FOR CALCULUS
+Neglect of mathematics works injury to all knowledge, since he who is ignorant of it
+cannot know the other sciences or the things of this world. And what is worse, men
+who are thus ignorant are unable to perceive their own ignorance and so do not seek
+a remedy. —Roger Bacon
+Functions are basic to the study of mathematics and many other sciences and are found in everyday
+life situations.
+To address functions adequately we need to lay a foundation. We start by introducing the notion
+of sets.
+
+1.1
+
+Elementary Set Theory
+
+Deﬁnition 1.1.1. A set is any well-deﬁned collection, aggregate, class or conglomerate of objects.
+These objects (which may be cities, years, numbers, letters of the alphabet, or anything else) are
+called elements of the set, and are often said to be members of the set.
+A
+⊙set is often speciﬁed by
+⊙ listing its elements inside a pair of braces or curly brackets or parentheses.
+means of a property of its elements.
+Example 1.1.2. The set whose elements are the ﬁrst six letters of the alphabet is written
+{a, b, c, d, e, f }
+Example 1.1.3. The set whose elements are the even integers between 1 and 11 is written
+{2, 4, 6, 8, 10}
+We can also specify a set by giving a description of its elements (without actually listing the
+elements).
+Example 1.1.4. The set {a, b, c, d, e, f } can also be written
+{T he f irst six letters of the alphabet}
+1
+
+2
+
+CHAPTER 1. PRELIMINARIES FOR CALCULUS
+
+1.1.1
+
+Notation and Terminology
+
+For convenience, we usually denote sets by capital letters of the alphabet A, B, C and so on. We
+use lowercase letters of the alphabet to represent elements of a set. For a set A, we write x ∈ A
+if x is a member of A or belongs to A. We write x ̸∈ A to mean that x is not a member of A or
+does not belong to A.
+Example 1.1.5. If E denotes the set of even integers, then 4 ∈ E but 7 ̸∈ E.
+Deﬁnition 1.1.6. An empty set is a set with no elements.
+An empty set is usually denoted by ∅. It is a set that arises in a variety of disguises.
+Deﬁnition 1.1.7. Let A and B be two sets. If every element of A is an element of B, we say that
+A is a subset of B, and we write A ⊆ B. We also say that A is contained in B.
+Deﬁnition 1.1.8. If A ⊆ B and B ⊆ A, then we say that A and B are equal, and write A = B.
+Deﬁnition 1.1.9. If A ⊆ B and A ̸= B, then we say that A is a proper subset of B are equal,
+and write A = B, or A is properly contained in B, and write A ⊂ B.
+Deﬁnition 1.1.10. (Cardinality of a set). The number of elements in a set A is called the
+cardinality of A, and is denoted n(A) or |A|.
+Deﬁnition 1.1.11. (Universal set). A universal set denoted by U is a set which contains all
+elements under consideration. That is, it contains all other sets under consideration. It is also
+called the universe of discourse or simply universe.
+1. Complement of a set
+Let U be the universal set and A be any set. The complement of A, written A{ is deﬁned as
+{
+}
+{
+A = x ∈ U : x ̸∈ A
+Example 1.1.12. Let the universal set be U = {0, 1, 2, 3, 5, 6} and A = {3, 5}. Then A{ =
+{0, 1, 2, 6}.
+2. Union of sets
+Let A and B be sets. The union of A and B, denoted by A ∪ B is
+{
+}
+A ∪ B = x : x ∈ A or x ∈ B or both
+Example 1.1.13. If A = {3, 5, 7} and B = {x, y, t}, them A ∪ B = {3, 5, 7, x, y, t}.
+3. Intersection of sets
+Let A and B be sets. The intersection of A and B, denoted by A ∩ B is
+{
+}
+A ∩ B = x : x ∈ A and x ∈ B
+Example 1.1.14. If A = {1, 3, T om, M ary} and B = {3, x, y, t, M ary}, them A∩B = {3, M ary}.
+
+1.1. ELEMENTARY SET THEORY
+
+3
+
+4. Set Diﬀerence
+Let A and B be sets. The set diﬀerence or relative complement of A with respect to B, denoted
+by A − B is deﬁned as
+{
+}
+A − B = x : x ∈ A and x ̸∈ B
+Example 1.1.15. If A = {N ew Y ork, Cairo, M umbai, Seoul, Beijing, M oscow, London} and
+B = {N airobi, Kigali, P retoria, beijing, Harare, P aris, London}. Then
+A − B = {N ew Y ork, Cairo, M umbai, Seoul, M oscow}
+and
+B − A = {N airobi, Kigali, P retoria, Harare, P aris}
+5. Cartesian Product of Sets
+Let A and B be sets. The Cartesian product of A and B, denoted by A × B is deﬁned as
+{
+}
+A × B = (a, b) : a ∈ A and b ∈ B
+Example 1.1.16. If A = {0, 1, 2} and B = {a, b}, them
+{
+}
+A × B = (0, a), (0, b), (1, a), (1, b), (2, a), (2, b)
+{
+}
+A × A = (0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)
+Example 1.1.17. Let R be the set of real numbers. Then the Cartesian product of
+{
+}
+R × R = (x, y) : x, y ∈ R
+This is also denoted as R2 and read as ”R two”. This is the two-dimensional Cartesian plane or
+simply the xy-plane.
+The Cartesian product
+{
+}
+R × R × R = (x, y, z) : x, y, z ∈ R
+This is also denoted as R3 and read as ”R three”, and is the three-dimensional Euclidean space.
+
+1.1.2
+
+Some Special Number Sets
+
+There are certain sets of numbers that appear frequently in mathematics and in other sciences.
+1. The Natural Numbers, N
+N = {1, 2, 3, ...}
+2. The Whole Numbers, W
+
+W = {0, 1, 2, 3, ...}
+
+3. The set of Integers, Z
+Z = {..., −4, −3, −2, −1, 0, 1, 2, 3, 4, ...}
+4. The Rational Numbers, QindexRational!numbers
+a
+Q = { : a, b ∈ Z, b ̸= 0, gcd(a, b) = 1}
+b
+
+4
+
+1.1.3
+
+CHAPTER 1. PRELIMINARIES FOR CALCULUS
+
+Fundamental Operations on Sets
+
+5. The Irrational Numbers, Q{ indexIrrational!numbers
+Q{ = {t : t ̸∈ Q}
+Note that Q ∩ Q{ = ∅.
+6. The Real Numbers, R
+indexReal!numbers A real number is a number which is either rational or irrational. That is
+R = Q ∪ Q{ . The set of real numbers is also called the real number line.
+7. Intervals in R. Let a, b, x ∈ R. Then
+(a, b) = {x ∈ R : a < x < b} is called the open interval between a and b.
+[a, b) = {x ∈ R : a ≤ x < b} and (a, b] = {x ∈ R : ax ≤ b} are called the half-open or half-closed
+intervals between a and b.
+[a, b] = {x ∈ R : a ≤ x ≤ b} is called the closed interval between a and b.
+(a, ∞) = {x ∈ R : x > a}
+[a, ∞) = {x ∈ R : x ≥ a}
+(−∞, a) = {x ∈ R : x < a}
+(−∞, a] = {x ∈ R : x ≤ a}
+(−∞, ∞) = {x ∈ R : −∞ < x < ∞} = R
+
+Chapter 2
+LIMITS AND CONTINUITY OF
+FUNCTIONS
+2.1
+
+Functions and their Graphs
+
+Deﬁnition 2.1.1. Let X and Y be two sets. By a function f from X to Y , we mean a rule or
+relation which assigns to each x in X a unique element f (x) in Y .
+We often express the fact that f is a function from X to Y by writing
+f : X −→ Y.
+The set X is called the domain of f , and denoted by Dom(f ). The set of values y = f (x) is
+called the range of f , and is denoted by Ran(f ). Equivalently, Ran(f ) = {f (x) : x ∈ Dom(f )}
+and is always a subset of Y might not equal Y . The set Y is called the co-domain of f . When
+we describe a function by writing a formula y = f (x), we call x the independent variable and y
+the dependent variable. The set of all values for which f(x) is deﬁned is the domain of f and the
+values y = f (x) where x ∈ Dom(f ) is the range of f . The graph of the function f is the set of all
+points in the plane of the form (x, f (x)), where x ∈ Dom(f ).
+Deﬁnition 2.1.2. We say that a function f : X −→ Y is one-to-one or injective if, for every
+pair x1 , x2 ∈ X, x1 ̸= x2 , implies that f (x1 ) ̸= f (x2 ) (or equivalently, if f (x1 ) = f (x2 ), then
+x1 = x2 ).
+Deﬁnition 2.1.3. A function f : X −→ Y is onto or surjective if, every y ∈ Y is of the form
+f (x) for some x ∈ X. Equivalently, f is onto if Ran(f ) = Y .
+Deﬁnition 2.1.4. A function f : X −→ Y is a bijection if it is one-to-one and onto.
+Example 2.1.5. The function f : R −→ R given by f (x) = 2x is one-to-one and onto, and hence
+it is a bijection.
+Deﬁnition 2.1.6. If a function f : X −→ Y is a bijection then there exists an inverse function
+f −1 : Y −→ X. For every y ∈ Y there exists a unique element x ∈ X deﬁned by x = f −1 (y).
+5
+
+6
+
+2.1.1
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Domain and Range of Functions
+
+We now consider functions f : X −→ Y for which X and Y subsets of real numbers R. Such
+functions are said to be real-valued.
+Example 2.1.7. For the function f with the formula y = f (x) = 2x, Dom(f ) = R and Ran(f ) =
+R.
+
+Figure 2.1: Graph ofy = f (x) = 2x
+
+Example 2.1.8. For the function f with the formula y = f (x) =
+−3 ≤ x ≤ 3} = [−3, 3] and Ran(f ) = {y ∈ R : y ≤ 3} = (−∞, 3].
+
+√
+
+√
+Figure 2.2: Graph of y=f(x)= 9 − x2
+
+9 − x2 , Dom(f ) = {x ∈ R :
+
+2.1. FUNCTIONS AND THEIR GRAPHS
+
+7
+
+Example 2.1.9. Let y = f (x) = 2−x
+. Find Dom(f ) and Ran(f ).
+x−1
+
+Figure 2.3: Graph of y = f (x) = 2−x
+x−1
+2−x
+, then x = y+2
+,
+It is easy to see that Dom(f ) = {x ∈ R : x ̸= 1} = R − {1}. Since y = x−1
+y+1
+and the only value of ywhich will not occur is y = −1, for which the denominator is zero. Hence
+Ran(f ) = R − {1}
+Composition of Functions
+
+2.1.2
+
+Some Elementary Functions
+
+1. Polynomials. A real polynomial is a function whose domain is the set of real numbers,
+deﬁned by
+f (x) = a0 + a1 x + a2 x2 + ... + an xn
+where a0 , a1 , ..., an are real constants(called the coeﬃcients of f and an ̸= 0). The integer n is called
+the degree of the polynomial, and denoted by n = deg(f ). Polynomials of degree 0, 1, 2, 3, 4, 5 are
+called constant, linear, quadratic, cubic, quartic and quintic, respectively. For example,
+f (x) = 4 − x2 + 6x8 is a polynomial of degree 8, g(x) = 2 is a polynomial of degree 0 or a constant
+polynomial.
+2. Rational Functions. A rational function f (x) is a quotient of two polynomials. That is
+2
+f (x) = p(x)
+, where p and q are polynomials and g(x) ̸= 0. For example, f (x) = xx3 −1
+is a rational
+q(x)
++1
+function.
+3. Trigonometric and Inverse Trigonometric Functions. The three basic trigonometric functions are sine, cosine and tangent. Reciprocals of these functions are secant = 1/cosine, cosecant =
+1/sine, cotangent = 1/tangent. The inverses are arcsine, arccosine, arctangent and arcotangent.
+4. Exponential and Logarithmic Functions. An exponential function is of the form y =
+f (x) = ax , where x is a variable, and a is a constant. The domain of f is the real line R = (−∞, ∞)
+and Ran(f ) = (0, ∞). When a = e, then f (x) = ex .
+The logarithm function is given by y = f (x) = loga x and its domain is (0, ∞) and its range is
+R = (−∞, ∞). The constant a is referred to as the base of the logarithm function. The logarithm
+
+8
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+function with base a = e is called the natural logarithm or Naperian logarithm, and denoted by
+ln x.
+The following laws of logarithms are easy to derive from the laws of exponents:
+• loga xy = loga x + loga y
+• loga xy = loga x − loga y
+• loga xα = α loga x, x any real number
+bx
+• loga x = log
+logb a
+These formulae hold for any positive x, y, a, b(a ̸= 1, b ̸= 1).
+5. Hyperbolic Functions. The four hyperbolic functions are hyperbolic cosine, hyperbolic sine,
+hyperbolic tangent and hyperbolic cotangent and are deﬁned as follows:
+x
+−x
+x
+−x
+sinh x
+x
+cosh x = e +e
+, sinh x = e −e
+, tanh x = cosh
+, coth x = cosh
+.
+2
+2
+x
+sinh x
+
+2.2
+
+Limits of Functions
+
+2.2.1
+
+Informal Deﬁnition of a Limit
+
+Deﬁnition 2.2.1. (Informal definition of a limit) A function f (x) is said to have a limit
+L as x approaches (or tends to) a if the values of f (x) can be made as close as we like to L by
+taking x suﬃciently close to a(but not equal to a). We use the two notations:
+limx→a f (x) = L, read as ” the limit of f (x) as x tends to a is equal to L” or
+f (x) −→ L as x −→ a, read as ”f(x) tends to L as x tends to a”.
+Remarks. It is assumed that the domain of f includes an interval containing a, but not necessarily
+a itself. This deﬁnition is informal because phrases such as ”close as we want” and ”close
+enough” are imprecise; the meaning depends on the context. To a machinist manufacturing
+pistons, close enough may mean within a few thousandths of an inch. To an astronomer studying
+distant galaxies, close enough may mean within a few thousand light years. This deﬁnition should
+be clear enough, however, to enable us recognize and evaluate limits of speciﬁc functions.
+Some limits are easy to compute but others are not so easy to evaluate. Limits of polynomials
+are found by substitution. Limits of (many but not all) rational functions can be found by
+substitution. Many situations require algebraic manipulation before applying the limits
+Example 2.2.2. Find limx→0 3x2 − 2x + 1
+Solution. As x tends to 0, it is evident that f (x) approaches 3(0)2 − 2(0) + 1 = 1.
+
+Figure 2.4: Limit of y=f(x)=3x2 − 2x + 1 as x −→ 0
+
+2.2. LIMITS OF FUNCTIONS
+
+9
+
+Example 2.2.3. Find limx→−5 3x+1
+.
+x−1
+Solution. As x tends to −5, it is evident that f (x) approaches 3(−5)+1
+= 73 .
+−5−1
+Remark. When we say that f (x) has a limit L as x approaches a, we are really saying that we
+can ensure that the error |f (x) − L| will be less than any allowed tolerance, no matter how small
+by taking x close enough to a (but not equal to a). It is traditional to use ϵ, the Greek letter
+”epsilon” for the error |f (x) − L| and δ, the Greek letter ”delta” for the diﬀerence |x − a| that
+measures how close x is within that tolerance.
+
+2.2.2
+
+Formal (ϵ − δ) Deﬁnition of a Limit
+
+Deﬁnition 2.2.4. (Formal(ϵ−δ) Deﬁnition of a Limit) We say that a function f (x) approaches
+the limit L as x approaches a, and write limx→a f (x) = L if for every number ϵ > 0, there exists
+a number δ > 0, possibly depending on ϵ, such that if 0 < |x − a| < δ then |f (x) − L| < ϵ.
+
+Figure 2.5: Limit of f(x) as x−→ a
+
+Remark. Note that the formal deﬁnition of a limit does not tell us how to ﬁnd the limit of a
+function, but it does enable us to verify a suspected limit is correct.
+If limx→a f (x) ̸= L, then there is an ϵ > 0 such that for every δ > 0 there is an x ∈ R with
+0 < |x − a| < δ and |f (x) − L| ≥ ϵ.
+Example 2.2.5. Verify that limx→2 3x + 1 = 7.
+Solution. Let Let ϵ > 0 be given. We want to ﬁnd δ > 0 so that if 0 < |x − a| < δ then
+|f (x) − L| < ϵ.
+Now, |f (x) − 7| = |3x + 1 − 7| = |3x − 6| = 3|x − 2| < ϵ whenever |x − 2| < δ. This means that
+|x − 2| < 13 ϵ. Now, if we choose δ = 13 ϵ, we will have shown that limx→2 3x + 1 = 7.
+Note that the value δ = 31 ϵ is not the only value that will make the implication |f (x) − 7| =
+|3x + 1 − 7| = |3x − 6| = 3|x − 2| < ϵ whenever |x − 2| < δ hold. Any smaller positive δ will do
+as well. The deﬁnition does not work for a ”best” δ, just one that will work. We can thus choose
+.
+δ ≤ 31 ϵ
+Example 2.2.6. Verify that limx→2 x2 = 4.
+
+10
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Solution. Let ϵ > 0 be given. We want to ﬁnd δ > 0 so that if 0 < |x − a| < δ then
+|f (x) − L| < ϵ.
+Now, |f (x) − 4| = |x2 − 4| = |(x + 2)(x − 2)| = |x + 2||x − 2|.
+We want the expression above to be less than ϵ. We can make the factor |x − 2| as small as
+we wish/please by choosing δ properly, but we need to control the factor |x + 2| so that it does
+not become too large. If we assume that δ ≤ 1(there is nothing special about 1. Another
+positive number could be used and not change the nature of the argument, the details would be
+diﬀerent,however. But for convenience, it is customary to always select/choose δ to be less than
+or equal to 1) and require that |x − 2| < δ, then we have
+|x − 2| < 1 =⇒ 1 < x < 3 =⇒ 3 < x + 2 < 5 =⇒ |x + 2| < 5.
+Therefore |f (x) − 4| < 5|x − 2| if |x − 2| ≤ 1. But 5|x − 2| < ϵ if |x − 2| < 5ϵ .
+Therefore, if we take δ = min{1, 5ϵ }, then |f (x) − 4| < 5|x − 2| < 5 5ϵ = ϵ if |x − 2| ≤ δ. This proves
+that limx→2 x2 = 4.
+Example 2.2.7. Use the ϵ − δ deﬁnition of a limit to prove that limx→3 x2 = 9.
+Solution. Here f (x) = x2 and L = 9, so that
+|f (x) − L| = |x2 − 9| = |(x + 3)(x − 3)| = |x + 3||x − 3|
+
+...............(⋆)
+
+.
+To make |f (x) − L| small, one must control the size of |x − 3|. If by agreement we choose δ ≤ 1
+and as a consequence the statement, ”x is near 3” is to mean that x is restricted to the closed
+interval [2, 4]. That is, 2 ≤ x ≤ 4. This information allows us to place bounds upon the factor
+|x + 3|. That is |x + 3| < 7. Thus (⋆) becomes
+|f (x) − L| = |x2 − 9| = |(x + 3)(x − 3)| = |x + 3||x − 3| < 7δ < ϵ
+
+...............(⋆⋆),
+
+where ϵ > 0 and less than 1, is as small as you want it to be.
+The inequality (⋆⋆) tells us that if δ < 7ϵ , then it follows that |x2 − 9| < ϵ whenever |x − 3| < δ.
+So here if we choose δ = min{1, 7ϵ }, then we are done.
+Remark. The ϵ − δ deﬁnition of a limit was developed around the 1800′ s and it resulted from
+the combined research developed by mathematicians Weierstrass, Bolzano and Cauchy.
+
+2.3
+
+Properties of Limits
+
+Theorem 2.3.1. (Limit Theorems/Properties)If limx→a f (x) = L1 and limx→a g(x) = L2 ,
+where L1 , L2 ∈ R, then
+1. limx→a [f (x) + g(x)] = limx→a f (x) + limx→a g(x) = L1 + L2
+
+[Sum Rule]
+
+2. limx→a [f (x) − g(x)] = limx→a f (x) − limx→a g(x) = L1 − L2
+
+[Difference Rule]
+
+3. limx→a [f (x).g(x)] = limx→a f (x). limx→a g(x) = L1 .L2
+
+[Product Rule]
+
+2.3. PROPERTIES OF LIMITS
+
+11
+
+4. limx→a k.f (x) = k limx→a f (x) = k.L1 , (for any number k)
+(x)
+x→a f (x)
+5. limx→a [ fg(x)
+] = lim
+= LL12 if L2 ̸= 0.
+limx→a g(x)
+
+[Constant Multiple Rule]
+
+[Quotient Rule]
+
+Proof.(1) and (2) and (4) are easy to prove.
+(3). Suppose limx→a f (x) = L1 and limx→a g(x) = L2 . Given ϵ > 0 there exists δ1 > 0 and δ2 > 0
+such that
+ϵ
+0 < |x − a| < δ1 =⇒ |f (x) − L1 | <
+2
+and
+ϵ
+0 < |x − a| < δ2 =⇒ |g(x) − L2 | < .
+2
+Note also that if limx→a g(x) = L2 , then 0 < |x − a| < δ2 =⇒ |g(x) − L2 | < ϵ. Letting ϵ = 1 in
+this deﬁnition we have that 0 < |x − a| < δ2 =⇒ |g(x) − L2 | < 1 or 0 < |x − a| < δ2 =⇒ −1 <
+g(x) − L2 < 1. Equivalently, 0 < |x − a| < δ2 =⇒ −1 + L2 < g(x) < 1 + L2 and hence
+0 < |x − a| < δ2 =⇒ |g(x)| < |1 + L2 | ≤ 1 + |L2 |.....................(⋆)
+Then
+
+|f (x)g(x) − L1 L2 | =
+|f (x)g(x) − L1 g(x) + L1 g(x) − L1 L2 |
+=
+|(f (x) − L1 )g(x) + L1 (g(x) − L2 )|
+≤
+|(f (x) − L1 )g(x)| + |L1 (g(x) − L2 )|
+= |g(x)||f (x) − L1 | + |L1 ||g(x) − L2 | ≤ 2ϵ + 2ϵ = ϵ.
+
+Therefore limx→a [f (x).g(x)] = L1 .L2 .
+1
+(5). Using (3), by using the fact that since L2 ̸= 0 =⇒ limx→a g(x)
+= L12 , we have
+(x)
+(x)
+L1
+L1
+− LL12 | =
+| fg(x)
+− g(x)
++ g(x)
+− LL12 |
+| fg(x)
+1
+1
+= | g(x)
+(f (x) − L1 ) + L1 ( g(x)
+− L12 |
+1
+1
+||f (x) − L1 | + |L1 || g(x)
+− L12 |
+≤ | g(x)
+ϵ
+=
++ 2ϵ = ϵ.
+2
+
+Remark. Many situations require algebraic manipulation before the limit theorems can be applied.
+
+Example 2.3.2. Compute the following limits
+2 −9
+(a). limx→3 xx−3
+√
+
+(b). limx→0 x+4−2
+x
+2 −9
+Solution.(a). The function xx−3
+is not deﬁned when x = 3, since direct substitution gives 00 ,
+which is undeﬁned. That causes no diﬃculty, since the limit as x approaches 3 depends only on
+the values of x near 3 and excludes consideration of the values at x = 3 itself. To evaluate the
+limit, note that x2 − 9 = (x − 3)(x + 3). So for x ̸= 3,
+(x − 3)(x + 3)
+x2 − 9
+=
+= x + 3.
+x−3
+x−3
+
+12
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+As x approaches 3, x + 3 approaches 6. Therefore
+x2 − 9
+= 6.
+x→3 x − 3
+lim
+
+(b). Since the denominator approaches zero when taking the limit, we may not apply the Quotient
+Rule directly. However, if we ﬁrst
+√ apply an algebraic trick, the limit may be evaluated. Multiply
+numerator and denominator by x + 4 + 2
+√
+
+√
+x+4−2 √x+4+2
+. x+4+2
+x
+
+Thus
+
+√
+
+limx→0
+
+x+4−2
+x
+
+=
+=
+=
+
+(x+4)−4
+√
+x( x+4+2)
+√ x
+x( x+4+2)
+√ 1
+x+4+2
+
+1
+= limx→0 √x+4+2
+limx→0
+√ 1
+= limx→0
+( x+4+2)
+1
+=
+.
+4
+
+Remarks. Note that if x approaches a and the values of f (x) do not approach a speciﬁc number,
+then we say that the limit of f (x) as x approaches a does not exist.
+
+2.3.1
+
+Right-Hand Limits and Left-Hand Limits
+
+Sometimes the values of a function f (x) tend to diﬀerent limits as x approaches a number a from
+diﬀerent sides. When this happens, we call the limit of f as x approaches a from the right the
+right-hand limit of f at a, and the limit of f as x approaches a from the left the left-hand
+limit of f at a. We use the notation
+limx→a+ f (x)
+
+(”the limit of f as x approaches a from the right”).
+
+limx→a− f (x)
+
+(”the limit of f as x approaches a from the left”).
+
+Deﬁnition 2.3.3. A function f (x) has a limit L as x approaches a if and only if the right-hand
+and left-hand limits at a exist and are equal.
+That is, limx→a f (x) = L iﬀ limx→a+ f (x) = L and limx→a− f (x) = L.
+Example 2.3.4. Consider the function
+
+ x + 2, f or x < 1
+4
+f or x = 1
+f (x) =
+
+x + 4 f or x > 1
+Show that f has no limit as x → 1.
+Solution. Clearly,
+lim f (x) = 3 ̸= lim+ f (x) = 5.
+
+x→1−
+
+x→1
+
+Thus the two one-sided limits exits but are not equal. Thus limx→1 f (x) does not exist.
+
+2.3. PROPERTIES OF LIMITS
+
+13
+
+Example 2.3.5. Graph the following function
+{ x2 +x
+, f or x ̸= 0
+x
+f (x) =
+5
+f or x = 0
+By inspection determine limx→0 f (x), limx→0+ f (x) and limx→0− f (x).
+By inspection
+lim f (x) = 1, lim+ f (x) = 1, lim− f (x) = 1
+x→0
+
+x→0
+
+x→0
+
+Notice that f (0) = 5 and is not equal to limx→0 f (x). Also note that the limit from the left and
+the limit from the right equal limx→0 f (x).
+Whenever a limit at a point exists, it is equal to the right-hand and left-hand limits. Also, whenever the right-hand and left-hand limits at a point both exist and are equal, the limit exists and
+is equal to the common value of the right-hand and left-hand limits.
+Example 2.3.6. Use the ϵ − δ deﬁnition of a limit to prove that the limit of a sum is the sum of
+the limits
+lim [f (x) + g(x)] = lim f (x) + lim g(x) = L1 + L2 .
+x→a
+
+x→a
+
+x→a
+
+Solution. By hypothesis, limx→a f (x) = L1 and limx→a g(x) = L2 , so that for a small number
+ϵ > 0, there exists δ1 > 0 and δ2 > 0 such that
+|f (x) − L1 | <
+
+ϵ
+when 0 < |x − a| < δ1
+2
+
+and
+
+ϵ
+when 0 < |x − a| < δ2
+2
+Choose δ to be the smaller of δ1 and δ2 , then using the triangle inequality, one can write
+|g(x) − L2 | <
+
+|(f (x) + g(x)) − (L1 + L2 )| =
+≤
+≤
+
+|(f (x) − L1 ) + (g(x) − L2 )|
+|f (x) − L1 | + |g(x) − L2 |
+ϵ
+ϵ
++
+= ϵ when 0 < |x − a| < δ
+2
+2
+
+Therefore |(f (x) + g(x)) − (L1 + L2 )| < ϵ when 0 < |x − a| < δ, which implies that
+lim [f (x) + g(x)] = lim f (x) + lim g(x) = L1 + L2 .
+
+x→a
+
+x→a
+
+x→a
+
+Exercise. Use the ϵ − δ deﬁnition of a limit to prove all the other limit theorems stated earlier.
+
+14
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Formal Deﬁnition of One-sided Limits
+Deﬁnition 2.3.7. The limit of f (x) as x approaches a from the right is the number L if the
+given ϵ > 0 there exists δ > 0 such that
+a < x < a + δ implies |f (x) − L| < ϵ.
+Deﬁnition 2.3.8. The limit of f (x) as x approaches a from the left is the number L if the
+given ϵ > 0 there exists δ > 0 such that
+a − δ < x < a implies |f (x) − L| < ϵ.
+Remark. By comparing the two inequalities above, we can see the relation between the one-sided
+limits and the two-sided limit. If we subtract a from the δ-inequalities, they become
+0 < x − a < δ =⇒ |f (x) − L| < ϵ
+and
+−δ < x − a < 0 =⇒ |f (x) − L| < ϵ.
+Together, these two inequalities say the same thing as
+0 < |x − a| < δ =⇒ |f (x) − L| < ϵ,
+which is the deﬁnition of the limit. In other words, f (x) has a limit L at a if and only if the
+right-hand and left-hand limits of f at a exist and are equal.
+
+2.3.2
+
+Limits at Inﬁnity and Inﬁnite Limits
+
+In this subsection, we study two types of limits
+• limits at inﬁnity, where x becomes arbitrarily large, positive or negative;
+• inﬁnite limits, which are not really limits at all but provide useful symbolism for describing the
+behaviour of functions whose values become arbitrarily large, positive or negative.
+
+2.3. PROPERTIES OF LIMITS
+
+15
+
+Limits at Inﬁnity
+Example 2.3.9. Consider the function f (x) = √xx2 +1 .
+
+Figure 2.6: Limit of f(x) as x−→±∞
+The values of f (x) seem to approach 1 as x takes on larger and larger positive values and −1
+as x takes on negative values that get larger and larger in absolute value. This is equivalent to
+saying that limx→∞ f (x) = 1 and limx→−∞ f (x) = −1.
+The graph of f conveys this limiting behaviour by approaching the horizontal lines y = 1 as
+x → ∞ and y = −1 as x → −∞. These lines are called horizontal asymptotes of the graph. In
+general if a curve approaches a straight line as it recedes very far away from the origin, that line
+is called an asymptote of the curve.
+Deﬁnition 2.3.10. (Informal Deﬁnition of Limits at ∞ and −∞).
+If the function f is deﬁned on an open interval (a, ∞) and we can ensure that f (x) is as close as
+we want to the limit L by taking x large enough, then we say that f (x) approaches the limit L as
+x approaches inﬁnity, and write
+lim f (x) = L.
+x→∞
+
+If the function f is deﬁned on an open interval (a, ∞) and we can ensure that f (x) is as close as
+we want to the limit L by taking x negative and large enough in absolute value, then we say that
+f (x) approaches the limit L as x approaches negative inﬁnity, and write
+lim f (x) = L.
+
+x→−∞
+
+Recall that the symbol ∞ does not represent a real number. We can not use it in arithmetic in the
+usual way, but we can use the phrase ”approaches ∞” to mean ”becomes arbitrarily large positive”
+and the phrase ”approaches −∞” to mean ”becomes arbitrarily large negative”.
+
+16
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Example 2.3.11. We can see that limx→±∞ x1 = 0, and the x-axis is a horizontal asymptote of
+the graph of y = f (x) = x1 .
+
+Figure 2.7: Limit of f(x) as x−→±∞
+
+We use algebraic manipulation/tricks to evaluate such limits.
+Example 2.3.12. Evaluate limx→∞ f (x) and limx→−∞ f (x) for f (x) = √xx2 −1 .
+Solution. Rewrite the expression for f (x) as follows:
+f (x) = √
+
+x
+x
+x
+sgn(x)
+x
+=√
+=√ √
+= √
+=√
+x2 + 1
+x2 (1 + 12 )
+x 1 + 12
+|x| 1 + 12
+1 + 12
+x
+
+x
+
+x
+
+x
+
+{
+
+1, x > 0
+x
+where sgn(x) = |x|
+=
+−1, x < 0
+√
+The factor 1 + x12 −→ 1 as x −→ ∞ or −∞. So f (x) must have the same limit as x −→ ±∞
+as does sgn(x). Therefore limx→∞ f (x) = 1 and limx→−∞ f (x) = −1.
+
+2.3.3
+
+Limits at Inﬁnity for Rational Functions
+
+The only polynomials that have limits at ±∞ are constant ones, p(x) = c. The situation is more
+interesting for rational functions. Recall that a rational function is a quotient of two polynomials.
+The following examples show how to render such a function in a form where its limits at inﬁnity
+and negative inﬁnity (if they exist) are apparent. The way to do this is to divide the numerator
+and denominator by the highest power of x appearing in the denominator. The limits of a rational
+function at inﬁnity and negative inﬁnity either both fail to exist or both exist and are equal.
+We consider several cases
+(a). Numerator and Denominator of the same degree. Divide the numerator and
+denominator by highest power of x, appearing in the denominator and apply the limit.
+
+2.3. PROPERTIES OF LIMITS
+
+17
+
+Example 2.3.13. Evaluate limx→±∞ 2x3x−x+3
+2 +5 .
+2
+
+Solution. Divide the numerator and denominator by x2 to have
+2 − 1x + x32
+2
+2x2 − x + 3
+2−0+0
+=
+lim
+=
+.
+=
+5
+x±∞
+x→±∞
+3x2 + 5
+3+0
+3
+3 + x2
+lim
+
+(b). Degree of Numerator less than degree of denominator. Divide both numerator
+and denominator by the highest power of x in the denominator.
+5x+2
+Example 2.3.14. Evaluate limx→±∞ 2x
+3 −1 .
+
+Solution. Divide the numerator and denominator by x3 to have
+5
++ x23
+0+0
+5x + 2
+x2
+=
+=
+lim
+= 0.
+1
+x→±∞ 2x3 − 1
+x→±∞ 2 − 3
+2
+−
+0
+x
+
+lim
+
+(c). Degree of Numerator is greater than the degree of Denominator. Divide by the
+highest of x in the denominator.
+−3
+Example 2.3.15. Evaluate limx→±∞ 2x
+.
+7x+4
+2
+
+Solution. Divide the numerator and denominator by x2 to have
+2x − x3
+2x2 − 3
+= ±∞.
+= lim
+x→∞ 7x + 4
+x→±∞ 7 + 4
+x
+lim
+
+Inﬁnite Limits
+A function whose values grow arbitrarily large can sometimes be said to have an inﬁnite limit.
+Since inﬁnity is not a number, inﬁnite limits are not really limits at all.
+Example 2.3.16. limx→0 x12 = ∞.
+Thus the limit does not exist(DNE) because the function x12 becomes arbitrarily large near x = 0.
+Changing Variables with Substitutions
+Sometimes a change of variable can turn an unfamiliar expression into one whose limit we know
+how to ﬁnd.
+Example 2.3.17. Compute limx→∞ sin x1 .
+Solution. If we substitute θ = x1 then θ → 0+ as x → ∞. Thus
+lim sin
+
+x→∞
+
+1
+= lim sin θ = 0.
+x θ→0+
+
+18
+
+2.3.4
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+The Sandwich or Squeeze Theorem
+
+Theorem 2.3.18. (The Sandwich or Squeeze Theorem) Suppose that
+g(x) ≤ f (x) ≤ h(x)
+for all x ̸= a in some interval about a and that
+lim g(x) = lim h(x) = L.
+
+x→a
+
+x→a
+
+Then limx→a f (x) = L.
+
+Figure 2.8: Sandwich or Squeeze Concept
+Proof. Suppose g(x) ≤ f (x) ≤ h(x), and limx→a g(x) = limx→a h(x) = L. Then given ϵ > 0 there
+exist δ1 > 0 and δ2 > 0 such that
+ϵ
+0 < |x − a| < δ1 =⇒ |g(x) − L| <
+3
+and
+
+ϵ
+0 < |x − a| < δ2 =⇒ |h(x) − L| < .
+3
+Letting δ = min{δ1 , δ2 }, we have
+0 < |x − a| < δ =⇒ |f (x) − L| =
+|f (x) − g(x) + g(x) − L|
+≤
+|f (x) − g(x)| + |g(x) − L|
+≤
+|h(x) − g(x)| + |g(x) − L|
+= |h(x) − L − (g(x) − L)| + |g(x) − L|
+≤ |h(x) − L| + |g(x) − L| + |g(x) − L|
+ϵ
++ 3ϵ + 3ϵ = ϵ.
+=
+3
+This proves that limx→a f (x) = L.
+Remark. The idea is that if the values of f are sandwiched between the values of of two functions
+that approach L, then the values of f approach L.
+Example 2.3.19. The value of limθ→0 sinθ θ can be found by the Sandwich Theorem. We sandwich
+sin θ
+between the number 1 and a fraction that is known to approach 1 as θ → 0. This tells us that
+θ
+sin θ
+approaches 1 as well.
+θ
+
+2.3. PROPERTIES OF LIMITS
+
+2.3.5
+
+19
+
+Techniques of Evaluating Indeterminate Limits
+
+(a). Evaluating Indeterminate forms 00 , ∞ − ∞, ∞
+using algebraic tricks and change of
+∞
+variable Techniques
+Example 2.3.20. Find limx→0 √1−x−x √1+x .
+Solution. This is a ” 00 ” indeterminate form. We rationalize the denominator.
+√
+√
+√
+√
+x
+x( 1 − x + 1 + x)
+1−x+ 1+x
+√
+√
+√
+√
+lim √
+= lim √
+= − lim
+= −1
+x→0
+x→0
+2
+1 − x − 1 + x x→0 ( 1 − x − 1 + x)( 1 − x + 1 + x)
+√
+√
+Example 2.3.21. Find limx→∞ ( x + 1 − x).
+√
+√
+Solution. This is an example of an ”∞ − ∞” type. We multiply and divide by ( x + 1 − x)
+√
+√
+√
+√
+√
+√ ( x + 1 − x)
+1
+( x + 1 − x) = ( x + 1 − x) √
+√ = ··· = √
+√ → 0 as x → ∞.
+( x + 1 − x)
+( x + 1 + x)
+√ √
+√
+Example 2.3.22. Find limx→∞ x( x + 1 − x).
+Solution. Rationalization gives
+√
+√ √
+√
+x
+x( x + 1 − x) = √
+√ .
+( x + 1 − x)
+This is now an ” ∞
+” form, and we divide the numerator and denominator by
+∞
+
+√
+
+x to obtain
+
+√
+√ √
+1
+1
+x( x + 1 − x) = √
+→
+as x → ∞.
+2
+1
+( 1 + x + 1)
+Example 2.3.23. Find limx→ Π
+
+cos x
+2 sin(cos x)
+
+.
+
+Solution. This is a ” 00 ” indeterminate form. We substitute t = cos x. Then t → 0 as x → Π2 .
+Therefore
+cos x
+t
+lim
+= lim
+= 1.
+Π sin(cos x)
+t→0 sin t
+x→ 2
+−1
+
+Example 2.3.24. Find limx→0 tanx x .
+Solution. This is a ” 00 ” indeterminate form. Let t = tan−1 x and t → 0 as x → 0. Therefore
+t
+t
+t
+tan−1 x
+= lim tan t = lim
+. cos t = lim
+. lim cos t = 1.
+lim
+t→0
+t→0
+t→0
+x→0
+x
+x
+sin t
+sin t t→0
+(b). Evaluating Indeterminate forms 00 and ∞
+using L’Hôpital’s Rule
+∞
+∞
+0
+This rule is designed to deal with ” 0 ” and ” ∞ ” indeterminate forms and it involves diﬀerentiation.
+This will be discussed in Chapter Two. Indeterminate forms like ”0.∞” and 1∞ can be rewritten
+, in which case L’Hôpital’s Rule is applicable.
+to look like 00 or ∞
+∞
+
+20
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+2.4
+
+Continuous Functions
+
+We ﬁrst deﬁne the notion of continuity of a function in terms of limits and then a few equivalent
+deﬁnitions.
+Deﬁnition 2.4.1. Suppose that a function f is deﬁned on a subset A of R and x ∈ A. If
+limx→a f (x) exists and if limx→a f (x) = f (a), then we say that f is continuous at a.
+A function f is continuous on A(its domain) if it is continuous at each point a ∈ A(its domain).
+Remark. Brieﬂy, continuity of a function f at a means that the limit of f at the point a is equal
+to the value of f at a. In other words, when x is close to a, then f (x) is close to f (a).
+
+2.4.1
+
+continuity Test and Points of Discontinuity
+
+Continuity Test: For a function f to be continuous at a, it must satisfy the following three
+conditions:
+1. f must be deﬁned at a;
+2. the limit, limx→a f (x), must exist(i.e < ∞);
+3. limx→a f (x must equal f (a).
+If any one of these conditions is not satisﬁed, then f is not continuous at a.
+Deﬁnition 2.4.2. If a functionf is not continuous at a, we say that it is discontinuous at a, or
+that a is a discontinuity of f or a point of discontinuity of f .
+
+2.4.2
+
+Formal (ϵ − δ) Deﬁnition of Continuity
+
+Deﬁnition 2.4.3. (Formal or ϵ − δ deﬁnition of continuity) A function f is continuous at
+a ∈ A if for any ϵ > 0 there exists a δ > 0 such that for all x ∈ A
+|x − a| < δ implies that |f (x) − f (a)| < ϵ.
+Example 2.4.4. Verify that the function f : R −→ R deﬁned by f (x) = 2x is continuous on R.
+Solution. Let ϵ > 0 be given such that |x − y| < δ =⇒ |f (x) − f (y)| < ϵ. That is
+|f (x) − f (y)|
+|2x − 2y|
+2|x − y|
+|x − y|
+
+< ϵ
+< ϵ
+< ϵ
+< 2ϵ
+
+So, if we choose δ ≤ 2ϵ will have shown that f is continuous on R.
+
+2.4. CONTINUOUS FUNCTIONS
+
+2.4.3
+
+21
+
+Types of Discontinuities
+
+Remark. Note that in the formal deﬁnition of continuity of a function f , the number δ = δ(x, ϵ)
+is a function of the point x and ϵ. If δ = δ(ϵ) a function of ϵ only, we say that f is uniformly
+continuous.
+Deﬁnition 2.4.5. If at a point a ∈ A the limit limx→a f (x) exists, but f (a) either is not deﬁned
+or limx→a f (x) ̸= f (a), then a is a removable point of discontinuity. In other words, f is
+discontinuous at a but can be re-deﬁned at that single point so that it becomes continuous there.
+Example 2.4.6. The function
+f (x) = {
+
+x3 , if x ̸= 0
+2, if x = 0,
+
+is discontinuous at a = 0 and limx→0 f (x) = 0 so that limx→0 f (x) ̸= f (0). Thus the point 0 is a
+removable point of discontinuity. To remove it, deﬁne f (0) = 0.
+Deﬁnition 2.4.7. If f is discontinuous at a point a ∈ A and one-sided limits f (a− ) and f (a+ )
+both exists, but f (a− ) ̸=f(a+ ), then f is said to have a discontinuity of the ﬁrst kind or jump
+discontinuity.
+
+Figure 2.9: Jump Discontinuity at a
+
+Example 2.4.8. The function
+f (x) = {
+
+x,
+if x < 1
+3x2 − 1, if x ≥ 1
+
+is discontinuous at a = 1, the left-hand and right-hand limits of f at 1 both exists and limx→1− f (x) =
+1 ̸= 2 = limx→1+ f (x). Thus the point 1 is a jump discontinuity.
+
+22
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Deﬁnition 2.4.9. If at a ∈ A, at least one of the one-sided limits does not exist or is inﬁnite,
+then we say that the point a is a discontinuity discontinuity of the second kind.
+
+Figure 2.10: Discontinuity of the Second Kind at a
+
+2.4.4
+
+Right Continuity and Left Continuity
+
+Deﬁnition 2.4.10. A function f is continuous from the right(from the left) at the point a if the
+following two conditions are satisﬁed:
+(
+)
+1. limx→a+ f (x) = f (a+ ) limx→a− f (x) = f (a− ) ;
+(
+)
+2. f (a+ ) = f (a) f (a− ) = f (a) .
+Clearly a function f is continuous at a if it is both right continuous and left continuous at a.
+Remark. Clearly, a function f is continuous at a point a provided that, roughly speaking, its
+graph has no breaks( gaps or holes) as it passes the point (a, f (a)). That is, f is continuous at a
+if we can draw the graph through (a, f (a)) without lifting our pencil from the paper.
+Remark. Clearly the sine and cosine functions are continuous for every value of x tangent function
+is continuous where it is deﬁned(its domain), polynomials are continuous at every point, rational
+functions are continuous wherever they are deﬁned, the absolute-value function is continuous, all
+m
+rational powers x n are continuous, exponential and logarithmic functions, hyperbolic functions
+are continuous.
+
+2.4.5
+
+Algebraic Properties of Continuous Functions
+
+Theorem 2.4.11. If the functions f and g are continuous at a point a, then the following functions are continuous at a:
+
+2.5. EXERCISES AND SOME SOLVED PROBLEMS
+
+23
+
+1. Sums: f + g;
+2. Diﬀerences: f − g;
+3. Products: f.g;
+4. Constant multiples: k.f ;
+5. Quotients: fg
+
+(provided that g(a) ̸= 0).
+
+Proof. The proofs involve the use of limit theorems.
+(a). limx→a [f (x) + g(x)] = limx→a f (x) + limx→a g(x) = f (a) + g(a), so f + g is continuous at
+a.
+The proofs to the other statements are done similarly, and are hence left as exercises.
+
+2.5
+
+Exercises and Some Solved Problems
+
+1
+, y = g(x) = 3x−5 and y = h(x) = sin(2x+1).
+1. Let f, g, h : R −→ R be deﬁned by y = f (x) = x−2
+(a). Find
+
+(i). the domain and range of f, g and h.
+(ii). the composite functions f ◦ g, g ◦ h and g ◦ f .
+(iii). g −1 (x).
+(b). Which of these functions is/are one-to-one, onto, many-to-one?
+(c). Determine the domains of the functions
+(i). y =
+
+√
+
+4 − x2
+
+(ii). y =
+
+√
+
+1
+(iv). y = x21−4 (v). y = x2x+5
+x2 − 16 (iii). y = x−3
+
+Solution.
+(i). Since y must be real, 4 − x2 ≥ 0, or x2 ≤ 4. Thus Dom(f ) is the interval −2 ≤ x ≤ 2. It
+is easy to check that the range is 0 ≤ y ≤ 2.
+(ii). Here x2 − 16 ≥ 0, or x2 ≥ 16. Thus the domain consist of the intervals x ≤ −4 and x ≥ 4.
+(iii). The function is deﬁned for every real value except 3. Thus the domain is R − 3.
+(iv). The function is deﬁned for x ̸= ±2.
+(v). Since x2 + 5 ̸= 0 for all x, the domain is the set of real numbers.
+
+24
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+2. Find the following limits without using L’Hôpital’s Rule.
+x−1
+(i). limx→1 √x+3−2
+. Solution: 4
+)−( −1
+)
+2
+
+1
+
+(
+
+(ii). limx→0 −2+x x
+
+. Solution: −1
+4
+
+√
+
+x
+√ . Solution: −1
+(iii). limx→∞ 2+
+2− x
+
+3. (a). State the formal deﬁnition of a limit of a function f (x) as x approaches a.
+(b). Use the formal deﬁnition of a limit to verify the indicated limit in each case.
+1
+(i). limx→1 x+1
+= 12 .
+
+(ii). limx→5 x2 = 25.
+(iii). limx→2 5 − 2x = 1.
+(c). Evaluate the following limits.
+cos 1
+
+(i). limx→−∞ 1+ 1x .
+x
+
+1
+
+(ii). limx→∞ ( x1 ) x .
+(iii). limx→±∞ (3 + x2 )(cos x1 ).
+(d). Use the formal deﬁnition of a limit to verify that limx→2 x2 + 3x = 10.
+Solution Let ϵ > 0 be chosen. We must produce a δ > 0 such that, whenever 0 < |x − 2| < δ
+then |(x2 + 3x) − 10| < ϵ. That is, |(x − 2)(x + 5)| < ϵ. Let δ ≤ 1. Then |x − 2| < 1 implies
+that 1 ≤ x ≤ 3 and hence |x + 5| ≤ 8. Thus 0 < |x − 2| < δ then 8|(x − 2)| < ϵ and thus
+|x − 2| < 8ϵ . Hence, if we take δ to be the minimum of 1 and 8ϵ , then whenever 0 < |x − 2| < δ,
+|(x2 + 3x) − 10| < 8δ ≤ ϵ.
+4. (a). State the Sandwich/Squueze Theorem.
+(b). Given that 3 − x2 ≤ f (x) ≤ 3 + x2 for all x ̸= 0, ﬁnd limx→0 f (x).
+5. (a). Evaluate the limit or explain why it does not exist.
+(i). limx→4 (x2 − 4x + 1).
+√
+
+x−3
+(ii). limx→9 x−9
+.
+
+(iii). limx→3 x x−6x+9
+.
+2 −9
+2
+
+2.5. EXERCISES AND SOME SOLVED PROBLEMS
+(iv). limx→0
+
+1
+1
+
+3+2 x
+
+25
+
+.
+
+Solution.
+• Note that as x → 0− ,
+
+1
+1
+→ −∞, and 2 x → 0, and limx→0 1 1
+x
+3+2 x
+
+• As x → 0+ ,
+
+1
+1
+→ ∞, and 2 x → ∞, and limx→0 1 1
+x
+3+2 x
+
+Thus limx→0
+
+1
+1
+
+3+2 x
+
+= 13 .
+
+= 0.
+
+does not exist.
+
+(b). (i). State the formal deﬁnition of continuity of a function f : R −→ R at the point x0 ∈ R.
+(ii). Prove that the function f : R −→ R deﬁned by f (x) = x2 is continuous at x0 ∈ R.
+(c). Let f : R −→ R deﬁned by
+
+{
+f (x) =
+
+x,
+x<1
+5 − x, x ≥ 1
+
+(i). Sketch the graph of f .
+(ii). Is f continuous at x = 1? If not, state the nature of discontinuity of f at x = 1.
+(d). Show that at x = 0, the function f (x) =
+
+1
+1
+
+3 x +1
+
+has a jump discontinuity.
+
+26
+
+CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS
+
+Chapter 3
+DIFFERENTIATION OF FUNCTIONS
+OF A SINGLE VARIABLE
+Two fundamental problems are considered in calculus:
+• The problem of slopes is concerned with ﬁnding the slope of (the tangent line to) a given
+curve at a given point on the curve.
+• The problem of areas is concerned with ﬁnding the area of a plane region bounded by curves
+and straight lines.
+The solution of the problem of slopes is the subject of diﬀerential calculus. As we will see, it has
+many applications in mathematics and other disciplines.
+The problem of areas is the subject of integral calculus, which we begin in Chapter 4.
+
+3.1
+
+Tangent Lines and Their Slopes
+
+3.1.1
+
+Tangent Lines
+
+Conditions for Tangency to a Curve at a Point
+Let C be the graph of a function y = f (x) and let P be the point (x0 , y0 ) on C, so that y0 = f (x0 ).
+What do we mean when we say that the line L is tangent to C at P ?
+Note that a tangent line L should have the ”same direction” as the curve does at the point of
+tangency P .
+
+27
+
+28
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+A reasonable deﬁnition of tangency can be stated in terms of limits. If Q is a point on C diﬀerent
+from P , then the line through P and Q is called a secant line to the curve. This line rotates
+around P as Q moves along the curve. If L is a line through P whose slope is the limit of the slopes
+of these secant lines P Q as Q approaches P along C, then we will say that L is tangent to C at P .
+
+Figure 3.1: Secant lines PQ approach tangent line L as Q approaches P along the curve C
+
+The slope of the line P Q is
+
+f (x0 + h) − f (x0 )
+.
+h
+Note that h can be positive or negative, depending on whether Q is to the right or left of P .
+Deﬁnition 3.1.1. Suppose f is continuous at x = x0 and that
+f (x0 + h) − f (x0 )
+= m,
+h→0
+h
+lim
+
+exists. Then the straight line having slope m and passing through the point P = (x0 , f (x0 )) is
+called the tangent line (or simply the tangent) to the graph of y = f (x) at P . An equation of
+this tangent is
+y = m(x − x0 ) + y0 .
+
+3.1. TANGENT LINES AND THEIR SLOPES
+
+29
+
+Example 3.1.2. Find an equation of the tangent line to the curve y = x2 at the point (1, 1).
+Solution. Here f (x) = x2 , x0 = 1, and y0 = f (1) = 1. The slope of the required tangent is
+(1)
+m = limh→0 f (1+h)−f
+=
+h
+
+−1
+limh→0 (1+h)
+h
+
+=
+
+−1
+limh→0 1+2h+h
+h
+
+=
+
+limh→0 2h+h
+h
+
+2
+
+2
+
+2
+
+= limh→0 (2 + h) = 2.
+
+Figure 3.2: Secant lines PQ approach tangent line L as Q approaches P along the curve C
+Accordingly, the equation of the tangent line at (1, 1) is y = 2(x − 1) + 1 or y = 2x − 1.
+
+3.1.2
+
+The Slope of a Curve
+
+Deﬁnition 3.1.3. The slope of a curve C at a point P is the slope of the tangent line to C at P
+if such a tangent line exists. In particular, the slope of the graph of y = f (x) at the point x0 is
+f (x0 + h) − f (x0 )
+.
+h→0
+h
+Example 3.1.4. Find the slope of the curve y = x2 at the point x = −2.
+lim
+
+Solution. If x = −2, then y = 4, so the slope is
+m =
+
+(x0 )
+limh→0 f (x0 +h)−f
+h
+
+=
+
+−4
+limh→0 (−2+h)
+h
+
+=
+
+−4
+limh→0 4−4h+h
+h
+
+2
+
+2
+
+= limh→0 −4h+h
+= limh→0 (−4 + h) = −4.
+h
+2
+
+30
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+The average rate of change in a quantity over a period of time is the amount of change divided
+by the time it takes. For instance, average speed is distance traveled divided by the elapsed time,
+say, in km/hour,etc.
+
+3.2
+
+The Derivative
+
+Deﬁnition 3.2.1. The derivative of a function f is another function f ′ (read as ”f prime”)
+deﬁned by
+f (x + h) − f (x)
+f ′ (x) = lim
+h→0
+h
+at all points x for which the limit exists (i.e., is a ﬁnite real number). If f ′ (x) exists, we say that
+f is diﬀerentiable at x otherwise, it is said to be non-diﬀerentiable at x.
+Remark. Note that the domain of f ′ is the subset of dom(f ) where f ′ is deﬁned. That is, The
+domain of the derivative f ′ is the set of numbers x in the domain of f where the graph of f
+has a non-vertical tangent line. Dom(f ′ ) of f ′ may be smaller than dom(f ) because it contains
+only those points in dom(f ) at which f is diﬀerentiable. Values of x in dom(f ) where f is not
+diﬀerentiable and that are not endpoints of dom(f ) are singular points of f .
+Remark. The value of the derivative of f at a particular point x0 can be expressed as a limit in
+either of two ways:
+f (x0 + h) − f (x0 )
+f (x) − f (x0 )
+= lim
+.
+x→x0
+h→0
+h
+x − x0
+
+f ′ (x0 ) = lim
+
+In the second limit x0 +h is replaced by x, so that h = x−x0 and h → 0 is equivalent to x → x0 . The
+process of calculating the derivative f ′ of a given function f is called diﬀerentiation. A function
+is diﬀerentiable on a set S if it is diﬀerentiable at every point x in S. Polynomial functions are
+diﬀerentiable, as are rational functions and trigonometric functions (in their domains). Composites
+of diﬀerentiable functions are diﬀerentiable, and so are sums, diﬀerences, products, powers, and
+quotients of diﬀerentiable functions, where deﬁned. Derivatives are the functions we use to measure
+the rates at which things change.
+
+3.2.1
+
+Right Derivative and Left Derivative
+
+(a)
+(a)
+f+′ (a) = limh→0+ f (a+h)−f
+and f−′ (a) = limh→0− f (a+h)−f
+h
+h
+
+3.2.2
+
+Leibniz Notation
+
+Because functions can be written in diﬀerent ways, it is useful to have more than one notation for
+derivatives. If y = f (x), we can use the dependent variable y to represent the function, and we
+can denote the derivative of the function with respect to x in any of the following ways:
+Dx y = y ′ =
+
+d
+dy
+=
+f (x) = f ′ (x) = Dx f (x) = Df (x).
+dx
+dx
+
+Often the most convenient way of referring to the derivative of a function given explicitly as an
+d
+expression in the variable x is to write dx
+(read ad ”d dx”) in front of that expression. The symbol
+d
+is a diﬀerential operator and should be read ”the derivative with respect to x of . . .” The
+dx
+
+3.2. THE DERIVATIVE
+
+31
+
+dy
+d
+notations dx
+and dx
+f (x) are called Leibniz notations for the derivative, after Gottfried Wilhelm
+Leibniz (1646-1716), one of the creators of calculus, who used such notations.
+The main ideas of calculus were developed independently by Leibniz and Isaac Newton (16421727). Newton used notations similar to the prime y ′ notations.
+(x)]
+dy
+The Newton quotient [f (x+h)−f
+, whose limit we take to determine the derivative dx
+(read ad
+h
+∆y
+”dy dx”), can be written in the form ∆x , where ∆y = f (x + h) − f (x) is the increment of y and
+∆x = (x + h) − x = h is the corresponding increment in x as we pass from the point (x, f (x)) to
+the point (x + h, f (x + h)) on the graph of f .
+
+dy
+∆y
+Figure 3.3: dx
+= lim∆x→0 ∆x
+
+3.2.3
+
+Diﬀerentiability and Continuity
+
+Recall that we have deﬁned diﬀerentiability of a function f (x) at x0 in terms of a limit. If this
+limit does not exists, then we said that f is non-diﬀerentiable at x = x0 . Geometrically, the
+non-diﬀerentiability of f at x = x0 can manifest itself in several diﬀerent ways. First of all, the
+graph of f (x) could have no tangent line at x = x0 . Secondly, the graph could have a vertical
+tangent line at x = x0 .
+Closely related to the concept of diﬀerentiability is the concept of continuity. Note that every
+diﬀerentiable function at x = a is continuous there. However, a function may be continuous at
+x = a but still not be diﬀerentiable there. For instance, the absolute value function f (x) = |x| is
+continuous on R but not diﬀerentiable at x = 0.
+Theorem 3.2.2. (Diﬀerentiability implies continuity). If a function f is diﬀerentiable at
+x, then f is continuous at x.
+Proof. Since f is diﬀerentiable at x, we know that
+f (x + h) − f (x)
+= f ′ (x)
+h→→0
+h
+lim
+
+32
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+exists. But using the limit theorems, we have
+(
+)
+(
+)
+(x)
+limh→→0 f (x + h) − f (x) = limh→→0 f (x+h)−f
+(h)
+h
+=
+
+(f ′ (x))(0) = 0.
+
+This is equivalent to
+lim f (x + h) = f (x),
+
+h→→0
+
+which says that f is continuous at x.
+
+3.3
+
+Diﬀerentiation Rules
+
+If every derivative had to be calculated directly from the deﬁnition(Method of First Principles),
+calculus would indeed be a painful subject. In this section we show how to diﬀerentiate functions rapidly-without having to apply the deﬁnition each time. We now give several examples of
+the calculation of derivatives algebraically from the deﬁnition of derivative(by Method of First
+Principles). Some of these are the basic building blocks from which more complicated derivatives
+can be calculated later.
+
+Theorem 3.3.1. (Rule 1: Derivative of a Constant and a Linear Function)
+If f (x) = ax + b, then f ′ (x) = a.
+
+Proof. Using the deﬁnition (First Principles)
+f ′ (x) =
+=
+
+(x)
+limh→0 f (x+h)−f
+h
+
+limh→0 a(x+h)+b−(ax+b)
+h
+
+= limh→0 ah
+= a.
+h
+A consequence of this result is that the derivative of a constant function is zero. That is, if
+g(x) = c (constant), then g ′ (x) = 0.
+
+Theorem 3.3.2. (Rule 2: Derivative of a Power Function)
+If f (x) = xr , then f ′ (x) = rxr−1 , when xr makes sense as a real number.
+
+Proof. Let r = n, a positive integer. Note that
+]
+[
+n−1
+n−2
+n−3 2
+n−2
+n−1
+.
+a − b = (a − b) a
++ a b + a b + · · · + ab
++b
+n
+
+n
+
+3.3. DIFFERENTIATION RULES
+
+33
+
+If f (x) = xn , a = x + h and b = x, then a − b = h, and,
+limh→0 (x+h)h −x
+n
+
+f ′ (x) =
+
+n
+
+n terms each with limit xn−1 as h approaches zero
+
+= limh→0
+
+[z
+}|
+{]
+n−1
+n−1
+n−2
+n−3 2
+h (x + h)
++ (x + h) x + (x + h) x + · · · + x
+h
+n terms
+
+=
+=
+
+[z
+}|
+{]
+n−1
+n−1
+n−1
+n−1
++x
++x
++ ··· + x
+lim→0 x
+nxn−1 .
+
+Theorem 3.3.3. (Rule 3: Constant Multiple Rule)
+If f is a diﬀerentiable function of x and k is a constant, the
+d
+df
+(k.f ) = k. .
+dx
+dx
+Proof. Easy and left as an exercise.
+Theorem 3.3.4. (Rule 4: Sum and Diﬀerence Rule)
+If f and g are a diﬀerentiable functions of x then their sum and diﬀerence are diﬀerentiable at
+every point where f and g are both diﬀerentiable. At such points,
+d
+df
+dg
+(f ± g) =
+± .
+dx
+dx dx
+Proof. Exercise.
+This rule can also be generalized to a ﬁnite set of functions.
+Second and Higher Order Derivatives The derivative
+y′ =
+
+dy
+dx
+
+is the ﬁrst derivative of y with respect to x. If the ﬁrst derivative is also a diﬀerentiable function,
+then its derivative
+dy ′
+d dy
+d2 y
+y ′′ =
+=
+( ) = 2,
+dx
+dx dx
+dx
+is called the second derivative of f with respect to x. If y ′′ (” y double prime” ) is diﬀerentiable,
+then its derivative
+dy ′′
+(”y triple prime”)
+y ′′′ =
+dx
+is the third derivative of f with respect to x and so on. Thus
+y (n) =
+
+d (n−1)
+y
+(”y super n”)
+dx
+
+denotes the nth derivativeof y with respect to x.
+
+34
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+Theorem 3.3.5. (Rule 5: The Product Rule)
+The product of two diﬀerentiable functions f and g of x is diﬀerentiable and
+d
+dg
+df
+(f.g) = f
++g .
+dx
+dx
+dx
+Proof. Let f and g of x be diﬀerentiable functions of x. Then
+(f g)′ (x) =
+
+(x)g(x)
+limh→0 f (x+h)g(x+h)−f
+h
+(x)g(x+h)−f (x)g(x)
+limh→0 f (x+h)g(x+h)−f (x)g(x+h)+f
+h
+
+=
+
+[
+]
+(x)
+g(x+h)−g(x)
+= limh→0 [ f (x+h)−f
+]g(x
++
+h)
++
+f
+(x)[
+]
+h
+h
+=
+
+f ′ (x)g(x) + f (x)g ′ (x)
+
+Note that to get to the last line of the proof, we have used the fact that g is continuous(since it
+is diﬀerentiable and hence g(x + h) → g(x) as h → 0).
+
+Theorem 3.3.6. (Rule 5: The Quotient Rule)
+At a point where g ̸= 0, the quotient y = fg of two diﬀerentiable functions of x is diﬀerentiable
+and
+df
+dg
+− f dx
+d ( f ) g dx
+=
+.
+dx g
+g2
+Proof.Let f and g of x be diﬀerentiable functions of x and suppose g(x) ̸= 0. Then
+f (x+h)
+
+( fg )′ (x) =
+=
+
+−
+
+f (x)
+
+limh→0 g(x+h)h g(x)
+(x)g(x+h))
+limh→0 g(x)f (x+h−f
+hg(x+h)g(x)
+
+(x)+g(x)f (x)−f (x)g(x+h)
+= limh→0 g(x)f (x+h)−g(x)f
+hg(x+h)g(x)
+g(x)[
+
+f (x+h)−f (x)
+g(x+h)−g(x)
+]−f (x)[
+]
+h
+h
+
+=
+
+limh→0
+
+=
+
+g(x)f ′ (x)−f (x)g ′ (x)
+[g(x)]2
+
+g(x+h)g(x)
+
+Note that to get to the last line of the proof, we have used the fact that g is continuous(since it
+is diﬀerentiable and hence g(x + h) → g(x) as h → 0).
+
+Theorem 3.3.7. (Rule 6: The Chain Rule)
+If f f (u) is diﬀerentiable at u = g(x), and g(x) is diﬀerentiable at x, then the composite function
+f ◦ g(x) = f (g(x)) is diﬀerentiable at x, and (f ◦ g)′ (x) = f ′ (g(x))g ′ (x).
+
+3.3. DIFFERENTIATION RULES
+
+35
+
+Proof 1. Suppose that f is diﬀerentiable at the point u = g(x) and that g is diﬀerentiable at x.
+Let the function E(k) be deﬁned by
+E(0) =
+E(k) =
+
+0,
+f (u+k)−f (u)
+= f ′ (u),
+k
+
+if k ̸= 0.
+
+By the deﬁnition of derivative, limk→0 E(k) = f ′ (u) − f ′ (u) = 0 = E(0), and so E(k) is continuous
+at k = 0. Also, whether k = 0 or not, we have
+f (u + k) − f (u) = (f ′ (u) + E(k))k.
+Now, put u = g(x) and k = g(x + h) − g(x), so that u + k = g(x + h), and obtain
+f (g(x + h)) − f (g(x)) = (f ′ (g(x) + E(k))(g(x + h) − g(x)).
+Since g is diﬀerentiable at x, limh→0 g(x+h)−g(x)
+= g ′ (x).
+h
+Also, g is continuous at x, so limh→0 k = limh→0 (g(x + h) − g(x)) = 0. Since E is continuous at 0,
+limh→0 E(k) = limk→0 E(k) = E(0) = 0.
+Hence
+f (g(x+h))−f (g(x))
+[f (g(x))]′ =
+lim
+h )
+( h→0
+′
+= limh→0 f (g(x) + E(k)) g(x+h)−g(x)
+h
+(
+)
+′
+′
+=
+f (g(x)) + 0 g (x)
+=
+f ′ (g(x))g ′ (x).
+Proof 2.
+[f (g(x))]′ =
+
+(g(x))
+limh→0 f (g(x+h))−f
+h
+
+=
+
+(g(x)) (g(x+h)−g(x))
+limh→0 f (g(x+h))−f
+.
+g(x+h)−g(x)
+h
+
+=
+
+(u) (g(x+h)−g(x))
+.
+limh→0 f (u+k)−f
+k
+h
+
+= f ′ (u)g ′ (x) = f ′ (g(x))g ′ (x).
+Idea of the proof. Introduce g(x+h)−g(x)in the numerator and denominator and let g(x) = u
+and g(x + h) = u + k. Note k→ 0 as h → 0.
+Remark. The Chain Rule tells us how to diﬀerentiate composites of functions whose derivatives
+we already know. If y = f (u), where u = g(x), then y = f (g(x)) and:
+dy
+times as fast as u is changing;
+at u, y is changing du
+times as fast as x is changing.
+at x, u is changing du
+dx
+dy du
+Therefore, at x, y = f (u) = f (g(x)) is changing du
+times as fast as x is changing. That is
+dx
+dy du
+dy
+=
+,
+dx
+du dx
+dy
+where du
+is evaluated at u = g(x).
+
+36
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+Figure 3.4: Chain Rule
+√
+
+x2 + 1
+√
+Solution Here y = f (g(x)), where f (u) = u and g(x) = x2 + 1. Since f ′ (u) = 2√1 u , g ′ (x) =
+2x, then by the Chain Rule
+Example 3.3.8. Find the derivative of y =
+
+dy
+d
+= dx
+(f (g(x)))
+dx
+
+= f ′ (g(x))g ′ (x)
+√1 (2x)
+=
+2
+
+=
+=
+
+g(x)
+
+√1
+(2x)
+2 x2 +1
+x
+√
+2 x2 +1
+
+Usually, when applying the Chain Rule, we do not introduce symbols to represent the functions
+being composed, but rather just proceed to calculate the derivative of the ”outside” function and
+then multiply by the derivative of whatever is ”inside.” You can say to yourself: ”the derivative
+of f of something is f’ of that thing, multiplied by the derivative of that thing.” This is called the
+”Inside-Outside” Rule.
+Example 3.3.9. Find the derivatives of
+(a). y = (8x − 3)5
+(b). y = f (xt) = sin(x2 − 4)
+(
+) 14
+1
+(c). y = 3x + (2x+1)
+3
+(d). y = cos2 (3x)
+Solution.
+dy
+(a). Let u = 7x − 3. Thus y = u10 . Clearly, du
+= 10y 9 and du
+= 7. Thus by the Chain Rule
+dx
+dy
+dy du
+9
+9
+= du dx = 10u (7) = 10u = 70(7x − 3).
+dx
+dy
+dy
+dy du
+(b). Let u = x2 − 4. Then y = sin u and du
+= cos u and du
+= 2x. Thus dx
+= du
+=
+dx
+dx
+cos u.(2x) = 2x cos(x2 − 4).
+
+Repeated Use. We sometimes have to use the Chain Rule two or more times to get the job done.
+(c).
+dy
+dx
+
+=
+
+1
+1
+1
+− 34 d
+(3x + (2x+1)
+(3x + (2x+1)
+3)
+3)
+4
+dx
+
+=
+
+1
+1
+3
+d
+− 32
+(3x + (2x+1)
+(3 − (2x+1)
+3)
+4 ) dx (2x + 1)
+4
+
+=
+
+−4
+3
+2
+2
+(1 − (2x+1)
+.
+4 )(3x + (2x+1)3 )
+4
+3
+
+3.4. DERIVATIVES OF TRIGONOMETRIC AND INVERSE TRIGONOMETRIC FUNCTIONS37
+(d).
+d
+cos2 (3x)
+dx
+
+d
+= 2 cos 3x. dx
+(cos 3x)
+
+(P ower and Chain Rule)
+
+d
+= 2 cos 3x(− sin 3x) dx
+(3x)
+
+(Chain Rule again)
+
+=
+
+2 cos 3x(− sin 3x)(3)
+
+=
+
+−6 cos 3x sin 3x.
+
+Note. The choice of which rule to use in solving a diﬀerentiation problem can make a diﬀerence
+in how much work you have to do.
+
+3.4
+
+Derivatives of Trigonometric and Inverse Trigonometric Functions
+
+Trigonometric functions are important because so much of the phenomena we want information
+about are periodic(heart rhythms, earthquakes, tides, weather,etc). Continuous periodic functions
+can always be expressed in terms of sines and cosines, so the derivatives of sines and cosines play
+an important role in describing important changes.
+Some Special Limits
+(1). limθ→0 sinθ θ = 1.
+(2). lim h → 0 cos hh−1 = 0.
+
+3.4.1
+
+Derivative of Sine and Cosine
+
+d
+Theorem 3.4.1. dx
+sin x = cos x.
+
+Proof. We use the Deﬁnition/First Principles.
+d
+sin x
+dx
+
+=
+
+limh→0 sin(x+h)−sinx
+h
+
+=
+
+limh→0 sin x cos h+cosh x sin h−sinx
+
+=
+
+x sin h
+limh→0 sin x(cos h−1)+cos
+h
+
+= limh→0 sin x. limh→0 (cos hh−1) + cos x. limh→0 sinh h
+=
+
+sin x(0) + (cos x).(1)
+
+=
+
+cos x.
+
+d
+Theorem 3.4.2. dx
+cos x = − sin x.
+
+38
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+Proof. We use the Deﬁnition/First Principles.
+d
+cos x
+dx
+
+=
+
+x
+limh→0 cos(x+h)−cos
+h
+
+=
+
+limh→0 cos x cos h−sinh x sin h−cos x
+
+=
+
+x sin h
+limh→0 cos x(cos h−1)−sin
+h
+
+= limh→0 cos x. limh→0 (cos hh−1) − sin x. limh→0 sinh h
+=
+
+cos x(0) − (sin x).(1)
+
+=
+
+− sin x.
+
+d
+Recall that sin( Π2 − x) = cos x and cos( Π2 − x) = sin x. Using the Chain Rule we have: dx
+cos x =
+d
+Π
+Π
+sin( 2 − x) = cos( 2 − x)(−1) = −sinx.
+dx
+
+3.4.2
+
+Derivatives of other Basic Trigonometric Functions
+
+Because sin x and cos x are diﬀerentiable functions of x, the related functions
+sin x
+tan x = cos
+x
+
+sec x = cos1 x
+
+x
+cot x = cos
+sin x
+
+csc x = sin1 x
+
+are diﬀerentiable at every value of x at which they are deﬁned(i.e. their domain). Their derivatives,
+calculated using the Quotient Rule are:
+d
+tan x = sec2 x
+dx
+
+d
+sec x = sec x tan x
+dx
+
+d
+cot x = csc2 x
+dx
+
+d
+csc x = − csc x cot x
+dx
+
+dy
+Example 3.4.3. Find dx
+if y = tan x.
+
+Solution.
+d
+tan x
+dx
+
+=
+=
+
+d
+d
+(sin x)−sin x dx
+(cos x)
+cos x dx
+d sin x
+=
+2
+dx cos x
+cos x
+2 x+sin2 x
+cos x−sin x(− sin x)
+= cos cos
+2x
+cos2 x
+
+=
+
+1
+= sec2 x.
+cos2 x
+
+dy
+Example 3.4.4. Find dx
+if y = sec x.
+
+Solution.
+d
+d
+1
+0. cos x − 1(− sin x)
+sin x
+sin x 1
+sec x =
+(
+)=
+=
+=
+= tan x sec x.
+2
+2
+dx
+dx cos x
+cos x
+cos x
+cos x cos x
+Exercises.
+1. Find the derivatives of the following functions
+
+3.5. DERIVATIVES OF EXPONENTIAL AND LOGARITHMIC FUNCTIONS
+
+39
+
+(a). y = 3x + cot( x2 )
+3
+(b). y = ( sin(2x)
+)
+Solutions.
+
+(a). 3 − 12 csc2 ( x2 )
+(b). −6 csc(2x) cot(2x)
+Example 3.4.5. Find the tangent and normal lines to the curve y = tan πx
+at the point (1, 1).
+4
+Solution. The slope of the tangent to y = tan πx
+at the point (1, 1) is
+4
+dy
+π
+πx
+π
+π
+π √
+π
+|x=1 = sec2 ( )|x=1 = sec2 ( ) = ( 2)2 = .
+dx
+4
+4
+4
+4
+4
+2
+π
+π
+π
+The tangent line is y = 1 + 2 (x − 1) or y = 2 x − 2 + 1.
+The normal has slope − π2 , so its point-slope equation is y = 1 − π2 (x − 1) or y = π2 x + π2 + 1.
+We now consider derivatives of inverse trigonometric functions.
+• The function y = sin−1 x
+(−1 < x < 1) has its inverse x = sin y
+(− π2 < y < π2 ) are
+inverses of each other. Thus
+d
+1
+1
+1
+1
+√
+√
+sin−1 x =
+=
+=
+=
+.
+dx
+(sin y)′
+cos y
+1 − x2
+1 − sin2 y
+• The function y = cos−1 x
+(−1 < x < 1) has its inverse x = cos y
+(0 < y < π) are
+inverses of each other. Thus
+d
+1
+1
+1
+1
+√
+√
+=
+−
+cos−1 x =
+=
+=
+−
+.
+dx
+(cos y)′
+− sin y
+1 − x2
+1 − cos2 y
+• The function y = tan−1 x
+(−∞ < x < ∞) has its inverse x = tan y
+inverses of each other. Thus
+d
+1
+1
+1
+2
+tan−1 x =
+=
+cos
+y
+=
+=
+.
+2
+dx
+(tan y)′
+1 + tan y
+1 + x2
+• The function y = cot−1 x
+inverses of each other. Thus
+
+(−∞ < x < ∞) has its inverse x = cot y
+
+(− π2 < y < π2 ) are
+
+(0 < y < π) are
+
+d
+1
+1
+cot−1 x =
+=−
+.
+′
+dx
+(cot y)
+1 + x2
+
+3.5
+
+Derivatives of Exponential and Logarithmic Functions
+
+The exponentialy = ax (0 < a ̸= 1) and logarithm function x = loga y (0 < y < ∞), are inverses
+of each other. By the deﬁnition of the derivative/First Principles:
+d x
+a
+dx
+
+= lim∆x→0 a
+
+x+∆x −ax
+
+∆x
+
+= ax lim∆x→0 a ∆x−1
+∆x
+
+=
+
+ax ln a.
+
+40
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+In particular, if a = e,
+d x
+e = ex ln e = ex .
+dx
+For the logarithmic function y = loga x, consider a point x > 0. By the deﬁnition of derivative
+d
+loga x
+dx
+
+ax
+= lim∆x→0 loga (x+∆x)−log
+∆x
+∆x
+
+=
+
+log (1+
+)
+1
+lim∆x→0 a ∆x x
+x
+x
+
+Since lim∆x→0 loga (1+t)
+= loga e , by substituting t = ∆x
+, it follows that
+t
+x
+d
+loga e
+loga x =
+................(⋆)
+dx
+x
+Note that this result can be deduced by using
+(loga y)′ =
+
+1
+1
+1
+loga e
+= x
+=
+=
+.
+x
+′
+(a )
+x ln a
+y ln a
+y
+
+By setting a = e, in (⋆), we ﬁnd
+d
+1
+ln x =
+dx
+x
+
+3.6
+
+(x > 0)
+
+Derivatives of Hyperbolic and Inverse Hyperbolic Functions
+d
+d ex + e−x
+ex − e−x
+cosh x =
+(
+)=
+= sinh x.
+dx
+dx
+2
+2
+
+Similarly,
+d
+sinh x = cosh x.
+dx
+d
+d sinh x
+tanh x = dx
+( cosh x )
+dx
+
+=
+
+cosh2 x−sinh2 x
+cosh2 x
+
+=
+
+1
+cosh2 x
+
+=
+
+(sech x)2
+
+Likewise
+
+d
+coth x = −(csch x)2
+dx
+Now, we compute the derivatives of the inverse hyperbolic functions.
+√
+√
+d
+1
+d
+x2 − 1 + x
+√
+√
+cosh−1 x =
+[ln(x + x2 − 1)] =
+=√
+, x > 1.
+2
+2
+2
+dx
+dx
+(x + x − 1) x − 1
+x −1
+√
+d
+d
+1
+sinh−1 x =
+[ln(x + x2 + 1)] = · · · = √
+2
+dx
+dx
+x +1
+
+3.7. DERIVATIVES AND INDETERMINATE LIMITS OF TYPE 00 AND ∞
+∞
+
+41
+
+d
+d 1 1+x
+1 1−x
+2
+1
+tanh−1 x =
+[ ln
+]= [
+.
+]=
+, |x| < 1.
+2
+dx
+dx 2 1 − x
+2 1 + x (1 − x)
+1 − x2
+and
+
+3.7
+
+d
+1
+coth−1 x =
+,
+dx
+1 − x2
+
+|x| > 1.
+
+Derivatives and Indeterminate limits of type 00 and ∞
+∞
+
+∞
+Indeterminate limits of type 00 and ∞
+can be evaluated using L’Hôpital’s Rule.
+
+3.7.1
+
+L’Hôpital’s First Rule for the Indeterminate form 00
+
+Theorem 3.7.1. (L’Hôpital’s First Rule)Suppose that the functions f and g are diﬀerentiable
+in a deleted σ− neighborhood (a − σ, a + σ) − {a} (σ > 0) of a point a. Moreover, suppose that
+lim f (x) = lim g(x) = 0,
+
+x→a
+
+x→a
+
+′
+
+(x)
+and g(x) ̸= 0 in the deleted neighborhood of a. Then if the limit limx→a fg′ (x)
+exists, then so does
+(x)
+and
+limx→a fg(x)
+
+f (x)
+f ′ (x)
+= lim ′
+.
+x→a g(x)
+x→a g (x)
+lim
+
+′
+
+(x)
+Remark. If it turns out that the quotient fg′ (x)
+is again indeterminate, then L’Hôpital’s Rule can
+be applied a second, a third, etc, time and
+
+f (x)
+f ′ (x)
+f ′′ (x)
+= lim ′
+= lim ′′
+.
+x→a g(x)
+x→a g (x)
+x→a g (x)
+lim
+
+Example 3.7.2. Compute the limit limx→0 cosxx−1
+.
+2
+Solution. The quotient has the indeterminate form 00 , and so
+cos x − 1
+− sin x
+− cos x
+−1
+= lim
+= lim
+=
+.
+2
+x→0
+x→0
+x→0
+x
+2x
+2
+2
+lim
+
+Remark. Suppose that f and g are deﬁned on the set R − [−σ, σ] and g ′ (x) ̸= 0, x ∈ R − [−σ, σ]
+(σ > 0). Assume that the limit
+f (x)
+..................................(⋆)
+x→∞ g(x)
+lim
+
+exists. Then the functions g1 (t) = g( 1t ) = g(x) and f1 (t) = f ( 1t ) = f (x) (where t = x1 ) are deﬁned
+and diﬀerentiable on −1
+< t < 1δ (t ̸= 0).
+δ
+′
+Besides, the derivative g1 (t) ̸= 0 in the deleted 1δ -neighborhood of the point t = 0 takes the form
+1
+1
+g1′ (t) = g ′ ( )(− 2 ) = g ′ (x)(−x2 ) ̸= 0.
+t
+t
+
+42
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+On the other hand, the existence of the limit (⋆) implies the following limit exists
+f1′ ( 1t )
+f ′ (x)
+f1′ (t)
+=
+lim
+=
+lim
+......(⋆⋆)
+t→0 g ′ ( 1 )
+x→∞ g ′ (x)
+t→0 g1′ (t)
+1 t
+
+lim
+
+Therefore by the theorem, the limit
+f1 (t)
+f (x)
+= lim
+t→0 g1 (t)
+x→∞ g(x)
+
+lim
+exists and
+
+f (x)
+f1 (t)
+f ′ (t)
+f ′ (x)
+= lim
+= lim 1′
+= lim ′
+.
+x→∞ g(x)
+t→0 g1 (t)
+t→0 g1 (t)
+x→∞ g (x)
+lim
+
+2
+
+x
+Example 3.7.3. Find limx→0 ln(1+x
+2)
+
+Solution. This is an indeterminate form 00 . By the theorem we have
+lim+
+
+x→0
+
+x2
+2x
+= lim+ 1 = lim+ 2x(1 + x2 ) = 0.
+2
+x→0
+ln(1 + x ) x→0 1+x2
+
+Example 3.7.4. Find limx→∞ x ln(1 + x1 ).
+Solution. Obviously,
+− x(x+1)
+ln(1 + x1 )
+1
+x
+lim x ln(1 + ) = lim
+=
+lim
+= lim
+= 1.
+1
+1
+x→∞
+x→∞
+x→∞
+x→∞
+x
+x+1
+− x2
+x
+1
+
+3.7.2
+
+L’Hôpital’s Second Rule for the Indeterminate form ∞
+∞
+
+Recall that if two functions f and g are deﬁned in a neighborhood of a pointx = a, such that
+(x)
+limx→a f (x) = ∞, limx→a g(x) = ∞, then we say that the quotient fg(x)
+has the indeterminate
+∞
+form ∞ at x = a.
+Theorem 3.7.5. (L’Hôpital’s Second Rule)Suppose that the functions f and g are diﬀerentiable in a deleted σ− neighborhood (a − σ, a + σ) − {a} (σ > 0) of a point a. Moreover, suppose
+that
+lim f (x) = lim g(x) = ∞,
+x→a
+
+x→a
+
+′
+
+(x)
+and g ′ (x) ̸= 0 in the deleted neighborhood of a. Then if the limit limx→a fg′ (x)
+.......(⋆⋆) exists, then
+(x)
+so does limx→a fg(x)
+and
+
+f ′ (x)
+f (x)
+= lim ′
+.
+x→a g (x)
+x→a g(x)
+lim
+
+′
+
+Remark. If the limit (⋆⋆) becomes ∞, then so limx→a fg ′(x)
+= 0, it follows that limx→a fg(x)
+= 0.
+(x)
+(x)
+Hence, we have
+f (x)
+= ∞.
+lim
+x→a g(x)
+√
+Example 3.7.6. Find limx→0+ x ln x.
+
+3.7. DERIVATIVES AND INDETERMINATE LIMITS OF TYPE 00 AND ∞
+∞
+Solution. limx→0+
+
+√
+
+x ln x = limx→0+ ln−x1 = limx→0+
+x
+
+2
+
+1
+x
+3
+1
+(− 2 )x− 2
+
+= −2 limx→0+
+
+√
+
+43
+
+x = 0.
+
+Example 3.7.7. Find limx→∞ lnxx .
+1
+
+Solution. limx→∞ lnxx = limx→∞ 1x = limx→∞ x1 = 0.
+n
+
+Example 3.7.8. Find limx→∞ xex .
+n
+
+n−1
+
+Solution. limx→∞ xex = limx→∞ nxex
+
+3.7.3
+
+n−2
+
+= limx→∞ nxex
+
+= · · · = limx→∞ en!x = 0.
+
+Indeterminate forms 0.∞, ∞ − ∞, 1∞ , 00 , 0∞ , ∞0
+
+The indeterminate forms 0.∞, ∞ − ∞, 1∞ , 00 , ∞0 can be converted by algebraic substitutions and
+tricks into a from of type 00 or ∞
+and L’Hôpital’s Rule used to compute them.
+∞
+Suppose that we try to ﬁnd the limit of y = f (x)g(x) where g(x > 0), when the limits of f and
+g as x → a are such that one of the indeterminate forms 1∞ , 00 , 0∞ , ∞0 is produced. First, we
+calculate the logarithm:
+ln y = g(x) ln f (x).
+For each of these three cases, ln y = g(x) ln f (x) has the form 0.∞ as x → a. Thus, it is easy to
+see that if
+z = p(x)q(x), .........(⋆)
+where limx→a p(x) = 0, limx→a q(x) = ∞,
+the indeterminate form 0.∞ can be converted by algebraic substitutions into either the form 00 or
+∞
+.
+∞
+Expressing (⋆) in the form
+p(x)
+z = 1 .......(⋆⋆)
+q(x)
+
+or
+z=
+
+q(x)
+
+1 .......(⋆ ⋆ ⋆)
+p(x)
+
+we see that (⋆⋆) and (⋆ ⋆ ⋆) have the indeterminate forms 00 and ∞
+, respectively.
+∞
+Example 3.7.9. Find limx→0 xx .
+Solution. This is of indeterminate form 00 . Let y = xx . Then ln y = x ln x = ln1x , and by passing
+x
+to the limit as x → 0, we have
+lim x ln x = lim
+
+x→0
+
+x→0
+
+ln x
+1
+x
+
+= lim
+
+1
+x
+
+x→0 − 12
+x
+
+Therefore ln limx→0 y = 0, and so limx→0 xx = e0 = 1.
+
+= − lim x = 0.
+x→0
+
+44
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+1
+
+Example 3.7.10. Find limx→0 (1 + x2 ) x2 .
+1
+
+Solution. This is of indeterminate form 1∞ . Let y = (1 + x2 ) x2 . Then ln y = x12 ln(1 + x2 ), and
+by passing to the limit as x → 0 we have
+1
+( 1+x
+1
+ln(1 + x2 )
+1
+2 )(2x)
+2
+ln(1
++
+x
+)
+=
+lim
+=
+lim
+=
+lim
+= 1.
+x→0 1 + x2
+x→0 x2
+x→0
+x→0
+x2
+2x
+
+lim
+
+1
+
+Therefore ln limx→0 y = 1, and so limx→0 (1 + x2 ) x2 = e.
+Exercises. 1. Use L’Hôpital’s Rule to ﬁnd the limits
+x−x
+(a). limx→0 tan
+, Ans. 2
+x−sin x
+ax
+, Ans. ab .
+(b). limx→0 sin
+sin bx
+√
+3
+
+tan x−1
+(c). limx→ π4 2 sin
+Ans. 13 .
+2 x−1 ,
+
+(d). limx→ π4 (tan x)tan 2x , Ans. 1e .
+ax)
+(e). limx→0 ln(cos
+, Ans. ( ab )2 .
+ln(cos bx)
+−x
+(f). limx→a ax−a
+x
+
+3.8
+
+a
+
+(a > 0), Ans. aa (ln a − 1).
+
+Diﬀerentiation of Implicit and Parametric Functions
+
+In this section we consider functions deﬁned implicitly and functions deﬁned parametrically.
+
+3.8.1
+
+Implicit Diﬀerentiation
+
+Sometimes we are not given y as a function of x explicitly, but instead have an equation connecting
+dy
+them which we may be unable to solve explicitly for either x or y. We may still want to ﬁnd dx
+.
+dy
+Example 3.8.1. Find dx
+if y 2 = x.
+
+Solution. We diﬀerentiate both sides of the equation with respect to x, treating y as a diﬀerentiable but otherwise unknown function of x. Therefore
+y2
+
+=
+
+x
+
+dy
+= 1 (Chain Rule)
+2y dx
+dy
+dx
+
+=
+
+1
+2y
+
+dy
+Example 3.8.2. Find the gradient dx
+at the point (1,2) on the curve whose equation is x3 −
+5xy 2 + y 3 + 11 = 0.
+
+3.8. DIFFERENTIATION OF IMPLICIT AND PARAMETRIC FUNCTIONS
+
+45
+
+Solution. We can not ﬁnd y(x) explicitly in terms of x. We therefore have to use the Chain Rule
+to diﬀerentiate the y 2 and y 3 terms and the product rule for the second term involving x and y.
+Diﬀerentiating with respect to x, we have
+3x2 − 5(x.2y
+
+dy
+dy
++ y 2 ) + 3y 2
+=0
+dx
+dx
+
+Rearranging this gives
+(3y 2 − 10xy)
+and therefore
+
+dy
+= 5y 2 − 3x2 ,
+dx
+
+dy
+5y 2 − 3x2
+= 2
+.
+dx
+3y − 10xy
+
+The gradient at the point (1,2) is then found by substituting these values for x and y the expression, giving −17
+.
+8
+2
+
+d y
+3
+2
+Example 3.8.3. Find dx
+2 if 2x − 3y = 7.
+dy
+:
+Solution. We diﬀerentiate both sides with respect to x to ﬁnd y ′ = dx
+
+2x3 − 3y 2
+
+=
+
+7
+
+d
+d
+(2x3 ) − dx
+(3y 2 )
+dx
+
+=
+
+d
+(7)
+dx
+
+6x2 − 6yy ′
+
+=
+
+0
+
+x2 − yy ′
+y′
+
+=
+=
+
+x2
+y
+
+0
+(when y ̸= 0).
+
+We now apply the Quotient Rule to ﬁnd y ′′ :
+y ′′ =
+
+d x2
+2xy − x2 y ′
+2x x2 ′
+( )=
+=
+− 2y .
+dx y
+y2
+y
+y
+
+Finally, we substitute y ′ = xy to express y ′′ in terms of x and y:
+2
+
+y ′′ =
+
+3.8.2
+
+2x x2 x2
+2x
+− 2( ) =
+− x4 y 3 .
+y
+y y
+y
+
+Logarithmic Diﬀerentiation
+
+This is an application of implicit diﬀerentiation.
+Example 3.8.4. Diﬀerentiate y = xsin x .
+Solution. We take logarithms of both sides of the equation to give
+ln y = ln(xsin x ) = sin x ln x.
+
+46
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+We deal with the LHS using implicit diﬀerentiation, and the RHS using the product rule. This
+gives
+1 dy
+1
+= cos x. ln x + sin x.( ).
+y dx
+x
+Therefore
+dy
+= y(cos x. ln x + sin x).
+dx
+
+3.8.3
+
+Parametric Diﬀerentiation
+
+Equations of curves are often given parametrically. For example the ellipse is sometimes speciﬁed
+by
+x = a cos t, y = b sin t, 0 ≤ t ≤ 2π.
+dy
+We want to ﬁnd dx
+(the gradient), but the parametric equations can only be diﬀerentiated with
+respect to t. We can approach this in two ways.
+Firstly, we can use the Chain Rule to give
+
+dy
+dy dx
+=
+,
+dt
+dx dt
+so
+
+dy
+dy
+dt
+,
+= dx
+dx
+dt
+
+provided dx
+̸= 0.
+dt
+Example 3.8.5. Find the gradient at an arbitrary point t on the ellipse speciﬁed by x = a cos t, y =
+b sin t, 0 ≤ t ≤ 2π.
+Solution. The gradient is given by
+dy
+dy
+b cos t
+b
+dt
+= dx
+=
+= − cot t.
+dx
+−a sin t
+a
+dt
+
+Note that here sin t ̸= 0, and thus t excludes the points 0, ±π, ±2π, ..., where the tangent to the
+ellipse is parallel to the y-axis.
+dy
+Example 3.8.6. Find dx
+given that x = t2 , y = t3 .
+
+Solution. These are parametric equations of a curve known as a semicubical parabola. The
+derivative is given
+dy
+3t
+dy
+3t2
+dt
+= dx
+=
+(t ̸= 0).
+=
+dx
+2t
+2
+dt
+We can also eliminate the parameter t to give y 3 = x3 , and so we could also ﬁnd the derivative
+using implicit diﬀerentiation, as follows
+2y
+2
+
+dy
+and so, dx
+= 3x
+,
+2y
+
+(y ̸= 0).
+
+dy
+= 3x2 ,
+dx
+
+3.8. DIFFERENTIATION OF IMPLICIT AND PARAMETRIC FUNCTIONS
+
+47
+
+2
+
+d y
+Example 3.8.7. Given x = a cos t, y = b sin t, 0 ≤ t ≤ 2π, ﬁnd dx
+2.
+
+Solution. It is possible to ﬁnd a general formula for the second derivative. We write
+d2 y
+dY
+=
+,
+2
+dx
+dx
+dy
+where Y = dx
+. Applying parametric diﬀerentiation formula to Y gives
+dY
+dY
+dt
+= dx
+.
+dx
+dt
+
+Thus
+
+dY
+−b
+csc2 t
+dY
+b
+d2 y
+dt
+a
+=
+= dx =
+=− 2 3 ,
+2
+dx
+dt
+−a sin t
+a sin t
+dt
+
+provided that sin t ̸= 0.
+2
+
+d y
+Caution. A common mistake is to try to ﬁnd dx
+2 by diﬀerentiating the formula obtained for
+dy
+with respect to x. This WRONG!
+dx
+
+3.8.4
+
+Diﬀerentiating Inverse Functions using Implicit Diﬀerentiation
+
+Example 3.8.8. Find the derivative of y = sinh−1 x.
+Solution. Suppose that y = sinh−1 x, so that x = sinh y. Diﬀerentiating with respect to x gives
+1 = cosh y
+so that
+
+dy
+,
+dx
+
+dy
+1
+=
+.
+dx
+cosh y
+
+We want the answer in terms of x, so we have to ﬁnd cosh y in terms of x = sinh y. Using the
+hyperbolic identity
+cosh2 y − sinh2 y = 1,
+gives
+
+√
+cosh y = 1 + sinh2 y,
+
+where we use the positive square root because cosh y is always positive. Therefore
+dy
+1
+1
+1
+=
+=√
+=√
+.
+2
+dx
+cosh y
+1 + x2
+1 + sinh y
+Exercise. Use implicit diﬀerentiation to verify the derivatives of inverse trigonometric and hyperbolic functions proved earlier.
+
+48
+
+3.9
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+Linear Approximations and Diﬀerentials
+
+Sometimes we can approximate complicated functions with simpler ones that give the accuracy
+we want for speciﬁc applications.
+
+3.9.1
+
+Diﬀerentials
+
+∆y
+The Newton quotient ∆x
+is a quotient of two quantities ∆y and ∆x. If y is a continuous function
+dy
+of x, then ∆y → 0 as ∆x → 0, so dx
+is the meaningless quantity 00 . We refer to dx as the
+diﬀerential of x and dy as the diﬀerential of y as a function of x and dx:
+
+dy =
+
+dy
+dx = f ′ (x)dx.
+dx
+
+For example, if y = x2 , then dy = 2xdx.
+Remark. The diﬀerentials dy and dx were originally regarded (by Leibniz and his successors as
+”infinitesimals”(meaning inﬁnitely small but nonzero)). If one quantity, say y, is a function of
+another quantity x, that is, y = f (x), we sometimes want to know how a change in the value of x
+by an amount ∆x will aﬀect the value of y. The exact change ∆x in y is given by
+∆y = f (x + ∆x) − f (x),
+but if the change ∆x is small, then we can get a good approximation to ∆y by using the fact that
+∆y
+dy
+is approximately the derivative dx
+. Thus
+∆x
+∆y =
+
+∆y
+dy
+∆x ≈
+∆x = f ′ (x)∆x.
+∆x
+dx
+
+It is often convenient to represent this approximation in terms of diﬀerentials; if we denote the
+change in x by dx instead of ∆x, then the change ∆y in y is approximated by the diﬀerential dy,
+that is
+∆y ≈ dy = f ′ (x)dx.
+Example 3.9.1. Without using a calculator, determine by approximately how much the value
+of sin x increases as x increases from π3 to π3 + 0.006. To 3 decimal places, what is the value of
+sin( π3 + 0.006)?
+Solution. If y = sin x, x = π3 ≈ 1.0472, and dx = 0.006, then
+1
+π
+dy = cos xdx = cos( )dx = (0.006) = 0.003.
+3
+2
+Thus the change in the value of sin x is approximately 0.003, and
+√
+π
+π
+3
+sin( + 0.006) ≈ sin( ) + 0.003 =
++ 0.003 = 0.869,
+3
+3
+2
+rounded to 3 decimal places.
+
+3.9. LINEAR APPROXIMATIONS AND DIFFERENTIALS
+
+49
+
+Sometimes changes in a quantity are measured with respect to the size of the quantity. The
+relative change in x is the ratio dx
+if x changes by amount dx. The percentage change in x is the
+x
+relative change expressed as a percentage:
+relative change in x =
+
+dx
+x
+
+percentage relative change in x = 100
+
+dx
+x
+
+Example 3.9.2. By approximately what percentage does the area of a circle increase if the radius
+increases by 2%?
+Solution. The area A os a circle is given in terms of radius r by A = πr2 . Thus
+∆A ≈ dA =
+
+dA
+dr = 2πrdr.
+dr
+
+We divide this approximation by A = πr2 to get an approximation that links the relative changes
+in A and r:
+∆A
+dA
+2πrdr
+dr
+≈
+=
+=2 .
+2
+A
+A
+πr
+r
+2
+If r increases by 2%, then dr = 100
+r, so
+
+∆A
+2
+4
+≈2
+=
+.
+A
+100
+100
+Thus, A increases by approximately 4%.
+
+3.9.2
+
+Linearizations are Linear Replacement Formulas
+
+Remark. The tangent to a curve y = f (x) lies close to the curve near the point of tangency. For
+a small interval to either side, the y-values along the tangent line give good approximations to the
+y-values on the curve. Therefore, to simplify the expression for the function near this point, we
+propose to replace the formula for f over this interval by the formula for its tangent line. If the
+tangent passes through the point P (a, f (a)) with slope f ′ (a), then its point-slope equation is
+y − f (a) = f ′ (a)(x − a)
+or
+y = f (a) + f ′ (a)(x − a).
+, the tangent line is the graph of the function
+L(x) = f (a) + f ′ (a)(x − a)..........(⋆)
+For as long as the line remains close to the graph of f , L(x) will give a good approximation to f (x).
+
+Example 3.9.3. Find the linearization of f (x) =
+
+√
+
+1 + x at x = 0.
+
+50
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+√
+1
+Solution. We evaluate (⋆) for f (x) = 1 + x and a = 0. The derivative of f (x) = 21 (1 + x)− 2 =
+√1
+. Its value at x = 0 is 12 . We substitute this along with a = 0 and f (0) = 1 into (⋆):
+2 1+x
+1
+x
+L(x) = f (a) + f ′ (a)(x − a) = 1 + (x − 0) = 1 + .
+2
+2
+Example 3.9.4. Find the linearization of f (x) = tan x.
+Solution. f (x) = tan x, a = 0. Since f (0) = 0, f ′ (0) = sec( 0) = 1, we have L(x) = 0 + 1(x − 0) =
+x. Near x = 0
+tan x ≈ x.
+√
+Example 3.9.5. Use linear approximation formula to estimate 1.1.
+√
+Solution. Let f (x) = x. Then we must compute f (1.1). By deﬁnition of derivative,
+√
+√
+∆x
+f (x + ∆x) − f (x)
+x + ∆x − x
+1
+′
+√
+f (x) = lim
+= lim
+= lim
+√ = √ .
+∆x→0
+∆x→0 ∆x( x + ∆x +
+∆x→0
+∆x
+∆x
+2 x
+x)
+Setting x = 1, x + ∆x = 1.1, it follows that
+f (1.1) ≈ f (1) + f ′ (1)(0.1)
+or
+
+√
+
+Consequently,
+
+√
+
+1.1 ≈
+
+√
+
+1
+1 + √ (0.1) = 1.05.
+2 1
+
+1.1 ≈ 1.05.
+
+Example 3.9.6. Use linear approximation formula to estimate sin 46◦ .
+Solution. Let f (x) = sin x. Then we must compute f (46). Clearly, f ′ (x) = cos x and by linear
+approximation
+sin(x + ∆x) ≈ sin x + cos x∆x.
+π
+π
+We estimate the value of sin 46◦ . Since x + ∆x = π4 + 180
+(1◦ = 180
+radians), and x = π4 , we have
+
+sin 46◦ = sin(
+or
+
+π
+π
+π
+π
+π
++
+) ≈ sin +
+cos ,
+4 180
+4 180
+4
+
+√
+
+√
+2
+2 π
+sin 46 ≈
++
+= 0.7071 + 0.7071(0.0175) = 0.7194.
+2
+2 180
+◦
+
+3.9.3
+
+Average and Instantaneous Rates of Change
+
+Deﬁnition 3.9.7. The average rate of change of a function f (x) with respect to x over an
+interval from a to a + h is
+f (a + h) − f (a)
+.
+h
+The (instantaneous) rate of change of f with respect to x at x = a is the derivative
+f (a + h) − f (a)
+,
+h→0
+h
+
+f ′ (a) = lim
+provided the limit exists.
+
+3.10. EXERCISES
+
+51
+
+Example 3.9.8. How fast is area A of a circle increasing with respect to its radius when the
+radius is 5 m?
+Solution. The rate of change of the area with respect to the radius is
+dA
+d
+= (πr2 ) = 2πr.
+dr
+dr
+When r = 5 m, the area is changing at the rate of 2π(5) = 10π m2 /min. This means that a small
+change ∆r m in the radius when the radius is 5 m would result in a change of about 10π m2 in
+the area of the circle.
+
+3.10
+
+Exercises
+
+dy
+1.(a). Use First Principles to ﬁnd dx
+for each of the following functions.
+
+(i). y = f (x) = x2 .
+(ii). y = cos(2x).
+1
+(iii). y = 2x
+.
+
+.
+(iv). y = 2−x
+2+x
+(v). y = eαx .
+(vi). y = loga x.
+Solution(vi). Let y = loga x. Then y + △y = loga (a + △x). Thus
+△y = loga (x + △x) − loga x = loga
+
+x + △x
+△x
+= loga (1 +
+).
+x
+x
+
+Therefore
+x
+△y
+1
+△x
+1 x
+△x
+1
+△x △x
+=
+loga (1 +
+)=
+loga (1 +
+) = loga (1 +
+)
+△x
+△x
+x
+x △x
+x
+x
+x
+
+and
+
+[
+] 1
+x
+x
+dy
+1
+△x △x
+1
+△x △x
+=
+lim log (1 +
+) = loga lim (1 +
+) ) = loga e.
+△x→0
+dx
+x △x→0 a
+x
+x
+x
+x
+
+d
+When a = e, loga e = loge e = 1 and dx
+(ln x) = x1 .
+
+(b). Find the derivatives of
+2
+
+1−x
+(i). y = 1+x
+2.
+
+52
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+(ii). y = (2 + 3t )−10 .
+(iii). y =
+
+√ √
+x x.
+
+(iv). y = xsin(x) .
+(v). y = sec(2x3 + 1).
+(vi). y = ax .
+dy
+dy
+d
+Solution. Let y = ax . Then ln y = x ln a and dx
+(ln y) = y1 dx
+= ln a. Thus dx
+= y ln a = ax ln a.
+d
+When a = e, ln a = ln e = 1 and we have dx
+(ex ) = ex .
+
+(c). Show that the derivative of y = f (x) = |x| does not exist at x = 0.
+Solution. This function is continuous at all values of x. For x < 0, f (x) = −x and
+= −1; for x > 0, f (x) = x and f ′ (x) = 1.
+f (x) = limh→0 − (x+h)−(−x)
+h
+(0)
+At x = 0, f (x) = 0 and limh→0 f (0+h)−f
+= limh→0 |h|
+. As h → 0− , |h|
+→ −1; but as
+h
+h
+h
+|h|
++
+h → 0 , h → 1.
+Hence the derivative does not exist.
+′
+
+dy
+2.(a). Find dx
+in each case.
+
+(i). x3 − xy + y 3 = 1.
+(ii). x2 y + xy 2 = 6.
+(iii). y 3 + y = 2 cos x at the point (0, 1).
+(iv). y = ln(x2 + 3x + 1).
+2
+
++1
+(v). y = ln( xx3 −x
+).
+
+(b). Find the tangent line to the curve
+(i). x3 + y 2 = 2 at the point (1, 1).
+3
+
+Solution: y = − 32 x + 52
+
+3
+
+(ii). x 2 + 2y 2 = 17. Solution: y = − 14 + 17
+4
+(iii). x3 y 3 + y 2 = x + y at the point (1, 1).
+(iv). x +
+
+√
+
+xy = 6 at the point (4, 1).
+2
+
+dy
+d y
+(c).(i). Given that xy + x − 2y − 1 = 0, ﬁnd dx
+and dx
+2.
+
+3.10. EXERCISES
+(ii). If y = ln(x +
+
+53
+√
+
+1
+1 + x2 ), show that y ′ = √1+x
+2.
+
+dy
+3.(a). If x = cos(2t − 1) and y = sin(3t + 1), ﬁnd dx
+.
+x
+
+dy
+(b). Find dx
+if y = xx .
+
+4. Suppose that the temperature at a certain location t hours after noon on a certain day is T ◦ C,
+where T = 31 t3 − 3t2 + 8t + 10 (for 0 ≤ t ≤ 5). How fast is the temperature rising or falling at
+1 : 00 pm? at 3 : 00 pm? At what instants is the temperature stationary?
+Solution. The rate of change of the temperature is dT
+= t2 − 6t + 8 = (t − 2)(t − 4).
+dt
+• If t = 1, then dT
+= 3, so the temperature is rising at the rate of 3 degrees C/h at 1 : 00pm.
+dt
+• If t = 3, then dT
+= −1, so the temperature is falling at the rate of 1 degree C/h at 3 : 00pm.
+dt
+• The temperature is stationary when dT
+= 0, that is, at 2 : 00 pm and 4 : 00 pm.
+dt
+2
+5.(a). If z = tan x2 , then show that dx
+= 1+z
+2,
+dz
+
+2
+
+2z
+1−z
+sin x = 1+z
+2 and cos x = 1+z 2 .
+
+(b). Find the linearization of the given function at the given point.
+(i). y = x2 about x = 3.
+(ii). y =
+
+√
+
+4 − x about x = 0.
+
+(iii). y = sin x about x = π.
+(c).(i). By approximately how much does the area of a square increase if its side length increases
+from 10 cm to 10.4 cm?
+(ii). By about how much must the length of a cube decrease from 20 cm to reduce the volume
+of the cube by 12 cm3 ?
+
+54
+
+CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE
+
+Chapter 4
+ANTI-DERIVATIVES OF
+FUNCTIONS AND APPLICATIONS
+TO AREAS
+Throughout Chapter 3 we have been concerned with the problem of ﬁnding the derivative f ′ of
+a given function f . The reverse problem-given the derivative f ′ , ﬁnd f -is also interesting and
+important. It is the problem studied in integral calculus and is generally more diﬃcult to solve
+than the problem of ﬁnding a derivative.
+
+4.1
+
+Anti-Derivatives
+
+We begin by deﬁning an anti derivative of a function f to be a function F whose derivative is f .
+It is appropriate to require that F ′ (x) = f (x) on an interval.
+Deﬁnition 4.1.1. An antiderivative of a function f on an interval I is another function F
+satisfying F ′ (x) = f (x) for x in I. The reverse process of determining F from f is called antidiﬀerentiation or integration.
+Remark. Antiderivatives are not unique; indeed, if C is any constant, then F (x) = x+ is an
+antiderivative of f (x) = 1 on any interval. You can always add a constant to an antiderivative
+F of a function f on an interval and get another antiderivative of f . More importantly, all
+antiderivatives of f on an interval can be obtained by adding constants to any particular one. If
+F and G are both antiderivatives of I on an interval I, then
+d
+(G(x) + F (x)) = f (x) − f (x) = 0,
+dx
+on I, so G(x) − F (x) = C (a constant) on I. Thus G(x) = F (x) + C on I.
+
+4.1.1
+
+Indeﬁnite Integral of a Function
+
+Example 4.1.2. If f (x) is a derivative, the set of all antiderivatives of f is called the indeﬁnite
+integral of f , denoted by the symbols
+∫
+f (x)dx.
+55
+
+56 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+∫
+The sign is called an integral sign. The function f is the integrand of the integral and x is
+the variable of integration.
+Remark. We have already seen that all the anti-derivatives F of f diﬀer by a constant. We
+indicate this by writing
+∫
+f (x)dx = F (x) + C.
+
+(⋆)
+
+The constant C is called the constant of integration. Equation (⋆) is read as ”The indeﬁnite
+integral of f with respect to x is F (x) + C”. When we ﬁnd F (x) + C, we say that we have evaluated the indeﬁnite integral.
+Example 4.1.3.
+F unction f (x) antiderivative Reversed derivative f ormula
+cos x
+
+sin x + C
+
+d
+sin x = cos x
+dx
+
+sin x
+
+− cos x + C
+
+d
+(− cos x) = sin x
+dx
+
+3x2
+
+x3 + C
+
+d 3
+x = 3x2
+dx
+
+√
+
+x+C
+
+d √
+x = 2√1 x
+dx
+
+− x1 + C
+
+d
+(− x1 ) = x12
+dx
+
+1
+√
+2 x
+1
+x2
+
+∫
+Example 4.1.4. Evaluate (x2 − 2x + 5)dx
+Solution.
+
+An antiderivative of f (x)=x2 −2x+5
+
+z
+}|
+{
+x3
+− x2 + 5x
+3
+
+∫
+
+(x2 − 2x + 5)dx =
++C.
+∫
+Remark. To evaluate f (x)dx, ﬁnd an antiderivative F (x) of f (x) and then add a constant C.
+
+4.1.2
+
+Integration Formulas
+
+∫
+n+1
+1. xn dx = xn+1 + C (n ̸= −1) (Power Rule)
+∫
+2. ∫ sin kxdx = − coskkx + C (Chain Rule)
+3. ∫ cos kxdx = sinkkx + C (Chain Rule)
+4. ∫ sec2 xdx = tan x + C
+5. ∫ sec x tan xdx = sec x + C
+6. ∫ cscx dx = − cot x + C
+7. csc x cot xdx = −cscx + C
+Example 4.1.5. a).
+
+∫
+
+6
+
+x5 dx = x6 + C
+
+4.2. TECHNIQUES OF INTEGRATION
+b).
+c).
+
+∫
+∫
+
+57
+
+sin 2xdx = − cos22x + C
+∫
+
+cos x2 dx =
+
+Example 4.1.6.
+
+∫
+
+cos 12 x =
+
+sin 12 x
+1
+2
+
++C=2sin x2 + C
+
+x cos xdx = x sin x + cos x + C
+
+Reason: The derivative of the right-hand side is the integrand:
+d
+(x sin x + cos x + C) = x cos x + sin x − sin x + 0 = x cos x.
+dx
+
+4.1.3
+1.
+
+∫ dF
+dx
+
+d
+2. dx
+
+3.
+4.
+5.
+
+∫
+∫
+∫
+
+∫
+
+Rules for Indeﬁnite Integrals
+dx = F (x) + C
+f (x)dx = f (x)
+
+kf (x)dx = k
+
+∫
+
+−f (x)dx = −
+
+f (x)dx (k a constant)
+
+∫
+
+f (x)
+
+[f (x) ± g(x)]dx =
+
+4.2
+
+∫
+
+f (x)dx ±
+
+∫
+
+g(x)dx
+
+Techniques of Integration
+
+This section is completely concerned with how to evaluate integrals.
+
+4.2.1
+
+Integration by Substitution
+
+A change of variable can often turn an unfamiliar integral into one we can evaluate. The method
+of doing this is called the Substitution Method.
+∫
+Example 4.2.1. Evaluate (x + 2)5 dx
+Solution. Let u = x + 2. Then du = dx. Therefore
+∫
+∫
+u6
+(x + 2)6
+5
+(x + 2) dx = u5 du =
++C =
++ C.
+6
+6
+∫√
+Example 4.2.2. Evaluate
+4x − 1dx
+Solution. Let u = 4x − 1. Then du = 4dx or dx = 14 du. Thus
+∫
+
+√
+
+1
+4x − 1dx =
+4
+
+∫
+
+3
+
+3
+1 u2
+1
+1 3
+u du = 3 + C = u 2 + C = (4x − 1) 2 + C.
+4 2
+6
+6
+1
+2
+
+58 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Example 4.2.3. Evaluate
+
+∫
+
+cos(7x + 5)dx
+
+Solution. Let u = 7x + 5. Then du = 7dx or dx = 71 du. Thus
+∫
+1
+1
+1
+cos(7x + 5)dx = cos udu = sin u + C = sin(7x + 5) + C.
+7
+7
+7
+∫ 2
+Example 4.2.4. Evaluate x sin(x3 )dx.
+Solution. Let u = x3 . Then du = 3x2 dx or x2 dx = 13 du. Thus
+∫
+∫
+∫
+1
+1
+1
+1
+2
+3
+x sin(x )dx = sin u. du =
+sin udu = (− cos u) + C = − cos(x3 ) + C.
+3
+3
+3
+3
+∫
+Example 4.2.5. Evaluate cos12 2x dx.
+1
+Solution. Note that sec 2x = 2x
+. Let u = 2x. Then du = 2dx or dx = 12 du. Thus
+∫
+∫
+∫
+∫
+1
+1
+1
+1
+1
+2
+2
+dx = sec 2xdx = sec u. du =
+sec2 udu = tan u + C = tan 2x + C.
+2
+cos 2x
+2
+2
+2
+2
+∫
+Example 4.2.6. Evaluate sin4 x cos xdx.
+
+Solution. Let u = sin x. Then du = cos xdx or cos xdx = du. Thus
+∫
+∫
+u5
+sin5 x
+4
+4
+sin x cos xdx = u du =
++C =
++ C.
+5
+5
+
+4.2.2
+
+Integration by Parts
+
+Our next general method for anti-diﬀerentiation is called Integration by Parts. Just as the
+method of substitution can be regarded as inverse to the Chain Rule for diﬀerentiation, so the
+method for integration by parts is inverse to the Product Rule for diﬀerentiation. Suppose that
+U (x) and V (x) are two diﬀerentiable functions. According to the Product Rule,
+)
+d(
+dV
+dU
+U (x).V (x) = U (x)
++ V (x) .
+dx
+dx
+dx
+Integrating both sides of this equation and transposing terms yields
+∫
+∫
+dU
+dV
+U (x) dx = U (x)V (x) − V (x) dx,
+dx
+dx
+or more simply,
+
+∫
+
+∫
+U dV = U V −
+
+V dU.
+
+In each application of the method, we break up the given
+∫ integrand into a product of two
+pieces, U and V ′ , where∫ V ′ is readily integrated and where V U ′ dx is usually (but not always)
+a simpler integral than U V ′ dx. The technique is called integration by parts because it replaces
+one integral with the sum of an integrated term and another integral that remains to be evaluated.
+That is, it accomplishes only part of the original integration.
+
+4.2. TECHNIQUES OF INTEGRATION
+Example 4.2.7. Evaluate
+
+∫
+
+59
+
+xex dx.
+
+Solution. Let U = x, dv = ex dx. Then dU = dx and V = ex . Thus
+∫
+∫
+x
+x
+xe dx = xe − ex dx = xex − ex + C.
+Note: In general, do not include a constant of integration with V or on the right-hand side until
+the last integral has been evaluated.
+Choices should be made for U and dV in various situations. An improper choice can result in
+making an integral more diﬃcult rather than easier. Look for a factor of the integrand that is
+easily integrated, and include dx with that factor to make up dV . Then V is the remaining factor
+of the integrand. Sometimes it is necessary to take dV = dx only. When breaking up an integrand
+using integration by parts, choose U and dV so that, if possible, V dU is ”simpler ” (easier to
+integrate) than U dV .
+Example
+4.2.8. ∫Use integration by
+∫
+∫ parts−1to evaluate:
+∫
+2
+a). ln xdx b). x sin xdx c). x tan xdx d). sin−1 xdx
+Solution.
+, V = x. Thus
+a). Let U = ln x, dV = dx. Then dU = dx
+x
+∫
+∫
+1
+ln xdx = x ln x − x dx = x ln x − x + C.
+x
+b). We apply integration by parts method twice: let U = x2 , dV = sin xdx. Then dU = 2xdx, V =
+− cos x. Thus
+∫
+∫
+x2 sin xdx = −x2 cos x + 2
+
+x cos xdx.
+
+Now, let U = x, dV = cos xdx. Then dU = dx, V = sin x. Thus
+∫
+∫
+∫
+2
+2
+2
+x sin xdx = −x cos x + 2 x cos xdx = −x cos x + 2(x sin x − sin xdx)
+= −x2 cos x + 2x sin x + 2 cos x + C.
+1 2
+dx
+c). Let U = tan−1 x, dV = xdx. Then dU = 1+x
+2 , V = 2 x . Thus
+∫
+∫
+∫
+1 2
+1
+x2
+1 2
+1
+1
+−1
+−1
+−1
+x tan xdx = x tan x −
+dx = x tan x −
+(1 −
+)dx
+2
+2
+2
+1+x
+2
+2
+1 + x2
+
+1
+1
+1
+= x2 tan−1 x − x + tan−1 x + C.
+2
+2
+2
+−1
+dx
+d). Let U = sin x, dV = dx. Then dU = √1−x2 , V = x. Thus
+∫
+∫
+x
+−1
+−1
+dx.
+sin xdx = x sin x − √
+1 − x2
+Now we use integration by substitution. Let u = 1 − x2 . Then du = −2xdx Thus
+∫
+∫
+∫
+1
+1
+x
+1
+−1
+−1
+−1
+u− 2 du = x sin−1 x + u 2 + C
+sin xdx = x sin x − √
+dx = x sin x +
+2
+2
+1−x
+
+60 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+= x sin−1 x +
+
+√
+
+1 − x2 + C.
+
+Remark. The following are two useful rules of thumb for choosing U and dV :
+(i) If the integrand involves a polynomial multiplied by an exponential, a sine or a cosine, or
+some other readily integrable function, try U equals the polynomial and dV equals the rest.
+(ii) If the integrand involves a logarithm, an inverse trigonometric function, or some other
+function that is not readily integrable but whose derivative is readily calculated, try that function
+for U and let d V equal the rest.
+(Of course, these ”rules” come with no guarantee. They may fail to be helpful if ”the rest” is
+not of a suitable form. There remain many functions that cannot be anti-diﬀerentiated by any
+2
+standard techniques; e.g., ex .)
+The following two examples illustrate a frequently occurring and very useful phenomenon. It
+may happen after one or two integrations by parts, with the possible application of some known
+identity, that the original integral reappears on the right-hand side. Unless its coeﬃcient there is
+1, we have an equation that can be solved for that integral.
+∫
+Example 4.2.9. Evaluate I = sec3 xdx
+Solution. We start by integrating by parts: let U = sec x, dV = sec2 xdx. Then dU =
+sec x tan xdx, V = tan x. Thus
+∫
+∫
+∫
+3
+2
+I = sec xdx = sec x tan x − sec x tan xdx = sec x tan x − sec x(secx − 1)dx
+∫
+= sec x tan x −
+
+∫
+sec xdx −
+3
+
+Solving for I, we have
+∫
+sec3 xdx = I =
+Example 4.2.10. Evaluate I =
+
+∫
+
+sec xdx = sec x tan x − I + ln | sec x + tan x|.
+
+1
+1
+sec x tan x + ln | sec x + tan x| + C.
+2
+2
+
+eax cos bxdx
+
+Solution. If either a = 0 or b = 0, the integral is easy to evaluate. So let us assume that a ̸= 0
+and b ̸= 0. Let U = eax , dV = cos bxdx. Then dU = aeax dx, V = 1b sin bx. Thus
+∫
+∫
+1 ax
+a
+ax
+eax sin bxdx.
+I = e cos bxdx = e sin bx −
+b
+b
+Now, let U = eax , dv = sin bxdx. Then dU = aeax dx, V = − cosb bx . Thus
+∫
+∫
+) 1
+1 ax
+a ( 1 ax
+a
+a
+a2
+ax
+I = e cos bxdx = e sin bx− − e cos bx+
+eax cos bxdx = eax sin bx+ 2 eax cos bx− 2 I.
+b
+b
+b
+b
+b
+b
+b
+Thus
+(1 +
+Hence
+
+∫
+
+a2
+1 ax
+a ax
+)I
+=
+e
+sin
+bx
++
+e cos bx + C1 .
+b2
+b
+b2
+
+beax sin bx + aeax cos bx
++ C.
+e cos bxdx = I =
+a2 + b2
+ax
+
+4.2. TECHNIQUES OF INTEGRATION
+
+4.2.3
+
+61
+
+Integration of Rational Functions
+
+In this subsection we are concerned with integrals of the form
+∫
+P (x)
+dx,
+Q(x)
+where P and Q are polynomials in x. We need normally concern ourselves only with rational
+P (x)
+functions Q(x)
+where the degree of P is less than that of Q. If the degree of P equals or exceeds
+P (x)
+the degree of Q, then we can use ”long division” to express the fraction Q(x)
+as a polynomial
+R(x)
+plus another fraction Q(x)
+, where R, the remainder in the division, has degree less than that of Q.
+Without loss of generality(WLOG), we will also consider the case where P (x) and Q(x) has no
+common roots.
+
+Deﬁnition 4.2.11. If the degree of the numerator P (x) is less than that of the denominator Q(x),
+P (x)
+then we say that the rational function Q(x)
+is a proper function.
+Example 4.2.12. Evaluate
+
+∫ x3 +3x2
+x2 +1
+
+dx
+
+Solution. The numerator has degree 3 and the denominator has degree 2, so we use long division
+to get
+x3 + 3x2
+x+3
+=x+3− 2
+.
+2
+x +1
+x +1
+Thus
+∫ 3
+∫
+∫
+∫
+x + 3x2
+x
+3
+1
+1
+dx = (x+3)dx−
+dx−
+dx = x2 +3x− ln(x2 +1)−3 tan−1 x+C.
+2
+2
+2
+x +1
+x +1
+x +1
+2
+2
+∫ x
+beginexampleEvaluate 2x−1
+dx
+Solution. The numerator and the denominator have the same degree 1, so division is again
+required. We use a method called ”short division”:
+x
+1 2x
+1 2x − 1 + 1
+1
+1
+=
+=
+= (1 +
+).
+2x − 1
+2 2x − 1
+2 2X − 1
+2
+2X − 1
+Thus
+
+∫
+
+x
+1
+dx =
+2x − 1
+2
+
+∫
+(1 +
+
+1
+x 1
+)dx = + ln |2x − 1| + C.
+2x − 1
+2 4
+
+Linear and Quadratic Denominators
+• Suppose that Q(x) is linear. That is Q(x) = ax + b. Then
+∫
+c
+c
+dx = ln |ax + b| + C.
+ax + b
+a
+• Suppose that Q(x) is quadratic,i.e. of degree 2. For purposes of this discussion we can assume
+that Q(x) is either of the form x2 +a2 or x2 −a2 , since completing the square and making change of
+variable can always reduce a quadratic to this form. Since P (x) can be at most a linear function,
+P (x) = Ax + B, we are led to consider the following four integrals
+
+62 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+∫
+
+xdx
+,
+x2 + a2
+
+∫
+
+xdx
+,
+x 2 − a2
+
+∫
+
+dx
+,
+x2 + a 2
+
+∫
+
+dx
+.
+x2 − a 2
+
+The ﬁrst two integrals yield to the substitution u = x2 ± a2 . The third is a known integral. In the
+fourth integral, notice that
+1
+x2 − a 2
+
+=
+
+1
+A
+B
+=
++
+.
+(x − a)(x + a)
+x−a x+a
+
+That is Ax+Aa+Bx−Ba
+= 1. Equating like coeﬃcients of like terms we have
+x2 −a2
+A+B = 0
+Aa − Ba = 1
+1
+1
+Solving, we have A = 2a
+, B = − 2a
+. Thus
+∫
+∫
+∫
+dx
+1
+dx
+1
+dx
+1
+1
+1
+x−a
+=
+−
+=
+ln |x − a| −
+ln |x + a| + C =
+ln |
+| + C.
+2
+2
+x −a
+2a
+x − a 2a
+x+a
+2a
+2a
+2a
+x+a
+
+In summary. we have:
+∫
+∫
+∫
+∫
+
+xdx
+x2 +a2
+
+=
+
+1
+ln(x2 + a2 ) + C
+2
+
+xdx
+x2 −a2
+
+=
+
+1
+ln(x2 − a2 ) + C
+2
+
+dx
+x2 +a2
+
+=
+
+1
+tan−1 x + C
+a
+
+dx
+x2 −a2
+
+=
+
+1
+ln | x−a
+|+C
+2a
+x+a
+
+The technique used above, involving the writing of a complicated fraction as a sum of simpler
+fractions, is called the Method of Partial Fractions. Suppose that a polynomial Q(x) is of
+degree n and that its highest degree term is xn (with coeﬃcient 1). Suppose also that Q factors
+into a product of n distinct linear (degree 1) factors, say,
+Q(x) = (x − a1 )(x − a2 )...(x − an ),
+P (x)
+where ai ̸= aj if i ̸= j, 1 ≤ i, j ≤ n. If P (x) is a polynomial of degree smaller than n, then Q(x)
+has a partial fraction decomposition of the form
+
+A1
+A2
+An
+P (x)
+=
++
++ ··· +
+,
+Q(x)
+x − a1 x − a2
+x − an
+where A1 , A2 , · · · , An are constants to be determined.
+∫ x+4
+Example 4.2.13. x2 −5x+6
+dx
+Solution. Note that
+x+4
+x2 − 5x + 6
+
+=
+
+x+4
+A
+B
+=
++
+.
+(x − 2)(x − 3)
+x−2 x−3
+
+4.2. TECHNIQUES OF INTEGRATION
+
+63
+
+That is,
+x + 4 = Ax + Bx − 3A − 2B.
+That is A + B = 1 and −3A − 2B = 4, and upon solving we have A = −6, B = 7. Thus
+∫
+∫
+∫
+x+4
+1
+1
+dx = −6
+dx + 7
+dx = −6 ln |x − 2| + 7 ln |x − 3| + C.
+2
+x − 5x + 6
+x−2
+x−3
+∫ 3
+Example 4.2.14. xx3 +2
+dx
+−3
+Solution. The numerator and denominator have same degree, so we must divide:
+∫
+∫ 3
+∫
+x+2
+x +2
+x+2
+)dx
+=
+x
++
+dx.
+dx
+=
+(1
++
+x3 − 3
+x3 − x2
+x3 − x2
+Using the method of partial fractions, we have:
+x+2
+x+2
+A
+B
+C
+=
+= +
++
+.
+3
+2
+x −x
+x(x − 1)(x + 1)
+x x−1 x+1
+Thus we have A + B + C = 0, B − C = 0, −A = 2, and thus A = −2, B = 23 and C = 12 . Thus
+∫
+
+x3 + 2
+dx = x−2
+x3 − 3
+
+∫
+
+dx 3
++
+x 2
+
+∫
+
+3
+1
+dx+
+x−1
+2
+
+∫
+
+3
+3
+1
+dx = x−2 ln |x|+ ln |x−1|+ ln |x+1|+C.
+x+1
+2
+2
+
+We next consider a rational function whose denominator has a quadratic factor that is a sum of
+sqaures and cannot be further factored into a product of real linear factors.
+Example 4.2.15. Evaluate
+
+∫ 2+3x+x2
+x(x2 +1)
+
+dx
+
+Solution. No division is required here since degree of numerator is less than degree of denominator.
+The appropriate form of decomposition turns out to be
+2 + 3x + x2
+A Bx + C
+= + 2
+.
+2
+x(x + 1)
+x
+x +1
+Equating coeﬃcients, we have A + B = 1, C = 3, A = 2. Hence A = 2, B = −1, and C = 3. Thus
+∫
+∫
+∫
+∫
+2 + 3x + x2
+1
+x
+1
+1
+dx
+=
+2
+dx−
+dx+3
+dx
+=
+2
+ln
+|x|−
+ln(x2 +1)+3 tan−1 x+C.
+x(x2 + 1)
+x
+x2 + 1
+x2 + 1
+2
+Completing the Square
+Quadratic expressions of the form Ax2 + Bx + C can be written as
+Ax2 + Bx + C =
+A(x2 + B
+x + CA )
+A
+2
+B
+C
+B2
+= A(x2 + B
+x + 4A
+2 + A − 4A2 )
+A
+2
+B 2
+) + 4AC−B
+=
+A(x + 2A
+4A
+B
+The substitution u = x + 2A
+should then be made.
+∫
+Example 4.2.16. EvaluateI = x31+1 dx
+
+64 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Solution. Note that Q(x) = x3 + 1 = (x + 1)(x2 − x + 1). The latter factor has no real roots and
+hence has no real linear sub-factors. We have
+1
+1
+Bx + C
+=
+=
++
+.
+x3 + 1
+(x + 1)(x2 − x + 1)
+x + 1 x2 − x + 1
+Equating coeﬃcients we have A+B = 0, −A+B+C = 0, A+C = 1. Hence A = 31 , B = − 13 , C = 23 .
+We thus have
+∫
+∫
+∫
+∫
+1
+1
+dx
+1
+dx
+1
+1
+dx
+I=
+dx =
+−
+= ln |x + 1| −
+.
+3
+2
+2
+x +1
+3
+x+1 3
+x −x+1
+3
+3
+x −x+1
+Completing squares, x2 − x + 1 = (x − 21 )2 + 34 . Thus
+∫
+I=
+
+1
+1
+1
+dx = ln |x + 1| −
+3
+x +1
+3
+3
+
+∫
+
+x − 21 − 32
+.
+(x − 12 )2 + 34
+
+Now letting u = x − 21 , we have du = dx. Thus
+∫
+∫
+∫
+1
+1
+1
+1
+u
+1
+I=
+dx = ln |x + 1| −
+3 +
+3
+2
+2
+x +1
+3
+3
+2
+u +4
+u + 34
+3
+1 2
+2u
+1
+1
+1
+2x − 1
+= ln(u2 + ) + √ tan−1 ( √ ) + C = ln |x + 1| − ln(x2 − x + 1) + √ tan−1 ( √ ) + C.
+4
+2 3
+3
+6
+3
+3
+3
+Denominators with Repeated Factors
+We require one ﬁnal reﬁnement of the method of partial fractions. If any of the linear or quadratic
+P (x)
+factors of Q(x) is repeated (say, m times), then the partial fraction decomposition of Q(x)
+requires
+m distinct fractions corresponding to that factor. The denominators of these fractions have exponents increasing from 1 to m, and the numerators are all constants where the repeated factor is
+linear or linear where the repeated factor is quadratic.
+Example 4.2.17. EvaluateI =
+
+∫
+
+1
+dx
+x(x−1)2
+
+Solution. The appropriate partial fraction decomposition is
+1
+A
+B
+C
+=
++
++
+.
+x(x − 1)2
+x x − 1 (x − 1)2
+Equating coeﬃcients of x2 , x, and 1, we have
+A+B
+= 0
+−2A + B + C = 0
+A
+= 1
+Hence A = 1, B = −1, C = 1, and
+∫
+1
+1
+1
+1
+1
+dx = dx −
+dx +
+dx = ln |x| − ln |x − 1| −
++C
+I=
+2
+2
+x(x − 1)
+x
+x−1
+(x − 1)
+x−1
+= ln |
+
+x
+1
+|−
++ C.
+x−1
+x−1
+
+4.2. TECHNIQUES OF INTEGRATION
+
+4.2.4
+
+65
+
+Inverse Substitutions
+
+The Inverse Trigonometric Substitutions
+Three very useful inverse substitutions are:
+x = a sin θ, x = a tan θ, x = a sec θ.
+These corresponds to the direct substitutions:
+x
+x
+x
+a
+θ = sin−1 , θ = tan−1 , θ = sec−1 = cos−1 .
+a
+a
+a
+x
+Inverse Sine Substitutions
+√
+Integrals involving a2 − x2 where a √> 0 can be reduced to a simpler form by means of the
+substitution x = a sin θ. Observe that a2 − x2 makes sense if −a ≤ x ≤ a, which corresponds to
+− π2 ≤ θ ≤ π2 . Since cos θ ≥ 0, for such θ we have
+√
+√
+√
+2
+2
+a − x = a2 (1 − sin2 θ) = a2 cos2 θ = a cos θ.
+√
+
+Therefore cos θ =
+
+a2 −x2
+a
+
+and tan θ = √a2x−x2 .
+
+Example 4.2.18. Evaluate
+
+∫
+
+1
+3
+
+(5−x2 ) 2
+
+dx
+
+√
+√
+Solution. Let x = 5 sin θ. Then dx = 5 cos θdθ. Thus
+∫
+∫
+∫ √
+1
+5 cos θdθ
+1
+x
+1
+1
+4
+sec2 θdθ = tan θ + C = √
+=
++ C.
+3 dx =
+3
+5
+5
+5 5 − x2
+(5 − x2 ) 2
+5 2 cos3 θ
+Inverse Tangent Substitutions
+√
+1
+Integrals involving a2 + x2 or x2 +a
+2 (a > 0) are often simpliﬁed by the substitution x = a tan θ.
+Since x can take any any real value, we have − π2 ≤ θ ≤ π2 or sec θ > 0 and
+√
+√
+a2 + x2 = a 1 + tan2 θ = a sec θ.
+Therefore sin θ = √a2x+x2 and cos θ = √a2a+x2 .
+Example 4.2.19. Evaluate
+
+∫
+
+√ 1
+dx
+4+x2
+
+Solution. Let x = 2 tan θ. Then dx = 2 sec2 θdθ. Thus
+∫
+∫
+∫
+1
+2 sec2 θ
+√
+dθ = sec θ dθ = ln | sec θ + tan θ| + C
+dx =
+2 sec θ
+4 + x2
+√
+√
+4 + x2 x
+= ln |
++ | + C = ln( 4 + x2 + x) + C1 ,
+2
+2
+where C1 = C − ln 2.
+
+66 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Example 4.2.20. Evaluate
+
+∫
+
+1
+dx
+(1+9x2 )
+
+Solution. Let 3x = tan θ. Then 3dx = sec2 θdθ and 1 + 9x2 = secθ . Thus
+∫
+∫
+∫
+1
+1
+1
+1
+sec2 θdθ
+dx =
+=
+cos2 θdθ = (θ + sin θ cos θ) + C
+2
+4
+(1 + 9x )
+3
+sec θ
+3
+6
+=
+
+1
+1
+1
+3x
+.√
++C
+tan−1 3x + √
+2
+6
+6 1 + 9x
+1 + 9x2
+=
+
+1
+1
+x
+tan−1 3x + .
++ C.
+6
+2 1 + 9x2
+
+Inverse Secant Substitutions
+√
+Integrals involving x2 − a2 (where a > 0) can be simpliﬁed
+θ.
+√ substitution x√= a sec
+√ by using the
+2
+2
+2
+2
+But we must be careful with this substitution. Although x − a = a sec θ − 1 = a √tan θ =
+a| tan θ|, we cannot always drop the absolute value from the tangent. Observe that x2 − a2
+makes sense for x ≥ a and for x ≤ −a.
+• If x ≥ a, then 0 ≤ θ = sec−1 xa = cosa x < π2 , and tan θ ≥ 0.
+• If x ≤ −a, then π2 < θ = sec−1 xa = cosa x ≤ π, and tan θ ≤ 0.
+In the ﬁrst case
+
+√
+
+x2 − a2 = a tan θ and in the second case
+
+Example 4.2.21. Find I =
+
+∫
+
+√
+
+x2 − a2 = −a tan θ.
+
+√ dx
+x2 −a2
+
+Solution. Assume x ≥ a.
+√
+If x = sec θ, then dx = a sec θ tan θdθ and x2 − a2 = a tan θ. Thus,
+∫
+I=
+
+dx
+√
+=
+2
+x − a2
+
+∫
+
+√
+√
+x2 − a 2
+x
+sec θdθ = ln | sec θ+tan θ|+C = ln | +
+|+C = ln |x+ x2 − a2 |+C1 ,
+a
+a
+
+where C1 = C − ln a.
+If x ≤ −a, let u = −x so that u ≥ a and du = −dx. We have
+∫
+I=−
+
+√
+√
+du
+1
+x + x2 − a2
+2
+2
+√
+√
+√
+= − ln |u + u − a | + C1 = ln |
+.
+| + C1
+u2 − a2
+−x + x2 − a2 x + x2 − a2
+= ln |
+
+x+
+
+√
+
+√
+x 2 − a2
+|
++
+C
+=
+ln
+|x
++
+x2 − a2 | + C2 ,
+1
+−a2
+
+where C2 = C1 − 2 ln a. Thus, in either case, we have
+I = ln |x +
+Example 4.2.22. Find I =
+
+∫
+
+√ 1
+dx
+2x−x2
+
+√
+
+x2 − a2 | + C.
+
+4.2. TECHNIQUES OF INTEGRATION
+∫
+
+Solution.
+I=
+
+1
+√
+dx =
+2x − x2
+
+∫
+
+67
+
+dx
+
+√
+=
+1 − (1 − 2x + x2 )
+
+∫
+
+dx
+√
+.
+1 − (x − 1)2
+
+Now, if we let u = x − 1, then du = dx. Thus
+∫
+∫
+∫
+1
+du
+dx
+√
+√
+√
+I=
+=
+dx =
+= sin−1 u + C = sin−1 (x − 1) + C.
+2
+2
+2
+2x − x
+1−u
+1 − (x − 1)
+∫
+x
+beginexampleFind I = 4x2 +12x+13
+dx
+Solution.
+
+∫
+I=
+
+x
+dx =
+2
+4x + 12x + 13
+
+∫
+
+xdx
+1
+=
+9
+2
+4
+4(x + 3x + 4 + 1
+
+∫
+
+xdx
+.
+(x + 32 )2 + 1
+
+Let u = x + 23 . Then du = dx. Thus
+∫
+∫
+∫
+x
+xdx
+1
+xdx
+I=
+dx =
+=
+9
+2
+2
+4x + 12x + 13
+4
+4(x + 3x + 4 + 1)
+(x + 32 )2 + 1
+∫
+∫
+1
+udu
+du
+3
+=
+−
+.
+2
+2
+4
+u +1 8
+u +1
+In the ﬁrst integral, let v = u2 + 1, thus dv = 2udu. Therefore,
+∫
+∫
+∫
+∫
+x
+1
+udu
+3
+du
+1
+dv 3
+I=
+dx
+=
+−
+=
+− tan−1 u
+2
+2
+2
+4x + 12x + 13
+4
+u +1 8
+u +1
+8
+v
+8
+1
+3
+1
+3
+3
+ln |v| − tan−1 u + C = ln(4x2 + 12x + 13) − tan−1 (x + ) + C1 ,
+8
+8
+8
+8
+2
+where C1 = C − ln84 .
+=
+
+4.2.5
+
+Inverse Hyperbolic Substitutions
+
+As an alternative to the inverse secant substitution x = a sec θ to simplify integrals involving
+√
+x2 − a2 (where x ≥ a > 0) we can use the inverse hyperbolic
+cosine substitution x = a cosh u.
+√
+2
+2
+2
+2
+Since cosh u − 1 = sinh u, this substitution produces x − a = a sinh u. To express u in terms
+of x, we need the result, note that
+√
+cosh−1 x = ln(x + x2 − 1), x ≥ 1.
+∫
+Example 4.2.23. Find I = √xdx
+(where a > 0)
+2 −a2 ,
+Solution. Note that this problem has been solved using the inverse secant substitution. Again
+we assume x ≥ a(the case where x ≤ −1 can be handled similarly.) Using the substitution
+x = a cosh u, so that dx = a sinh udu, we have
+√
+∫
+∫
+∫
+x
+x
+a sinh u
+dx
+x2
+√
+du = du = u + C = cosh−1 + C = ln( +
+−1 )+C
+=
+I=
+a sinh u
+a
+a
+a2
+x2 − a2
+
+68 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+= ln(x +
+
+√
+
+x2 − a2 ) + C1 ,
+
+where C1 = C − ln a.
+Similarly, the inverse hyperbolic substitution x = a sinh u can
+of the inverse
+√ be used instead
+1
+2
+2
+tangent substitution x = a tan θ to simplify integrals involving x + a or x2 +a2 . In this case, we
+have dx = a cosh udu and x2 + a2 = a2 cosh2 u, and we may need the result that
+√
+sinh2 x = ln(x + x2 + 1),
+which is valid for all x.
+
+4.2.6
+
+Other Inverse Substitutions
+√
+
+ax + b can be made simpler with the substitution ax + b = u2 .
+∫ 1
+Example 4.2.24. Find 1+√
+dx
+2x
+Integrals involving
+
+Solution. Let 2x = u2 . Then 2dx = 2udu. Thus
+∫
+∫
+∫
+∫
+1
+u
+1+u−1
+1
+√ dx =
+du =
+du = (1 −
+)du.
+1+u
+1+u
+1+u
+1 + 2x
+Let v = 1 + u and hence dv = du. Thus
+∫
+∫
+∫
+√
+√
+1
+dv
+1
+√ dx = (1 −
+)du = u −
+= u − ln |v| + C = 2x − ln(1 + 2x) + C.
+1+u
+v
+1 + 2x
+√
+Sometimes integrals involving n ax + b will be much simpliﬁed by the hybrid substitution ax+b =
+un , adx = nun−1 du.
+Example 4.2.25. Find
+
+∫
+
+√x
+dx
+1+ 3 3x+2
+
+Solution. Let 3x + 2 = u3 . Then 3dx = 3u2 du. Thus
+∫
+∫ 3
+∫
+x
+1 u5
+u −2 2
+1
+4
+√
+dx
+=
+u
+du
+=
+(u
+−
+2u)du
+=
+( − u2 ) + C
+3u
+3
+3 5
+1 + 3 3x + 2
+√
+)
+√
+1 ( ( 3 3x + 2)5
+− ( 3 3x + 2)2 + C.
+=
+3
+5
+If more than one fractional power is present, it may be possible to eliminate all of them at once.
+Example 4.2.26. Evaluate
+
+∫
+
+1
+1
+1
+x 2 (1+x) 3
+
+dx
+
+Solution. Eliminate both the square root and the cube root by using the inverse substitution
+x = u6 (6 is chosen because it is the LCM of 2 and 3). Let x = u6 . Then dx = 6u5 du. Thus
+∫
+∫
+∫
+1
+u2
+u5 du
+=
+6
+du
+dx
+=
+6
+1
+1
+u3 (1 + u2 )
+1 + u2
+x 2 (1 + x) 3
+
+4.3. THE DEFINITE INTEGRAL
+∫
+=6
+
+(1 −
+
+69
+
+1
+1
+1
+)du = 6(u − tan−1 u) + C = 6(x 6 − tan−1 x 6 ) + C.
+2
+1+u
+
+The tan( 2θ ) Substitution
+There is a certain special substitution that can transform an integral whose integrand is a rational
+function of sinθ and cosθ (i.e., a quotient of polynomials in sinθ and cosθ into a rational function
+of x. The substitution is x = tan 2θ or, equivalently, θ = 2 tan−1 x. Observe that
+cos2
+
+θ
+1 θ
+1
+1
+=
+=
+,
+=
+θ
+2
+2
+2
+sec 2
+1 + x2
+1 + tan 2
+
+so
+cos θ = 2 cos2
+sin θ = 2 sin2
+
+θ
+2
+1 − x2
+−1=
+−
+1
+=
+2
+1 + x2
+1 + x2
+
+θ
+θ
+θ
+θ
+2x
+cos = 2 tan cos2 =
+2
+2
+2
+2
+1 + x2
+
+Also dx = 12 sec2 2θ dθ, so
+θ
+2dx
+dθ = 2 cos2 dx =
+.
+2
+1 + x2
+Example 4.2.27. Evaluate
+
+∫
+
+1
+2+cos θdθ
+2
+
+2dx
+Solution. Let x = tan 2θ . Then cos θ = 1−x
+and dθ = 1+x
+2 . Thus
+1+x2
+
+∫
+
+1
+dx =
+2 + cos θ
+
+∫
+
+2dx
+1+x2
+2
+2 + 1−x
+1+x2
+
+∫
+=2
+
+1
+3 + x3
+
+2
+x
+2
+1
+θ
+= √ tan−1 √ + C = √ tan−1 ( tan ) + C.
+3
+2
+3
+3
+3
+∫ dx
+dx
+Example 4.2.28. Evaluate cos
+x
+2
+
+2dt
+Solution. Taking into account that cos x = 1−t
+and dx = 1+t
+2 , we ﬁnd that
+1+t2
+
+∫
+
+4.3
+
+dx
+dx =
+cos x
+
+∫
+
+2dt
+1+t2
+2
+2 + 1−t
+1+t2
+
+∫
+=2
+
+1 + tan x2
+dt
+1+t
+=
+ln
+|
+|
++
+C
+=
+ln
+|
+| + C.
+1 + t2
+1−t
+1 − tan x2
+
+The Deﬁnite Integral
+
+∫b
+The deﬁnite integral of f (x) over [a, b], denoted by a f (x)dx is a number; it is not a function of
+x. It depends on the numbers a and b and on the particular function f , but not on the variable
+x. It is deﬁned
+∫
+b
+
+f (x)dx = [F (x) + C]|ba = F (b) − F (a),
+a
+
+where F is an antiderivative of f .
+
+(⋆)
+
+70 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Deﬁnition 4.3.1. Let f (x) be a function whose domain contains the closed interval [a, b]. Suppose
+F (x)
+∫ nis an antiderivative for f (x). Then the deﬁnite integral of f (x) from x = a to x = b, denoted
+by a f (x)dx is deﬁned as
+∫ b
+f (x)dx = [F (x) + C]|x=b
+x=a = F (b) − F (a).
+a
+
+Here, a is called the lower bound/limit of integration and b is called the upper bound/limit
+of integration.
+Observe that the diﬀerence F (b) − F (a) does not depend on C, because
+(F (b) + C) − (F (a) + C) = F (b) − F (a).
+Formula (⋆) is called
+∫ a the Newton-Leibniz formula. Note that in (⋆) if a = b, then the integral
+is zero. That is a f (x)dx = 0.
+The techniques of integration can be used to evaluate deﬁnite integrals.
+
+4.3.1
+
+Properties of the Deﬁnite Integral
+
+∫b
+∫a
+1. a f (x)dx = − b f (x)dx
+∫b
+∫b
+2. a kf (x)dx = k a f (x)dx
+∫b
+∫b
+∫b
+3. a [f (x) + g(x)]dx = a f (x)dx + a g(x)dx
+∫b
+∫c
+∫b
+4. a f (x)dx = a f (x)dx + c f (x)dx where
+
+c ∈ [a, b]
+
+If a function F is an antiderivative of f on the half-interval [a, ∞) and limx→∞ F (x) exists, then
+∫ ∞
+∫ x
+f (x)dx = lim F (x) − F (a) = lim
+f (t)dt.
+x→∞
+
+a
+
+Similarly
+
+∫ ∞
+
+x→∞
+
+∫ c
+f (x)dx =
+
+−∞
+
+∫ ∞
+f (x)dx +
+
+−∞
+
+a
+
+f (x)dx.
+c
+
+Such integrals are called improper integrals.
+∫1
+Example 4.3.2. Find 0 √dx
+1−x
+Example 4.3.3. Solution. The integrand is not deﬁned at x = 1, and so as an improper integral,
+we can write
+∫ 1
+∫ x
+√
+dx
+dt
+√
+√
+= lim−
+= lim− (−2 1 − x) − (−2) = 2.
+1 − x x→1 0
+1 − t x→1
+0
+∫ ∞ dx
+Example 4.3.4. Find 1 x2
+Example 4.3.5. Solution. The interval of integration is the inﬁnite interval [0, ∞).
+∫ ∞
+∫ ∞
+dt
+1
+dx
+=
+lim
+=
+lim
+(−
+) − (−1) = 1.
+x→∞ 1
+x→∞
+x2
+t2
+x
+1
+∫1
+Example 4.3.6. Evaluate 0 2x(x2 + 1)5 dx
+
+4.4. APPLICATIONS OF THE DEFINITE INTEGRAL
+
+71
+
+Example 4.3.7. Solution:Method 1. Let u = x2 + 1, du = 2xdx. Then
+∫ 1
+∫
+x2 + 1
+u6
+2
+5
+2x(x + 1) dx = u5 du =
++C =
++ C.
+6
+6
+0
+Consequently,
+
+∫ 1
+
+x2 + 1 1 26 16
+21
+2x(x + 1) dx =
+|0 =
+−
+= .
+6
+6
+6
+2
+0
+2
+
+5
+
+Method 2. Let u = x2 + 1, du = 2xdx; however, we also apply the substitution to the limits of
+integration as well. When x = 0, we have u = 02 + 1 = 1; and when x = 1, we have u = 12 + 1 = 2.
+Therefore
+∫ 1
+∫ 2
+u6 2 26 16
+21
+2
+5
+5
+2x(x + 1) dx =
+u du = |1 =
+−
+= .
+6
+6
+6
+2
+0
+1
+
+4.4
+
+Applications of the Deﬁnite Integral
+
+We give concepts of length, area and volume analytic deﬁnitions using the concept of the deﬁnite
+integral.
+
+4.4.1
+
+Area and the Deﬁnite Integral
+
+Area as a Limit
+Let f be a continuous, positive valued function on [a, b] and suppose we want to compute the
+area of f under the graph of f from x = a to x = b. We may approximate the area by partitioning
+the region into n trapezia (subdivide [a, b] into n equal intervals each of length ∆x) and ﬁnding
+the area of each trapezia and add the areas up.
+A = lim (
+
+n
+∑
+
+n→∞
+
+f (xi )∆x),
+
+i=1
+
+where ∆x = b−a
+and xi is the right-hand endpoint of the ith interval [xi−1 , xi ].
+n
+Note that the deﬁnite integral exists if the limit is a ﬁnite number. The actual area A is given by
+the deﬁnite integral
+∫
+b
+
+A=
+
+f (x)dx.
+
+(⋆).
+
+a
+
+Note that the approximation to area approaches the actual area as n → ∞. Thus
+∫ b
+A=
+
+n
+∑
+f (x)dx = lim (
+f (xi )∆x).
+n→∞
+
+a
+
+i=1
+
+It can be shown that the partitioning points xi need not be equally spaced as long as the longest
+interval nears zero as n increases without bound. The deﬁnite integral deﬁned here is called a
+Riemann integral.
+If f (x) < 0 on [a, b], then the integral (⋆) is a non-positive number,−A. Since the area is nonnegative, we deﬁne
+∫
+b
+
+|f (x)|dx.
+
+A=
+a
+
+72 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Let f1 , f2 be continuous functions with f1 (x) ≥ f (x2 ) for x ∈ [a, b]. Then the area A of the region
+bounded by the curves y = f1 (x) and y = f2 (x) and the vertical lines x = a, x = b is
+∫ b
+[f (x) − g(x)]dx
+
+A=
+
+(⋆⋆)
+
+a
+
+More generally, consider a continuous function f with a graph that crosses the x-axis at ﬁnitely
+many points xi , i = 1, 2, ..., k between a and b. Then we write
+∫ b
+∫ b
+∫ x1
+∫
+x2
+A=
+f (x)dx =
+f (x)dx +
+a f (x)dx + · · · +
+f (x)dx.
+a
+
+a
+
+xk
+
+x1
+
+∫b
+Hence, we see that a f (x)dx is equal to the area under y = f (x) above the x-axis, minus the area
+over y = f (x) below the x-axis.
+Finally, let f1 , f2 be continuous, with f1 (y) ≥ f2 (y) for y ∈ [c, d]. Then the area A of the region
+bounded by the curves x = f1 (y) and x = f2 (y) and the vertical lines y = c and y = d is
+∫ d
+[f1 (y) − f2 (y)]dy.
+
+A=
+c
+
+Example 4.4.1. Find the area A of the region bounded by the curves y = xα and x = y α .
+1
+
+Solution. The points of intersection of these curves are (0, 0) and (1, 1). Because x α ≥ xα for all
+xin [0, 1], it follows that
+∫ 1
+
+1
+α
+
+(x − x )dx =
+
+A=
+0
+
+α
+
+( αx α+1
+α
+α+1
+
+−
+
+xα+1 ) α − 1
+=
+.
+α+1
+α+1
+
+Example 4.4.2. Find the area A of the region bounded by the curve y = sin x, x ∈ [0, 2π] and
+the x-axis.
+∫ 2π
+∫π
+∫ 2π
+Solution. A = 0 | sin x|dx = 0 sin xdx+| π sin xdx| = −(cos π −cos 0)+|−(cos 2π −cos π)| =
+2 + | − 2| = 4.
+
+4.4. APPLICATIONS OF THE DEFINITE INTEGRAL
+
+73
+
+Example 4.4.3. Find the area A of the region bounded by the parabola f (x) = 2 − x2 and the
+line g(x) = −x.
+Solution. Notice that the curves intersect at the points (−1, 1) and (2, −2) by solving 2−x2 = −x.
+∫ 2
+∫ 2
+9
+A=
+[f (x) − g(x)]dx =
+(2 − x2 + x)dx = · · · = .
+2
+−1
+−1
+
+Figure 4.1: Area of region bounded by f and g
+Example 4.4.4. Find the area A of the region bounded by the x-axis and f (x) = x2 + x − 6.
+Solution. The zeros of f (x) = x2 + x − 6 are (−3, 0) and (2, 0). Since the x axis has equation
+y = 0, the desired area can be considered as the area of a region between the two curves y = 0
+and f (x) = x2 + x − 6. Thus
+∫ 2
+125
+A=
+.
+[0 − (x2 + x − 6)]dx =
+6
+3
+
+Figure 4.2: Area below the x-axis
+Example 4.4.5. Find the area A of the region bounded by the x-axis, f (x) = x3 , a = −3 and
+b = 3.
+
+74 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS
+Solution.
+
+Figure 4.3: Area of region symmetric to the x-axis
+From the graph, part of the region falls below the x-axis and part above. Note that
+∫ 3
+x3 dx = 0.
+−3
+
+This is incorrect. Since the region below the x-axis gives a negative value for the area and the
+part above the x-axis gives a positive value for the area, then the area A is
+∫ 0
+∫ 3
+81
+81
+81
+3
+= .
+A=|
+x dx| +
+x3 dx = | − | +
+4
+4
+2
+−3
+0
+Another way of approaching the problem is to realize that the region below the x-axis is symmetric
+to the region above the x-axis and therefore
+∫ 3
+∫ 0
+3
+A=2
+x dx or A = 2|
+x3 dx|.
+0
+
+−3
+
+Summary. The area of a region bounded by two or more curves can be found by integration.
+The integrand is g(x) − f (x) when g(x) ≥ f (x) for all x in the interval of integration. The bounds
+of integration are usually found by determining the points of intersection of the curves. In some
+cases it may be necessary to use more than one integral. If f (x) or (g(x) − f (x)) crosses the x-axis
+in [a, b], then more than one integral may be necessary.
+
+4.5
+
+Exercises and Some Solved Problems
+
+1. Evaluate
+(i).
+
+∫
+
+cos2 xdx
+
+Soln:
+
+∫
+
+∫
+cos2 xdx = 12 (1 + cos 2x)dx = x2 + 14 sin 2x + c.
+
+4.5. EXERCISES AND SOME SOLVED PROBLEMS
+(ii).
+
+∫
+
+75
+
+sin4 xdx
+
+∫
+∫
+∫
+∫
+Soln: sin4 xdx = 14 (1 − cos 2x)2 dx = 14 (1 − 2 cos 2x + cos2 2x)dx = x4 − 41 sin 2x + 18 (1 +
+1
+1
+cos 4x)dx = x4 − 41 sin 2x + x8 + 32
+sin 4x + c = 38 x − 14 sin 2x + 32
+sin 4x + c.
+(iii). 2 cos(2x3 + 1)dx
+∫ ln x
+
+(iv).
+(v).
+
+x
+
+∫
+
+(vi).
+
+dx
+
+x cos xdx
+
+∫ ln(ln x)
+
+(vii).
+(viii).
+
+x
+
+∫
+
+dx
+
+dθ
+cos θ(1+sin θ)
+
+∫√
+
+a2 − x2 dx
+
+2. Find the area of the plane region bounded by the given curves.
+(i). y = x, y = x2
+(ii). y = x3 , y = x
+(iii). y = x1 , 2x + 2y = 5
+
+Index
+bijection, 5
+cardinality
+set, 2
+Cartesian product, 3
+Chain Rule, 32
+complement
+set, 2
+Continuity
+ϵ − δ deﬁnition, 20
+Continuity Test, 20
+continuous function, 20
+Derivative, 28
+Left, 28
+Right, 28
+Derivatives
+Exponential Functions, 37
+Logarithmic Functions, 37
+indeterminate forms, 39
+trigonometric functions, 35
+Diﬀerentiable, 28
+function, 28
+Diﬀerentials, 46
+Diﬀerentiation, 28
+implicit, 42
+logarithmic, 43
+parametric, 42
+rules, 30
+Discontinuity, 21
+of second kind, 22
+types, 21
+Domain
+function, 5
+empyty
+set, 2
+Exponential function, 8
+Function, 5
+range, 5
+
+anti-derivative, 51
+anti-diﬀerentiation, 51
+diﬀerentiable, 28
+domain, 5
+limit, 8
+non-diﬀerentiable, 28
+onto, 5
+Functions
+hyperbolic, 38
+Implicit
+Diﬀerentiation, 42
+Indeterminate
+limits, 19
+Injective
+function, 5
+Integers, 3
+Integral
+indeﬁnite, 51
+deﬁnite, 65
+Riemann, 67
+Integrand, 51
+Integration, 51
+constant, 51
+by parts, 54
+rational functions, 57
+substitution, 53
+techinques, 53
+Jump discontinuity, 21
+L’Hôpital’s First Rule, 39
+L’Hôpital’s Second Rule, 40
+Left
+derivative, 28
+Left continuity, 22
+Leibniz Notation, 28
+Limit, 8
+formal deﬁnition, 9
+left-hand limit, 12
+76
+
+INDEX
+right-hand limit, 12
+Limit Theorems, 11
+Limits
+at Inﬁnity, 16
+at inﬁnity, 15
+indeterminate, 19
+inﬁnite, 17
+one-sided, 14
+Linear
+approximations, 46
+Linearizations, 47
+Logarithm
+natural, 7
+Logarithmic
+diﬀerentiation, 43
+Logarithmic function, 8
+Naperian logarithm, 7
+Natural
+numbers, 3
+one-to-one
+function, 5
+onto
+function, 5
+Polynomial, 8
+Product Rule, 32
+Proper
+subset, 2
+Quotient Rule, 32
+Range
+function, 5
+Rates of change
+instantaneous, 48
+Rational
+function, 7
+Right
+derivative, 28
+Right continuity, 22
+Sandwich(Squeeze) Theorem, 18
+Set
+equality, 2
+set, 1
+complement, 2
+diﬀerence, 2
+
+77
+elements, 1
+empty, 2
+intersection, 2
+union, 2
+universal, 2
+set
+cardinality , 2
+Singular point, 28
+Slope
+curve, 27
+tangent line, 26
+Surjective
+function, 5
+Uniformly continuous, 21
+universal
+set, 2
+Universe of discourse , 2
+Whole
+numbers, 3
+
+

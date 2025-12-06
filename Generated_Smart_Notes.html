@@ -1,0 +1,6084 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Notes Generated</title>
+    <!-- MathJax for rendering math -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.65);
+            --glass-active: rgba(56, 189, 248, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #eab308;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Layout --- */
+        header {
+            padding: 1rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* --- Main Content Area --- */
+        #content-viewport {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 1rem;
+            padding-bottom: 6rem;
+            /* Space for bottom nav */
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* --- Cards & Text --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p,
+        li {
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Special Elements --- */
+        .definition-box {
+            border-left: 4px solid var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .definition-title {
+            color: var(--accent);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .theorem-box {
+            border-left: 4px solid var(--warning);
+            background: rgba(234, 179, 8, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .theorem-title {
+            color: var(--warning);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .example-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="header-title">Generative Notes</h1>
+        <div class="subtitle">AI-Powered Conversion</div>
+    </header>
+
+    <div id="content-viewport">
+        <!-- AI GENERATED CONTENT GOES HERE -->
+        <div id="tab-1" class="tab-section active">
+<section class="glass-panel"><h2></h2>
+<p>Chapter 1</p>
+<h3>PRELIMINARIES FOR CALCULUS</h3>
+<p>Neglect of mathematics works injury to all knowledge, since he who is ignorant of it</p>
+<p>cannot know the other sciences or the things of this world. And what is worse, men</p>
+<p>who are thus ignorant are unable to perceive their own ignorance and so do not seek</p>
+<p>a remedy. —Roger Bacon</p>
+<p>Functions are basic to the study of mathematics and many other sciences and are found in everyday</p>
+<p>life situations.</p>
+<p>To address functions adequately we need to lay a foundation. We start by introducing the notion</p>
+<p>of sets.</p>
+<p>1.1</p>
+<p>Elementary Set Theory</p>
+<p>Deﬁnition 1.1.1. A set is any well-deﬁned collection, aggregate, class or conglomerate of objects.</p>
+<p>These objects (which may be cities, years, numbers, letters of the alphabet, or anything else) are</p>
+<p>called elements of the set, and are often said to be members of the set.</p>
+<p>A</p>
+<p>⊙set is often speciﬁed by</p>
+<p>⊙ listing its elements inside a pair of braces or curly brackets or parentheses.</p>
+<p>means of a property of its elements.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.2. The set whose elements are the ﬁrst six letters of the alphabet is written</div>
+<p>{a, b, c, d, e, f }</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.3. The set whose elements are the even integers between 1 and 11 is written</div>
+<p>{2, 4, 6, 8, 10}</p>
+<p>We can also specify a set by giving a description of its elements (without actually listing the</p>
+<p>elements).</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.4. The set {a, b, c, d, e, f } can also be written</div>
+<p>{T he f irst six letters of the alphabet}</p>
+<p>1</p>
+<p>2</p>
+</div>
+</section></div>
+<div id="tab-2" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 1. PRELIMINARIES FOR CALCULUS</h3>
+<p>1.1.1</p>
+<p>Notation and Terminology</p>
+<p>For convenience, we usually denote sets by capital letters of the alphabet A, B, C and so on. We</p>
+<p>use lowercase letters of the alphabet to represent elements of a set. For a set A, we write x ∈ A</p>
+<p>if x is a member of A or belongs to A. We write x ̸∈ A to mean that x is not a member of A or</p>
+<p>does not belong to A.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.5. If E denotes the set of even integers, then 4 ∈ E but 7 ̸∈ E.</div>
+<p>Deﬁnition 1.1.6. An empty set is a set with no elements.</p>
+<p>An empty set is usually denoted by ∅. It is a set that arises in a variety of disguises.</p>
+<p>Deﬁnition 1.1.7. Let A and B be two sets. If every element of A is an element of B, we say that</p>
+<p>A is a subset of B, and we write A ⊆ B. We also say that A is contained in B.</p>
+<p>Deﬁnition 1.1.8. If A ⊆ B and B ⊆ A, then we say that A and B are equal, and write A = B.</p>
+<p>Deﬁnition 1.1.9. If A ⊆ B and A ̸= B, then we say that A is a proper subset of B are equal,</p>
+<p>and write A = B, or A is properly contained in B, and write A ⊂ B.</p>
+<p>Deﬁnition 1.1.10. (Cardinality of a set). The number of elements in a set A is called the</p>
+<p>cardinality of A, and is denoted n(A) or |A|.</p>
+<p>Deﬁnition 1.1.11. (Universal set). A universal set denoted by U is a set which contains all</p>
+<p>elements under consideration. That is, it contains all other sets under consideration. It is also</p>
+<p>called the universe of discourse or simply universe.</p>
+<p>1. Complement of a set</p>
+<p>Let U be the universal set and A be any set. The complement of A, written A{ is deﬁned as</p>
+<p>{</p>
+<p>}</p>
+<p>{</p>
+<p>A = x ∈ U : x ̸∈ A</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.12. Let the universal set be U = {0, 1, 2, 3, 5, 6} and A = {3, 5}. Then A{ =</div>
+<p>{0, 1, 2, 6}.</p>
+<p>2. Union of sets</p>
+<p>Let A and B be sets. The union of A and B, denoted by A ∪ B is</p>
+<p>{</p>
+<p>}</p>
+<p>A ∪ B = x : x ∈ A or x ∈ B or both</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.13. If A = {3, 5, 7} and B = {x, y, t}, them A ∪ B = {3, 5, 7, x, y, t}.</div>
+<p>3. Intersection of sets</p>
+<p>Let A and B be sets. The intersection of A and B, denoted by A ∩ B is</p>
+<p>{</p>
+<p>}</p>
+<p>A ∩ B = x : x ∈ A and x ∈ B</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.14. If A = {1, 3, T om, M ary} and B = {3, x, y, t, M ary}, them A∩B = {3, M ary}.</div>
+<p>1.1. ELEMENTARY SET THEORY</p>
+<p>3</p>
+<p>4. Set Diﬀerence</p>
+<p>Let A and B be sets. The set diﬀerence or relative complement of A with respect to B, denoted</p>
+<p>by A − B is deﬁned as</p>
+<p>{</p>
+<p>}</p>
+<p>A − B = x : x ∈ A and x ̸∈ B</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.15. If A = {N ew Y ork, Cairo, M umbai, Seoul, Beijing, M oscow, London} and</div>
+<p>B = {N airobi, Kigali, P retoria, beijing, Harare, P aris, London}. Then</p>
+<p>A − B = {N ew Y ork, Cairo, M umbai, Seoul, M oscow}</p>
+<p>and</p>
+<p>B − A = {N airobi, Kigali, P retoria, Harare, P aris}</p>
+<p>5. Cartesian Product of Sets</p>
+<p>Let A and B be sets. The Cartesian product of A and B, denoted by A × B is deﬁned as</p>
+<p>{</p>
+<p>}</p>
+<p>A × B = (a, b) : a ∈ A and b ∈ B</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.16. If A = {0, 1, 2} and B = {a, b}, them</div>
+<p>{</p>
+<p>}</p>
+<p>A × B = (0, a), (0, b), (1, a), (1, b), (2, a), (2, b)</p>
+<p>{</p>
+<p>}</p>
+<p>A × A = (0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  1.1.17. Let R be the set of real numbers. Then the Cartesian product of</div>
+<p>{</p>
+<p>}</p>
+<p>R × R = (x, y) : x, y ∈ R</p>
+<p>This is also denoted as R2 and read as ”R two”. This is the two-dimensional Cartesian plane or</p>
+<p>simply the xy-plane.</p>
+<p>The Cartesian product</p>
+<p>{</p>
+<p>}</p>
+<p>R × R × R = (x, y, z) : x, y, z ∈ R</p>
+<p>This is also denoted as R3 and read as ”R three”, and is the three-dimensional Euclidean space.</p>
+<p>1.1.2</p>
+<p>Some Special Number Sets</p>
+<p>There are certain sets of numbers that appear frequently in mathematics and in other sciences.</p>
+<p>1. The Natural Numbers, N</p>
+<p>N = {1, 2, 3, ...}</p>
+<p>2. The Whole Numbers, W</p>
+<p>W = {0, 1, 2, 3, ...}</p>
+<p>3. The set of Integers, Z</p>
+<p>Z = {..., −4, −3, −2, −1, 0, 1, 2, 3, 4, ...}</p>
+<p>4. The Rational Numbers, QindexRational!numbers</p>
+<p>a</p>
+<p>Q = { : a, b ∈ Z, b ̸= 0, gcd(a, b) = 1}</p>
+<p>b</p>
+<p>4</p>
+<p>1.1.3</p>
+</div>
+</section></div>
+<div id="tab-3" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 1. PRELIMINARIES FOR CALCULUS</h3>
+<p>Fundamental Operations on Sets</p>
+<p>5. The Irrational Numbers, Q{ indexIrrational!numbers</p>
+<p>Q{ = {t : t ̸∈ Q}</p>
+<p>Note that Q ∩ Q{ = ∅.</p>
+<p>6. The Real Numbers, R</p>
+<p>indexReal!numbers A real number is a number which is either rational or irrational. That is</p>
+<p>R = Q ∪ Q{ . The set of real numbers is also called the real number line.</p>
+<p>7. Intervals in R. Let a, b, x ∈ R. Then</p>
+<p>(a, b) = {x ∈ R : a < x < b} is called the open interval between a and b.</p>
+<p>[a, b) = {x ∈ R : a ≤ x < b} and (a, b] = {x ∈ R : ax ≤ b} are called the half-open or half-closed</p>
+<p>intervals between a and b.</p>
+<p>[a, b] = {x ∈ R : a ≤ x ≤ b} is called the closed interval between a and b.</p>
+<p>(a, ∞) = {x ∈ R : x > a}</p>
+<p>[a, ∞) = {x ∈ R : x ≥ a}</p>
+<p>(−∞, a) = {x ∈ R : x < a}</p>
+<p>(−∞, a] = {x ∈ R : x ≤ a}</p>
+<p>(−∞, ∞) = {x ∈ R : −∞ < x < ∞} = R</p>
+</section></div>
+<div id="tab-4" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<p>Chapter 2</p>
+<h3>LIMITS AND CONTINUITY OF</h3>
+<h3>FUNCTIONS</h3>
+<p>2.1</p>
+<p>Functions and their Graphs</p>
+<p>Deﬁnition 2.1.1. Let X and Y be two sets. By a function f from X to Y , we mean a rule or</p>
+<p>relation which assigns to each x in X a unique element f (x) in Y .</p>
+<p>We often express the fact that f is a function from X to Y by writing</p>
+<p>f : X −→ Y.</p>
+<p>The set X is called the domain of f , and denoted by Dom(f ). The set of values y = f (x) is</p>
+<p>called the range of f , and is denoted by Ran(f ). Equivalently, Ran(f ) = {f (x) : x ∈ Dom(f )}</p>
+<p>and is always a subset of Y might not equal Y . The set Y is called the co-domain of f . When</p>
+<p>we describe a function by writing a formula y = f (x), we call x the independent variable and y</p>
+<p>the dependent variable. The set of all values for which f(x) is deﬁned is the domain of f and the</p>
+<p>values y = f (x) where x ∈ Dom(f ) is the range of f . The graph of the function f is the set of all</p>
+<p>points in the plane of the form (x, f (x)), where x ∈ Dom(f ).</p>
+<p>Deﬁnition 2.1.2. We say that a function f : X −→ Y is one-to-one or injective if, for every</p>
+<p>pair x1 , x2 ∈ X, x1 ̸= x2 , implies that f (x1 ) ̸= f (x2 ) (or equivalently, if f (x1 ) = f (x2 ), then</p>
+<p>x1 = x2 ).</p>
+<p>Deﬁnition 2.1.3. A function f : X −→ Y is onto or surjective if, every y ∈ Y is of the form</p>
+<p>f (x) for some x ∈ X. Equivalently, f is onto if Ran(f ) = Y .</p>
+<p>Deﬁnition 2.1.4. A function f : X −→ Y is a bijection if it is one-to-one and onto.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.1.5. The function f : R −→ R given by f (x) = 2x is one-to-one and onto, and hence</div>
+<p>it is a bijection.</p>
+<p>Deﬁnition 2.1.6. If a function f : X −→ Y is a bijection then there exists an inverse function</p>
+<p>f −1 : Y −→ X. For every y ∈ Y there exists a unique element x ∈ X deﬁned by x = f −1 (y).</p>
+<p>5</p>
+<p>6</p>
+<p>2.1.1</p>
+</div>
+</section></div>
+<div id="tab-5" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>Domain and Range of Functions</p>
+<p>We now consider functions f : X −→ Y for which X and Y subsets of real numbers R. Such</p>
+<p>functions are said to be real-valued.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.1.7. For the function f with the formula y = f (x) = 2x, Dom(f ) = R and Ran(f ) =</div>
+<p>R.</p>
+<p>Figure 2.1: Graph ofy = f (x) = 2x</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.1.8. For the function f with the formula y = f (x) =</div>
+<p>−3 ≤ x ≤ 3} = [−3, 3] and Ran(f ) = {y ∈ R : y ≤ 3} = (−∞, 3].</p>
+<p>√</p>
+<p>√</p>
+<p>Figure 2.2: Graph of y=f(x)= 9 − x2</p>
+</div>
+<h3>9 − x2 , Dom(f ) = {x ∈ R :</h3>
+<p>2.1. FUNCTIONS AND THEIR GRAPHS</p>
+<p>7</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.1.9. Let y = f (x) = 2−x</div>
+<p>. Find Dom(f ) and Ran(f ).</p>
+<p>x−1</p>
+<p>Figure 2.3: Graph of y = f (x) = 2−x</p>
+<p>x−1</p>
+<p>2−x</p>
+<p>, then x = y+2</p>
+<p>,</p>
+<p>It is easy to see that Dom(f ) = {x ∈ R : x ̸= 1} = R − {1}. Since y = x−1</p>
+<p>y+1</p>
+<p>and the only value of ywhich will not occur is y = −1, for which the denominator is zero. Hence</p>
+<p>Ran(f ) = R − {1}</p>
+<p>Composition of Functions</p>
+<p>2.1.2</p>
+<p>Some Elementary Functions</p>
+<p>1. Polynomials. A real polynomial is a function whose domain is the set of real numbers,</p>
+<p>deﬁned by</p>
+<p>f (x) = a0 + a1 x + a2 x2 + ... + an xn</p>
+<p>where a0 , a1 , ..., an are real constants(called the coeﬃcients of f and an ̸= 0). The integer n is called</p>
+<p>the degree of the polynomial, and denoted by n = deg(f ). Polynomials of degree 0, 1, 2, 3, 4, 5 are</p>
+<p>called constant, linear, quadratic, cubic, quartic and quintic, respectively. For example,</p>
+<p>f (x) = 4 − x2 + 6x8 is a polynomial of degree 8, g(x) = 2 is a polynomial of degree 0 or a constant</p>
+<p>polynomial.</p>
+<p>2. Rational Functions. A rational function f (x) is a quotient of two polynomials. That is</p>
+<p>2</p>
+<p>f (x) = p(x)</p>
+<p>, where p and q are polynomials and g(x) ̸= 0. For example, f (x) = xx3 −1</p>
+<p>is a rational</p>
+<p>q(x)</p>
+<p>+1</p>
+<p>function.</p>
+<p>3. Trigonometric and Inverse Trigonometric Functions. The three basic trigonometric functions are sine, cosine and tangent. Reciprocals of these functions are secant = 1/cosine, cosecant =</p>
+<p>1/sine, cotangent = 1/tangent. The inverses are arcsine, arccosine, arctangent and arcotangent.</p>
+<p>4. Exponential and Logarithmic Functions. An exponential function is of the form y =</p>
+<p>f (x) = ax , where x is a variable, and a is a constant. The domain of f is the real line R = (−∞, ∞)</p>
+<p>and Ran(f ) = (0, ∞). When a = e, then f (x) = ex .</p>
+<p>The logarithm function is given by y = f (x) = loga x and its domain is (0, ∞) and its range is</p>
+<p>R = (−∞, ∞). The constant a is referred to as the base of the logarithm function. The logarithm</p>
+<p>8</p>
+</div>
+</section></div>
+<div id="tab-6" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>function with base a = e is called the natural logarithm or Naperian logarithm, and denoted by</p>
+<p>ln x.</p>
+<p>The following laws of logarithms are easy to derive from the laws of exponents:</p>
+<p>• loga xy = loga x + loga y</p>
+<p>• loga xy = loga x − loga y</p>
+<p>• loga xα = α loga x, x any real number</p>
+<p>bx</p>
+<p>• loga x = log</p>
+<p>logb a</p>
+<p>These formulae hold for any positive x, y, a, b(a ̸= 1, b ̸= 1).</p>
+<p>5. Hyperbolic Functions. The four hyperbolic functions are hyperbolic cosine, hyperbolic sine,</p>
+<p>hyperbolic tangent and hyperbolic cotangent and are deﬁned as follows:</p>
+<p>x</p>
+<p>−x</p>
+<p>x</p>
+<p>−x</p>
+<p>sinh x</p>
+<p>x</p>
+<p>cosh x = e +e</p>
+<p>, sinh x = e −e</p>
+<p>, tanh x = cosh</p>
+<p>, coth x = cosh</p>
+<p>.</p>
+<p>2</p>
+<p>2</p>
+<p>x</p>
+<p>sinh x</p>
+<p>2.2</p>
+<p>Limits of Functions</p>
+<p>2.2.1</p>
+<p>Informal Deﬁnition of a Limit</p>
+<p>Deﬁnition 2.2.1. (Informal definition of a limit) A function f (x) is said to have a limit</p>
+<p>L as x approaches (or tends to) a if the values of f (x) can be made as close as we like to L by</p>
+<p>taking x suﬃciently close to a(but not equal to a). We use the two notations:</p>
+<p>limx→a f (x) = L, read as ” the limit of f (x) as x tends to a is equal to L” or</p>
+<p>f (x) −→ L as x −→ a, read as ”f(x) tends to L as x tends to a”.</p>
+<p>Remarks. It is assumed that the domain of f includes an interval containing a, but not necessarily</p>
+<p>a itself. This deﬁnition is informal because phrases such as ”close as we want” and ”close</p>
+<p>enough” are imprecise; the meaning depends on the context. To a machinist manufacturing</p>
+<p>pistons, close enough may mean within a few thousandths of an inch. To an astronomer studying</p>
+<p>distant galaxies, close enough may mean within a few thousand light years. This deﬁnition should</p>
+<p>be clear enough, however, to enable us recognize and evaluate limits of speciﬁc functions.</p>
+<p>Some limits are easy to compute but others are not so easy to evaluate. Limits of polynomials</p>
+<p>are found by substitution. Limits of (many but not all) rational functions can be found by</p>
+<p>substitution. Many situations require algebraic manipulation before applying the limits</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.2.2. Find limx→0 3x2 − 2x + 1</div>
+<p>Solution. As x tends to 0, it is evident that f (x) approaches 3(0)2 − 2(0) + 1 = 1.</p>
+<p>Figure 2.4: Limit of y=f(x)=3x2 − 2x + 1 as x −→ 0</p>
+<p>2.2. LIMITS OF FUNCTIONS</p>
+<p>9</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.2.3. Find limx→−5 3x+1</div>
+<p>.</p>
+<p>x−1</p>
+<p>Solution. As x tends to −5, it is evident that f (x) approaches 3(−5)+1</p>
+<p>= 73 .</p>
+<p>−5−1</p>
+<p>Remark. When we say that f (x) has a limit L as x approaches a, we are really saying that we</p>
+<p>can ensure that the error |f (x) − L| will be less than any allowed tolerance, no matter how small</p>
+<p>by taking x close enough to a (but not equal to a). It is traditional to use ϵ, the Greek letter</p>
+<p>”epsilon” for the error |f (x) − L| and δ, the Greek letter ”delta” for the diﬀerence |x − a| that</p>
+<p>measures how close x is within that tolerance.</p>
+<p>2.2.2</p>
+<p>Formal (ϵ − δ) Deﬁnition of a Limit</p>
+<p>Deﬁnition 2.2.4. (Formal(ϵ−δ) Deﬁnition of a Limit) We say that a function f (x) approaches</p>
+<p>the limit L as x approaches a, and write limx→a f (x) = L if for every number ϵ > 0, there exists</p>
+<p>a number δ > 0, possibly depending on ϵ, such that if 0 < |x − a| < δ then |f (x) − L| < ϵ.</p>
+<p>Figure 2.5: Limit of f(x) as x−→ a</p>
+<p>Remark. Note that the formal deﬁnition of a limit does not tell us how to ﬁnd the limit of a</p>
+<p>function, but it does enable us to verify a suspected limit is correct.</p>
+<p>If limx→a f (x) ̸= L, then there is an ϵ > 0 such that for every δ > 0 there is an x ∈ R with</p>
+<p>0 < |x − a| < δ and |f (x) − L| ≥ ϵ.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.2.5. Verify that limx→2 3x + 1 = 7.</div>
+<p>Solution. Let Let ϵ > 0 be given. We want to ﬁnd δ > 0 so that if 0 < |x − a| < δ then</p>
+<p>|f (x) − L| < ϵ.</p>
+<p>Now, |f (x) − 7| = |3x + 1 − 7| = |3x − 6| = 3|x − 2| < ϵ whenever |x − 2| < δ. This means that</p>
+<p>|x − 2| < 13 ϵ. Now, if we choose δ = 13 ϵ, we will have shown that limx→2 3x + 1 = 7.</p>
+<p>Note that the value δ = 31 ϵ is not the only value that will make the implication |f (x) − 7| =</p>
+<p>|3x + 1 − 7| = |3x − 6| = 3|x − 2| < ϵ whenever |x − 2| < δ hold. Any smaller positive δ will do</p>
+<p>as well. The deﬁnition does not work for a ”best” δ, just one that will work. We can thus choose</p>
+<p>.</p>
+<p>δ ≤ 31 ϵ</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.2.6. Verify that limx→2 x2 = 4.</div>
+<p>10</p>
+</div>
+</section></div>
+<div id="tab-7" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>Solution. Let ϵ > 0 be given. We want to ﬁnd δ > 0 so that if 0 < |x − a| < δ then</p>
+<p>|f (x) − L| < ϵ.</p>
+<p>Now, |f (x) − 4| = |x2 − 4| = |(x + 2)(x − 2)| = |x + 2||x − 2|.</p>
+<p>We want the expression above to be less than ϵ. We can make the factor |x − 2| as small as</p>
+<p>we wish/please by choosing δ properly, but we need to control the factor |x + 2| so that it does</p>
+<p>not become too large. If we assume that δ ≤ 1(there is nothing special about 1. Another</p>
+<p>positive number could be used and not change the nature of the argument, the details would be</p>
+<p>diﬀerent,however. But for convenience, it is customary to always select/choose δ to be less than</p>
+<p>or equal to 1) and require that |x − 2| < δ, then we have</p>
+<p>|x − 2| < 1 =⇒ 1 < x < 3 =⇒ 3 < x + 2 < 5 =⇒ |x + 2| < 5.</p>
+<p>Therefore |f (x) − 4| < 5|x − 2| if |x − 2| ≤ 1. But 5|x − 2| < ϵ if |x − 2| < 5ϵ .</p>
+<p>Therefore, if we take δ = min{1, 5ϵ }, then |f (x) − 4| < 5|x − 2| < 5 5ϵ = ϵ if |x − 2| ≤ δ. This proves</p>
+<p>that limx→2 x2 = 4.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.2.7. Use the ϵ − δ deﬁnition of a limit to prove that limx→3 x2 = 9.</div>
+<p>Solution. Here f (x) = x2 and L = 9, so that</p>
+<p>|f (x) − L| = |x2 − 9| = |(x + 3)(x − 3)| = |x + 3||x − 3|</p>
+<p>...............(⋆)</p>
+<p>.</p>
+<p>To make |f (x) − L| small, one must control the size of |x − 3|. If by agreement we choose δ ≤ 1</p>
+<p>and as a consequence the statement, ”x is near 3” is to mean that x is restricted to the closed</p>
+<p>interval [2, 4]. That is, 2 ≤ x ≤ 4. This information allows us to place bounds upon the factor</p>
+<p>|x + 3|. That is |x + 3| < 7. Thus (⋆) becomes</p>
+<p>|f (x) − L| = |x2 − 9| = |(x + 3)(x − 3)| = |x + 3||x − 3| < 7δ < ϵ</p>
+<p>...............(⋆⋆),</p>
+<p>where ϵ > 0 and less than 1, is as small as you want it to be.</p>
+<p>The inequality (⋆⋆) tells us that if δ < 7ϵ , then it follows that |x2 − 9| < ϵ whenever |x − 3| < δ.</p>
+<p>So here if we choose δ = min{1, 7ϵ }, then we are done.</p>
+<p>Remark. The ϵ − δ deﬁnition of a limit was developed around the 1800′ s and it resulted from</p>
+<p>the combined research developed by mathematicians Weierstrass, Bolzano and Cauchy.</p>
+<p>2.3</p>
+<p>Properties of Limits</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  2.3.1. (Limit Theorems/Properties)If limx→a f (x) = L1 and limx→a g(x) = L2 ,</span>
+<p>where L1 , L2 ∈ R, then</p>
+<p>1. limx→a [f (x) + g(x)] = limx→a f (x) + limx→a g(x) = L1 + L2</p>
+<p>[Sum Rule]</p>
+<p>2. limx→a [f (x) − g(x)] = limx→a f (x) − limx→a g(x) = L1 − L2</p>
+<p>[Difference Rule]</p>
+<p>3. limx→a [f (x).g(x)] = limx→a f (x). limx→a g(x) = L1 .L2</p>
+<p>[Product Rule]</p>
+<p>2.3. PROPERTIES OF LIMITS</p>
+<p>11</p>
+<p>4. limx→a k.f (x) = k limx→a f (x) = k.L1 , (for any number k)</p>
+<p>(x)</p>
+<p>x→a f (x)</p>
+<p>5. limx→a [ fg(x)</p>
+<p>] = lim</p>
+<p>= LL12 if L2 ̸= 0.</p>
+<p>limx→a g(x)</p>
+<p>[Constant Multiple Rule]</p>
+<p>[Quotient Rule]</p>
+<p>Proof.(1) and (2) and (4) are easy to prove.</p>
+<p>(3). Suppose limx→a f (x) = L1 and limx→a g(x) = L2 . Given ϵ > 0 there exists δ1 > 0 and δ2 > 0</p>
+<p>such that</p>
+<p>ϵ</p>
+<p>0 < |x − a| < δ1 =⇒ |f (x) − L1 | <</p>
+<p>2</p>
+<p>and</p>
+<p>ϵ</p>
+<p>0 < |x − a| < δ2 =⇒ |g(x) − L2 | < .</p>
+<p>2</p>
+<p>Note also that if limx→a g(x) = L2 , then 0 < |x − a| < δ2 =⇒ |g(x) − L2 | < ϵ. Letting ϵ = 1 in</p>
+<p>this deﬁnition we have that 0 < |x − a| < δ2 =⇒ |g(x) − L2 | < 1 or 0 < |x − a| < δ2 =⇒ −1 <</p>
+<p>g(x) − L2 < 1. Equivalently, 0 < |x − a| < δ2 =⇒ −1 + L2 < g(x) < 1 + L2 and hence</p>
+<p>0 < |x − a| < δ2 =⇒ |g(x)| < |1 + L2 | ≤ 1 + |L2 |.....................(⋆)</p>
+<p>Then</p>
+<p>|f (x)g(x) − L1 L2 | =</p>
+<p>|f (x)g(x) − L1 g(x) + L1 g(x) − L1 L2 |</p>
+<p>=</p>
+<p>|(f (x) − L1 )g(x) + L1 (g(x) − L2 )|</p>
+<p>≤</p>
+<p>|(f (x) − L1 )g(x)| + |L1 (g(x) − L2 )|</p>
+<p>= |g(x)||f (x) − L1 | + |L1 ||g(x) − L2 | ≤ 2ϵ + 2ϵ = ϵ.</p>
+<p>Therefore limx→a [f (x).g(x)] = L1 .L2 .</p>
+<p>1</p>
+<p>(5). Using (3), by using the fact that since L2 ̸= 0 =⇒ limx→a g(x)</p>
+<p>= L12 , we have</p>
+<p>(x)</p>
+<p>(x)</p>
+<p>L1</p>
+<p>L1</p>
+<p>− LL12 | =</p>
+<p>| fg(x)</p>
+<p>− g(x)</p>
+<p>+ g(x)</p>
+<p>− LL12 |</p>
+<p>| fg(x)</p>
+<p>1</p>
+<p>1</p>
+<p>= | g(x)</p>
+<p>(f (x) − L1 ) + L1 ( g(x)</p>
+<p>− L12 |</p>
+<p>1</p>
+<p>1</p>
+<p>||f (x) − L1 | + |L1 || g(x)</p>
+<p>− L12 |</p>
+<p>≤ | g(x)</p>
+<p>ϵ</p>
+<p>=</p>
+<p>+ 2ϵ = ϵ.</p>
+<p>2</p>
+<p>Remark. Many situations require algebraic manipulation before the limit theorems can be applied.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.2. Compute the following limits</div>
+<p>2 −9</p>
+<p>(a). limx→3 xx−3</p>
+<p>√</p>
+<p>(b). limx→0 x+4−2</p>
+<p>x</p>
+<p>2 −9</p>
+<p>Solution.(a). The function xx−3</p>
+<p>is not deﬁned when x = 3, since direct substitution gives 00 ,</p>
+<p>which is undeﬁned. That causes no diﬃculty, since the limit as x approaches 3 depends only on</p>
+<p>the values of x near 3 and excludes consideration of the values at x = 3 itself. To evaluate the</p>
+<p>limit, note that x2 − 9 = (x − 3)(x + 3). So for x ̸= 3,</p>
+<p>(x − 3)(x + 3)</p>
+<p>x2 − 9</p>
+<p>=</p>
+<p>= x + 3.</p>
+<p>x−3</p>
+<p>x−3</p>
+<p>12</p>
+</div>
+</section></div>
+<div id="tab-8" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>As x approaches 3, x + 3 approaches 6. Therefore</p>
+<p>x2 − 9</p>
+<p>= 6.</p>
+<p>x→3 x − 3</p>
+<p>lim</p>
+<p>(b). Since the denominator approaches zero when taking the limit, we may not apply the Quotient</p>
+<p>Rule directly. However, if we ﬁrst</p>
+<p>√ apply an algebraic trick, the limit may be evaluated. Multiply</p>
+<p>numerator and denominator by x + 4 + 2</p>
+<p>√</p>
+<p>√</p>
+<p>x+4−2 √x+4+2</p>
+<p>. x+4+2</p>
+<p>x</p>
+<p>Thus</p>
+<p>√</p>
+<p>limx→0</p>
+<p>x+4−2</p>
+<p>x</p>
+<p>=</p>
+<p>=</p>
+<p>=</p>
+<p>(x+4)−4</p>
+<p>√</p>
+<p>x( x+4+2)</p>
+<p>√ x</p>
+<p>x( x+4+2)</p>
+<p>√ 1</p>
+<p>x+4+2</p>
+<p>1</p>
+<p>= limx→0 √x+4+2</p>
+<p>limx→0</p>
+<p>√ 1</p>
+<p>= limx→0</p>
+<p>( x+4+2)</p>
+<p>1</p>
+<p>=</p>
+<p>.</p>
+<p>4</p>
+<p>Remarks. Note that if x approaches a and the values of f (x) do not approach a speciﬁc number,</p>
+<p>then we say that the limit of f (x) as x approaches a does not exist.</p>
+<p>2.3.1</p>
+<p>Right-Hand Limits and Left-Hand Limits</p>
+<p>Sometimes the values of a function f (x) tend to diﬀerent limits as x approaches a number a from</p>
+<p>diﬀerent sides. When this happens, we call the limit of f as x approaches a from the right the</p>
+<p>right-hand limit of f at a, and the limit of f as x approaches a from the left the left-hand</p>
+<p>limit of f at a. We use the notation</p>
+<p>limx→a+ f (x)</p>
+<p>(”the limit of f as x approaches a from the right”).</p>
+<p>limx→a− f (x)</p>
+<p>(”the limit of f as x approaches a from the left”).</p>
+<p>Deﬁnition 2.3.3. A function f (x) has a limit L as x approaches a if and only if the right-hand</p>
+<p>and left-hand limits at a exist and are equal.</p>
+<p>That is, limx→a f (x) = L iﬀ limx→a+ f (x) = L and limx→a− f (x) = L.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.4. Consider the function</div>
+<p></p>
+<p> x + 2, f or x < 1</p>
+<p>4</p>
+<p>f or x = 1</p>
+<p>f (x) =</p>
+<p></p>
+<p>x + 4 f or x > 1</p>
+<p>Show that f has no limit as x → 1.</p>
+<p>Solution. Clearly,</p>
+<p>lim f (x) = 3 ̸= lim+ f (x) = 5.</p>
+<p>x→1−</p>
+<p>x→1</p>
+<p>Thus the two one-sided limits exits but are not equal. Thus limx→1 f (x) does not exist.</p>
+<p>2.3. PROPERTIES OF LIMITS</p>
+<p>13</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.5. Graph the following function</div>
+<p>{ x2 +x</p>
+<p>, f or x ̸= 0</p>
+<p>x</p>
+<p>f (x) =</p>
+<p>5</p>
+<p>f or x = 0</p>
+<p>By inspection determine limx→0 f (x), limx→0+ f (x) and limx→0− f (x).</p>
+<p>By inspection</p>
+<p>lim f (x) = 1, lim+ f (x) = 1, lim− f (x) = 1</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>Notice that f (0) = 5 and is not equal to limx→0 f (x). Also note that the limit from the left and</p>
+<p>the limit from the right equal limx→0 f (x).</p>
+<p>Whenever a limit at a point exists, it is equal to the right-hand and left-hand limits. Also, whenever the right-hand and left-hand limits at a point both exist and are equal, the limit exists and</p>
+<p>is equal to the common value of the right-hand and left-hand limits.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.6. Use the ϵ − δ deﬁnition of a limit to prove that the limit of a sum is the sum of</div>
+<p>the limits</p>
+<p>lim [f (x) + g(x)] = lim f (x) + lim g(x) = L1 + L2 .</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>Solution. By hypothesis, limx→a f (x) = L1 and limx→a g(x) = L2 , so that for a small number</p>
+<p>ϵ > 0, there exists δ1 > 0 and δ2 > 0 such that</p>
+<p>|f (x) − L1 | <</p>
+<p>ϵ</p>
+<p>when 0 < |x − a| < δ1</p>
+<p>2</p>
+<p>and</p>
+<p>ϵ</p>
+<p>when 0 < |x − a| < δ2</p>
+<p>2</p>
+<p>Choose δ to be the smaller of δ1 and δ2 , then using the triangle inequality, one can write</p>
+<p>|g(x) − L2 | <</p>
+<p>|(f (x) + g(x)) − (L1 + L2 )| =</p>
+<p>≤</p>
+<p>≤</p>
+<p>|(f (x) − L1 ) + (g(x) − L2 )|</p>
+<p>|f (x) − L1 | + |g(x) − L2 |</p>
+<p>ϵ</p>
+<p>ϵ</p>
+<p>+</p>
+<p>= ϵ when 0 < |x − a| < δ</p>
+<p>2</p>
+<p>2</p>
+<p>Therefore |(f (x) + g(x)) − (L1 + L2 )| < ϵ when 0 < |x − a| < δ, which implies that</p>
+<p>lim [f (x) + g(x)] = lim f (x) + lim g(x) = L1 + L2 .</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>x→a</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Exercise  Use the ϵ − δ deﬁnition of a limit to prove all the other limit theorems stated earlier.</div>
+<p>14</p>
+</div>
+</section></div>
+<div id="tab-9" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>Formal Deﬁnition of One-sided Limits</p>
+<p>Deﬁnition 2.3.7. The limit of f (x) as x approaches a from the right is the number L if the</p>
+<p>given ϵ > 0 there exists δ > 0 such that</p>
+<p>a < x < a + δ implies |f (x) − L| < ϵ.</p>
+<p>Deﬁnition 2.3.8. The limit of f (x) as x approaches a from the left is the number L if the</p>
+<p>given ϵ > 0 there exists δ > 0 such that</p>
+<p>a − δ < x < a implies |f (x) − L| < ϵ.</p>
+<p>Remark. By comparing the two inequalities above, we can see the relation between the one-sided</p>
+<p>limits and the two-sided limit. If we subtract a from the δ-inequalities, they become</p>
+<p>0 < x − a < δ =⇒ |f (x) − L| < ϵ</p>
+<p>and</p>
+<p>−δ < x − a < 0 =⇒ |f (x) − L| < ϵ.</p>
+<p>Together, these two inequalities say the same thing as</p>
+<p>0 < |x − a| < δ =⇒ |f (x) − L| < ϵ,</p>
+<p>which is the deﬁnition of the limit. In other words, f (x) has a limit L at a if and only if the</p>
+<p>right-hand and left-hand limits of f at a exist and are equal.</p>
+<p>2.3.2</p>
+<p>Limits at Inﬁnity and Inﬁnite Limits</p>
+<p>In this subsection, we study two types of limits</p>
+<p>• limits at inﬁnity, where x becomes arbitrarily large, positive or negative;</p>
+<p>• inﬁnite limits, which are not really limits at all but provide useful symbolism for describing the</p>
+<p>behaviour of functions whose values become arbitrarily large, positive or negative.</p>
+<p>2.3. PROPERTIES OF LIMITS</p>
+<p>15</p>
+<p>Limits at Inﬁnity</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.9. Consider the function f (x) = √xx2 +1 .</div>
+<p>Figure 2.6: Limit of f(x) as x−→±∞</p>
+<p>The values of f (x) seem to approach 1 as x takes on larger and larger positive values and −1</p>
+<p>as x takes on negative values that get larger and larger in absolute value. This is equivalent to</p>
+<p>saying that limx→∞ f (x) = 1 and limx→−∞ f (x) = −1.</p>
+<p>The graph of f conveys this limiting behaviour by approaching the horizontal lines y = 1 as</p>
+<p>x → ∞ and y = −1 as x → −∞. These lines are called horizontal asymptotes of the graph. In</p>
+<p>general if a curve approaches a straight line as it recedes very far away from the origin, that line</p>
+<p>is called an asymptote of the curve.</p>
+<p>Deﬁnition 2.3.10. (Informal Deﬁnition of Limits at ∞ and −∞).</p>
+<p>If the function f is deﬁned on an open interval (a, ∞) and we can ensure that f (x) is as close as</p>
+<p>we want to the limit L by taking x large enough, then we say that f (x) approaches the limit L as</p>
+<p>x approaches inﬁnity, and write</p>
+<p>lim f (x) = L.</p>
+<p>x→∞</p>
+<p>If the function f is deﬁned on an open interval (a, ∞) and we can ensure that f (x) is as close as</p>
+<p>we want to the limit L by taking x negative and large enough in absolute value, then we say that</p>
+<p>f (x) approaches the limit L as x approaches negative inﬁnity, and write</p>
+<p>lim f (x) = L.</p>
+<p>x→−∞</p>
+<p>Recall that the symbol ∞ does not represent a real number. We can not use it in arithmetic in the</p>
+<p>usual way, but we can use the phrase ”approaches ∞” to mean ”becomes arbitrarily large positive”</p>
+<p>and the phrase ”approaches −∞” to mean ”becomes arbitrarily large negative”.</p>
+<p>16</p>
+</div>
+</section></div>
+<div id="tab-10" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.11. We can see that limx→±∞ x1 = 0, and the x-axis is a horizontal asymptote of</div>
+<p>the graph of y = f (x) = x1 .</p>
+<p>Figure 2.7: Limit of f(x) as x−→±∞</p>
+<p>We use algebraic manipulation/tricks to evaluate such limits.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.12. Evaluate limx→∞ f (x) and limx→−∞ f (x) for f (x) = √xx2 −1 .</div>
+<p>Solution. Rewrite the expression for f (x) as follows:</p>
+<p>f (x) = √</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>sgn(x)</p>
+<p>x</p>
+<p>=√</p>
+<p>=√ √</p>
+<p>= √</p>
+<p>=√</p>
+<p>x2 + 1</p>
+<p>x2 (1 + 12 )</p>
+<p>x 1 + 12</p>
+<p>|x| 1 + 12</p>
+<p>1 + 12</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>{</p>
+<p>1, x > 0</p>
+<p>x</p>
+<p>where sgn(x) = |x|</p>
+<p>=</p>
+<p>−1, x < 0</p>
+<p>√</p>
+<p>The factor 1 + x12 −→ 1 as x −→ ∞ or −∞. So f (x) must have the same limit as x −→ ±∞</p>
+<p>as does sgn(x). Therefore limx→∞ f (x) = 1 and limx→−∞ f (x) = −1.</p>
+<p>2.3.3</p>
+<p>Limits at Inﬁnity for Rational Functions</p>
+<p>The only polynomials that have limits at ±∞ are constant ones, p(x) = c. The situation is more</p>
+<p>interesting for rational functions. Recall that a rational function is a quotient of two polynomials.</p>
+<p>The following examples show how to render such a function in a form where its limits at inﬁnity</p>
+<p>and negative inﬁnity (if they exist) are apparent. The way to do this is to divide the numerator</p>
+<p>and denominator by the highest power of x appearing in the denominator. The limits of a rational</p>
+<p>function at inﬁnity and negative inﬁnity either both fail to exist or both exist and are equal.</p>
+<p>We consider several cases</p>
+<p>(a). Numerator and Denominator of the same degree. Divide the numerator and</p>
+<p>denominator by highest power of x, appearing in the denominator and apply the limit.</p>
+<p>2.3. PROPERTIES OF LIMITS</p>
+<p>17</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.13. Evaluate limx→±∞ 2x3x−x+3</div>
+<p>2 +5 .</p>
+<p>2</p>
+<p>Solution. Divide the numerator and denominator by x2 to have</p>
+<p>2 − 1x + x32</p>
+<p>2</p>
+<p>2x2 − x + 3</p>
+<p>2−0+0</p>
+<p>=</p>
+<p>lim</p>
+<p>=</p>
+<p>.</p>
+<p>=</p>
+<p>5</p>
+<p>x±∞</p>
+<p>x→±∞</p>
+<p>3x2 + 5</p>
+<p>3+0</p>
+<p>3</p>
+<p>3 + x2</p>
+<p>lim</p>
+<p>(b). Degree of Numerator less than degree of denominator. Divide both numerator</p>
+<p>and denominator by the highest power of x in the denominator.</p>
+<p>5x+2</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.14. Evaluate limx→±∞ 2x</div>
+<p>3 −1 .</p>
+<p>Solution. Divide the numerator and denominator by x3 to have</p>
+<p>5</p>
+<p>+ x23</p>
+<p>0+0</p>
+<p>5x + 2</p>
+<p>x2</p>
+<p>=</p>
+<p>=</p>
+<p>lim</p>
+<p>= 0.</p>
+<p>1</p>
+<p>x→±∞ 2x3 − 1</p>
+<p>x→±∞ 2 − 3</p>
+<p>2</p>
+<p>−</p>
+<p>0</p>
+<p>x</p>
+<p>lim</p>
+<p>(c). Degree of Numerator is greater than the degree of Denominator. Divide by the</p>
+<p>highest of x in the denominator.</p>
+<p>−3</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.15. Evaluate limx→±∞ 2x</div>
+<p>.</p>
+<p>7x+4</p>
+<p>2</p>
+<p>Solution. Divide the numerator and denominator by x2 to have</p>
+<p>2x − x3</p>
+<p>2x2 − 3</p>
+<p>= ±∞.</p>
+<p>= lim</p>
+<p>x→∞ 7x + 4</p>
+<p>x→±∞ 7 + 4</p>
+<p>x</p>
+<p>lim</p>
+<p>Inﬁnite Limits</p>
+<p>A function whose values grow arbitrarily large can sometimes be said to have an inﬁnite limit.</p>
+<p>Since inﬁnity is not a number, inﬁnite limits are not really limits at all.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.16. limx→0 x12 = ∞.</div>
+<p>Thus the limit does not exist(DNE) because the function x12 becomes arbitrarily large near x = 0.</p>
+<p>Changing Variables with Substitutions</p>
+<p>Sometimes a change of variable can turn an unfamiliar expression into one whose limit we know</p>
+<p>how to ﬁnd.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.17. Compute limx→∞ sin x1 .</div>
+<p>Solution. If we substitute θ = x1 then θ → 0+ as x → ∞. Thus</p>
+<p>lim sin</p>
+<p>x→∞</p>
+<p>1</p>
+<p>= lim sin θ = 0.</p>
+<p>x θ→0+</p>
+<p>18</p>
+<p>2.3.4</p>
+</div>
+</section></div>
+<div id="tab-11" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>The Sandwich or Squeeze Theorem</p>
+<div class="theorem-box"><span class="theorem-title">Theorem  2.3.18. (The Sandwich or Squeeze Theorem) Suppose that</span>
+<p>g(x) ≤ f (x) ≤ h(x)</p>
+<p>for all x ̸= a in some interval about a and that</p>
+<p>lim g(x) = lim h(x) = L.</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>Then limx→a f (x) = L.</p>
+<p>Figure 2.8: Sandwich or Squeeze Concept</p>
+<p>Proof. Suppose g(x) ≤ f (x) ≤ h(x), and limx→a g(x) = limx→a h(x) = L. Then given ϵ > 0 there</p>
+<p>exist δ1 > 0 and δ2 > 0 such that</p>
+<p>ϵ</p>
+<p>0 < |x − a| < δ1 =⇒ |g(x) − L| <</p>
+<p>3</p>
+<p>and</p>
+<p>ϵ</p>
+<p>0 < |x − a| < δ2 =⇒ |h(x) − L| < .</p>
+<p>3</p>
+<p>Letting δ = min{δ1 , δ2 }, we have</p>
+<p>0 < |x − a| < δ =⇒ |f (x) − L| =</p>
+<p>|f (x) − g(x) + g(x) − L|</p>
+<p>≤</p>
+<p>|f (x) − g(x)| + |g(x) − L|</p>
+<p>≤</p>
+<p>|h(x) − g(x)| + |g(x) − L|</p>
+<p>= |h(x) − L − (g(x) − L)| + |g(x) − L|</p>
+<p>≤ |h(x) − L| + |g(x) − L| + |g(x) − L|</p>
+<p>ϵ</p>
+<p>+ 3ϵ + 3ϵ = ϵ.</p>
+<p>=</p>
+<p>3</p>
+<p>This proves that limx→a f (x) = L.</p>
+<p>Remark. The idea is that if the values of f are sandwiched between the values of of two functions</p>
+<p>that approach L, then the values of f approach L.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.19. The value of limθ→0 sinθ θ can be found by the Sandwich Theorem. We sandwich</div>
+<p>sin θ</p>
+<p>between the number 1 and a fraction that is known to approach 1 as θ → 0. This tells us that</p>
+<p>θ</p>
+<p>sin θ</p>
+<p>approaches 1 as well.</p>
+<p>θ</p>
+<p>2.3. PROPERTIES OF LIMITS</p>
+<p>2.3.5</p>
+<p>19</p>
+<p>Techniques of Evaluating Indeterminate Limits</p>
+<p>(a). Evaluating Indeterminate forms 00 , ∞ − ∞, ∞</p>
+<p>using algebraic tricks and change of</p>
+<p>∞</p>
+<p>variable Techniques</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.20. Find limx→0 √1−x−x √1+x .</div>
+<p>Solution. This is a ” 00 ” indeterminate form. We rationalize the denominator.</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>x</p>
+<p>x( 1 − x + 1 + x)</p>
+<p>1−x+ 1+x</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>lim √</p>
+<p>= lim √</p>
+<p>= − lim</p>
+<p>= −1</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>2</p>
+<p>1 − x − 1 + x x→0 ( 1 − x − 1 + x)( 1 − x + 1 + x)</p>
+<p>√</p>
+<p>√</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.21. Find limx→∞ ( x + 1 − x).</div>
+<p>√</p>
+<p>√</p>
+<p>Solution. This is an example of an ”∞ − ∞” type. We multiply and divide by ( x + 1 − x)</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>√ ( x + 1 − x)</p>
+<p>1</p>
+<p>( x + 1 − x) = ( x + 1 − x) √</p>
+<p>√ = ··· = √</p>
+<p>√ → 0 as x → ∞.</p>
+<p>( x + 1 − x)</p>
+<p>( x + 1 + x)</p>
+<p>√ √</p>
+<p>√</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.22. Find limx→∞ x( x + 1 − x).</div>
+<p>Solution. Rationalization gives</p>
+<p>√</p>
+<p>√ √</p>
+<p>√</p>
+<p>x</p>
+<p>x( x + 1 − x) = √</p>
+<p>√ .</p>
+<p>( x + 1 − x)</p>
+<p>This is now an ” ∞</p>
+<p>” form, and we divide the numerator and denominator by</p>
+<p>∞</p>
+<p>√</p>
+<p>x to obtain</p>
+<p>√</p>
+<p>√ √</p>
+<p>1</p>
+<p>1</p>
+<p>x( x + 1 − x) = √</p>
+<p>→</p>
+<p>as x → ∞.</p>
+<p>2</p>
+<p>1</p>
+<p>( 1 + x + 1)</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.23. Find limx→ Π</div>
+<p>cos x</p>
+<p>2 sin(cos x)</p>
+<p>.</p>
+<p>Solution. This is a ” 00 ” indeterminate form. We substitute t = cos x. Then t → 0 as x → Π2 .</p>
+<p>Therefore</p>
+<p>cos x</p>
+<p>t</p>
+<p>lim</p>
+<p>= lim</p>
+<p>= 1.</p>
+<p>Π sin(cos x)</p>
+<p>t→0 sin t</p>
+<p>x→ 2</p>
+<p>−1</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.3.24. Find limx→0 tanx x .</div>
+<p>Solution. This is a ” 00 ” indeterminate form. Let t = tan−1 x and t → 0 as x → 0. Therefore</p>
+<p>t</p>
+<p>t</p>
+<p>t</p>
+<p>tan−1 x</p>
+<p>= lim tan t = lim</p>
+<p>. cos t = lim</p>
+<p>. lim cos t = 1.</p>
+<p>lim</p>
+<p>t→0</p>
+<p>t→0</p>
+<p>t→0</p>
+<p>x→0</p>
+<p>x</p>
+<p>x</p>
+<p>sin t</p>
+<p>sin t t→0</p>
+<p>(b). Evaluating Indeterminate forms 00 and ∞</p>
+<p>using L’Hôpital’s Rule</p>
+<p>∞</p>
+<p>∞</p>
+<p>0</p>
+<p>This rule is designed to deal with ” 0 ” and ” ∞ ” indeterminate forms and it involves diﬀerentiation.</p>
+<p>This will be discussed in Chapter Two. Indeterminate forms like ”0.∞” and 1∞ can be rewritten</p>
+<p>, in which case L’Hôpital’s Rule is applicable.</p>
+<p>to look like 00 or ∞</p>
+<p>∞</p>
+<p>20</p>
+</div>
+</section></div>
+<div id="tab-12" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>2.4</p>
+<p>Continuous Functions</p>
+<p>We ﬁrst deﬁne the notion of continuity of a function in terms of limits and then a few equivalent</p>
+<p>deﬁnitions.</p>
+<p>Deﬁnition 2.4.1. Suppose that a function f is deﬁned on a subset A of R and x ∈ A. If</p>
+<p>limx→a f (x) exists and if limx→a f (x) = f (a), then we say that f is continuous at a.</p>
+<p>A function f is continuous on A(its domain) if it is continuous at each point a ∈ A(its domain).</p>
+<p>Remark. Brieﬂy, continuity of a function f at a means that the limit of f at the point a is equal</p>
+<p>to the value of f at a. In other words, when x is close to a, then f (x) is close to f (a).</p>
+<p>2.4.1</p>
+<p>continuity Test and Points of Discontinuity</p>
+<p>Continuity Test: For a function f to be continuous at a, it must satisfy the following three</p>
+<h3>conditions:</h3>
+<p>1. f must be deﬁned at a;</p>
+<p>2. the limit, limx→a f (x), must exist(i.e < ∞);</p>
+<p>3. limx→a f (x must equal f (a).</p>
+<p>If any one of these conditions is not satisﬁed, then f is not continuous at a.</p>
+<p>Deﬁnition 2.4.2. If a functionf is not continuous at a, we say that it is discontinuous at a, or</p>
+<p>that a is a discontinuity of f or a point of discontinuity of f .</p>
+<p>2.4.2</p>
+<p>Formal (ϵ − δ) Deﬁnition of Continuity</p>
+<p>Deﬁnition 2.4.3. (Formal or ϵ − δ deﬁnition of continuity) A function f is continuous at</p>
+<p>a ∈ A if for any ϵ > 0 there exists a δ > 0 such that for all x ∈ A</p>
+<p>|x − a| < δ implies that |f (x) − f (a)| < ϵ.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.4.4. Verify that the function f : R −→ R deﬁned by f (x) = 2x is continuous on R.</div>
+<p>Solution. Let ϵ > 0 be given such that |x − y| < δ =⇒ |f (x) − f (y)| < ϵ. That is</p>
+<p>|f (x) − f (y)|</p>
+<p>|2x − 2y|</p>
+<p>2|x − y|</p>
+<p>|x − y|</p>
+<p>< ϵ</p>
+<p>< ϵ</p>
+<p>< ϵ</p>
+<p>< 2ϵ</p>
+<p>So, if we choose δ ≤ 2ϵ will have shown that f is continuous on R.</p>
+<p>2.4. CONTINUOUS FUNCTIONS</p>
+<p>2.4.3</p>
+<p>21</p>
+<p>Types of Discontinuities</p>
+<p>Remark. Note that in the formal deﬁnition of continuity of a function f , the number δ = δ(x, ϵ)</p>
+<p>is a function of the point x and ϵ. If δ = δ(ϵ) a function of ϵ only, we say that f is uniformly</p>
+<p>continuous.</p>
+<p>Deﬁnition 2.4.5. If at a point a ∈ A the limit limx→a f (x) exists, but f (a) either is not deﬁned</p>
+<p>or limx→a f (x) ̸= f (a), then a is a removable point of discontinuity. In other words, f is</p>
+<p>discontinuous at a but can be re-deﬁned at that single point so that it becomes continuous there.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.4.6. The function</div>
+<p>f (x) = {</p>
+<p>x3 , if x ̸= 0</p>
+<p>2, if x = 0,</p>
+<p>is discontinuous at a = 0 and limx→0 f (x) = 0 so that limx→0 f (x) ̸= f (0). Thus the point 0 is a</p>
+<p>removable point of discontinuity. To remove it, deﬁne f (0) = 0.</p>
+<p>Deﬁnition 2.4.7. If f is discontinuous at a point a ∈ A and one-sided limits f (a− ) and f (a+ )</p>
+<p>both exists, but f (a− ) ̸=f(a+ ), then f is said to have a discontinuity of the ﬁrst kind or jump</p>
+<p>discontinuity.</p>
+<p>Figure 2.9: Jump Discontinuity at a</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  2.4.8. The function</div>
+<p>f (x) = {</p>
+<p>x,</p>
+<p>if x < 1</p>
+<p>3x2 − 1, if x ≥ 1</p>
+<p>is discontinuous at a = 1, the left-hand and right-hand limits of f at 1 both exists and limx→1− f (x) =</p>
+<p>1 ̸= 2 = limx→1+ f (x). Thus the point 1 is a jump discontinuity.</p>
+<p>22</p>
+</div>
+</section></div>
+<div id="tab-13" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>Deﬁnition 2.4.9. If at a ∈ A, at least one of the one-sided limits does not exist or is inﬁnite,</p>
+<p>then we say that the point a is a discontinuity discontinuity of the second kind.</p>
+<p>Figure 2.10: Discontinuity of the Second Kind at a</p>
+<p>2.4.4</p>
+<p>Right Continuity and Left Continuity</p>
+<p>Deﬁnition 2.4.10. A function f is continuous from the right(from the left) at the point a if the</p>
+<h3>following two conditions are satisﬁed:</h3>
+<p>(</p>
+<p>)</p>
+<p>1. limx→a+ f (x) = f (a+ ) limx→a− f (x) = f (a− ) ;</p>
+<p>(</p>
+<p>)</p>
+<p>2. f (a+ ) = f (a) f (a− ) = f (a) .</p>
+<p>Clearly a function f is continuous at a if it is both right continuous and left continuous at a.</p>
+<p>Remark. Clearly, a function f is continuous at a point a provided that, roughly speaking, its</p>
+<p>graph has no breaks( gaps or holes) as it passes the point (a, f (a)). That is, f is continuous at a</p>
+<p>if we can draw the graph through (a, f (a)) without lifting our pencil from the paper.</p>
+<p>Remark. Clearly the sine and cosine functions are continuous for every value of x tangent function</p>
+<p>is continuous where it is deﬁned(its domain), polynomials are continuous at every point, rational</p>
+<p>functions are continuous wherever they are deﬁned, the absolute-value function is continuous, all</p>
+<p>m</p>
+<p>rational powers x n are continuous, exponential and logarithmic functions, hyperbolic functions</p>
+<p>are continuous.</p>
+<p>2.4.5</p>
+<p>Algebraic Properties of Continuous Functions</p>
+<div class="theorem-box"><span class="theorem-title">Theorem  2.4.11. If the functions f and g are continuous at a point a, then the following functions are continuous at a:</span>
+<p>2.5. EXERCISES AND SOME SOLVED PROBLEMS</p>
+<p>23</p>
+<p>1. Sums: f + g;</p>
+<p>2. Diﬀerences: f − g;</p>
+<p>3. Products: f.g;</p>
+<p>4. Constant multiples: k.f ;</p>
+<p>5. Quotients: fg</p>
+<p>(provided that g(a) ̸= 0).</p>
+<p>Proof. The proofs involve the use of limit theorems.</p>
+<p>(a). limx→a [f (x) + g(x)] = limx→a f (x) + limx→a g(x) = f (a) + g(a), so f + g is continuous at</p>
+<p>a.</p>
+<p>The proofs to the other statements are done similarly, and are hence left as exercises.</p>
+<p>2.5</p>
+<p>Exercises and Some Solved Problems</p>
+<p>1</p>
+<p>, y = g(x) = 3x−5 and y = h(x) = sin(2x+1).</p>
+<p>1. Let f, g, h : R −→ R be deﬁned by y = f (x) = x−2</p>
+<p>(a). Find</p>
+<p>(i). the domain and range of f, g and h.</p>
+<p>(ii). the composite functions f ◦ g, g ◦ h and g ◦ f .</p>
+<p>(iii). g −1 (x).</p>
+<p>(b). Which of these functions is/are one-to-one, onto, many-to-one?</p>
+<p>(c). Determine the domains of the functions</p>
+<p>(i). y =</p>
+<p>√</p>
+<p>4 − x2</p>
+<p>(ii). y =</p>
+<p>√</p>
+<p>1</p>
+<p>(iv). y = x21−4 (v). y = x2x+5</p>
+<p>x2 − 16 (iii). y = x−3</p>
+<p>Solution.</p>
+<p>(i). Since y must be real, 4 − x2 ≥ 0, or x2 ≤ 4. Thus Dom(f ) is the interval −2 ≤ x ≤ 2. It</p>
+<p>is easy to check that the range is 0 ≤ y ≤ 2.</p>
+<p>(ii). Here x2 − 16 ≥ 0, or x2 ≥ 16. Thus the domain consist of the intervals x ≤ −4 and x ≥ 4.</p>
+<p>(iii). The function is deﬁned for every real value except 3. Thus the domain is R − 3.</p>
+<p>(iv). The function is deﬁned for x ̸= ±2.</p>
+<p>(v). Since x2 + 5 ̸= 0 for all x, the domain is the set of real numbers.</p>
+<p>24</p>
+</div>
+</section></div>
+<div id="tab-14" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+<p>2. Find the following limits without using L’Hôpital’s Rule.</p>
+<p>x−1</p>
+<p>(i). limx→1 √x+3−2</p>
+<p>. Solution: 4</p>
+<p>)−( −1</p>
+<p>)</p>
+<p>2</p>
+<p>1</p>
+<p>(</p>
+<p>(ii). limx→0 −2+x x</p>
+<p>. Solution: −1</p>
+<p>4</p>
+<p>√</p>
+<p>x</p>
+<p>√ . Solution: −1</p>
+<p>(iii). limx→∞ 2+</p>
+<p>2− x</p>
+<p>3. (a). State the formal deﬁnition of a limit of a function f (x) as x approaches a.</p>
+<p>(b). Use the formal deﬁnition of a limit to verify the indicated limit in each case.</p>
+<p>1</p>
+<p>(i). limx→1 x+1</p>
+<p>= 12 .</p>
+<p>(ii). limx→5 x2 = 25.</p>
+<p>(iii). limx→2 5 − 2x = 1.</p>
+<p>(c). Evaluate the following limits.</p>
+<p>cos 1</p>
+<p>(i). limx→−∞ 1+ 1x .</p>
+<p>x</p>
+<p>1</p>
+<p>(ii). limx→∞ ( x1 ) x .</p>
+<p>(iii). limx→±∞ (3 + x2 )(cos x1 ).</p>
+<p>(d). Use the formal deﬁnition of a limit to verify that limx→2 x2 + 3x = 10.</p>
+<p>Solution Let ϵ > 0 be chosen. We must produce a δ > 0 such that, whenever 0 < |x − 2| < δ</p>
+<p>then |(x2 + 3x) − 10| < ϵ. That is, |(x − 2)(x + 5)| < ϵ. Let δ ≤ 1. Then |x − 2| < 1 implies</p>
+<p>that 1 ≤ x ≤ 3 and hence |x + 5| ≤ 8. Thus 0 < |x − 2| < δ then 8|(x − 2)| < ϵ and thus</p>
+<p>|x − 2| < 8ϵ . Hence, if we take δ to be the minimum of 1 and 8ϵ , then whenever 0 < |x − 2| < δ,</p>
+<p>|(x2 + 3x) − 10| < 8δ ≤ ϵ.</p>
+<p>4. (a). State the Sandwich/Squueze Theorem.</p>
+<p>(b). Given that 3 − x2 ≤ f (x) ≤ 3 + x2 for all x ̸= 0, ﬁnd limx→0 f (x).</p>
+<p>5. (a). Evaluate the limit or explain why it does not exist.</p>
+<p>(i). limx→4 (x2 − 4x + 1).</p>
+<p>√</p>
+<p>x−3</p>
+<p>(ii). limx→9 x−9</p>
+<p>.</p>
+<p>(iii). limx→3 x x−6x+9</p>
+<p>.</p>
+<p>2 −9</p>
+<p>2</p>
+<p>2.5. EXERCISES AND SOME SOLVED PROBLEMS</p>
+<p>(iv). limx→0</p>
+<p>1</p>
+<p>1</p>
+<p>3+2 x</p>
+<p>25</p>
+<p>.</p>
+<p>Solution.</p>
+<p>• Note that as x → 0− ,</p>
+<p>1</p>
+<p>1</p>
+<p>→ −∞, and 2 x → 0, and limx→0 1 1</p>
+<p>x</p>
+<p>3+2 x</p>
+<p>• As x → 0+ ,</p>
+<p>1</p>
+<p>1</p>
+<p>→ ∞, and 2 x → ∞, and limx→0 1 1</p>
+<p>x</p>
+<p>3+2 x</p>
+<p>Thus limx→0</p>
+<p>1</p>
+<p>1</p>
+<p>3+2 x</p>
+<p>= 13 .</p>
+<p>= 0.</p>
+<p>does not exist.</p>
+<p>(b). (i). State the formal deﬁnition of continuity of a function f : R −→ R at the point x0 ∈ R.</p>
+<p>(ii). Prove that the function f : R −→ R deﬁned by f (x) = x2 is continuous at x0 ∈ R.</p>
+<p>(c). Let f : R −→ R deﬁned by</p>
+<p>{</p>
+<p>f (x) =</p>
+<p>x,</p>
+<p>x<1</p>
+<p>5 − x, x ≥ 1</p>
+<p>(i). Sketch the graph of f .</p>
+<p>(ii). Is f continuous at x = 1? If not, state the nature of discontinuity of f at x = 1.</p>
+<p>(d). Show that at x = 0, the function f (x) =</p>
+<p>1</p>
+<p>1</p>
+<p>3 x +1</p>
+<p>has a jump discontinuity.</p>
+<p>26</p>
+</section></div>
+<div id="tab-15" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 2. LIMITS AND CONTINUITY OF FUNCTIONS</h3>
+</section></div>
+<div id="tab-16" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<p>Chapter 3</p>
+<h3>DIFFERENTIATION OF FUNCTIONS</h3>
+<h3>OF A SINGLE VARIABLE</h3>
+<p>Two fundamental problems are considered in calculus:</p>
+<p>• The problem of slopes is concerned with ﬁnding the slope of (the tangent line to) a given</p>
+<p>curve at a given point on the curve.</p>
+<p>• The problem of areas is concerned with ﬁnding the area of a plane region bounded by curves</p>
+<p>and straight lines.</p>
+<p>The solution of the problem of slopes is the subject of diﬀerential calculus. As we will see, it has</p>
+<p>many applications in mathematics and other disciplines.</p>
+<p>The problem of areas is the subject of integral calculus, which we begin in Chapter 4.</p>
+<p>3.1</p>
+<p>Tangent Lines and Their Slopes</p>
+<p>3.1.1</p>
+<p>Tangent Lines</p>
+<p>Conditions for Tangency to a Curve at a Point</p>
+<p>Let C be the graph of a function y = f (x) and let P be the point (x0 , y0 ) on C, so that y0 = f (x0 ).</p>
+<p>What do we mean when we say that the line L is tangent to C at P ?</p>
+<p>Note that a tangent line L should have the ”same direction” as the curve does at the point of</p>
+<p>tangency P .</p>
+<p>27</p>
+<p>28</p>
+</section></div>
+<div id="tab-17" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>A reasonable deﬁnition of tangency can be stated in terms of limits. If Q is a point on C diﬀerent</p>
+<p>from P , then the line through P and Q is called a secant line to the curve. This line rotates</p>
+<p>around P as Q moves along the curve. If L is a line through P whose slope is the limit of the slopes</p>
+<p>of these secant lines P Q as Q approaches P along C, then we will say that L is tangent to C at P .</p>
+<p>Figure 3.1: Secant lines PQ approach tangent line L as Q approaches P along the curve C</p>
+<p>The slope of the line P Q is</p>
+<p>f (x0 + h) − f (x0 )</p>
+<p>.</p>
+<p>h</p>
+<p>Note that h can be positive or negative, depending on whether Q is to the right or left of P .</p>
+<p>Deﬁnition 3.1.1. Suppose f is continuous at x = x0 and that</p>
+<p>f (x0 + h) − f (x0 )</p>
+<p>= m,</p>
+<p>h→0</p>
+<p>h</p>
+<p>lim</p>
+<p>exists. Then the straight line having slope m and passing through the point P = (x0 , f (x0 )) is</p>
+<p>called the tangent line (or simply the tangent) to the graph of y = f (x) at P . An equation of</p>
+<p>this tangent is</p>
+<p>y = m(x − x0 ) + y0 .</p>
+<p>3.1. TANGENT LINES AND THEIR SLOPES</p>
+<p>29</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.1.2. Find an equation of the tangent line to the curve y = x2 at the point (1, 1).</div>
+<p>Solution. Here f (x) = x2 , x0 = 1, and y0 = f (1) = 1. The slope of the required tangent is</p>
+<p>(1)</p>
+<p>m = limh→0 f (1+h)−f</p>
+<p>=</p>
+<p>h</p>
+<p>−1</p>
+<p>limh→0 (1+h)</p>
+<p>h</p>
+<p>=</p>
+<p>−1</p>
+<p>limh→0 1+2h+h</p>
+<p>h</p>
+<p>=</p>
+<p>limh→0 2h+h</p>
+<p>h</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>= limh→0 (2 + h) = 2.</p>
+<p>Figure 3.2: Secant lines PQ approach tangent line L as Q approaches P along the curve C</p>
+<p>Accordingly, the equation of the tangent line at (1, 1) is y = 2(x − 1) + 1 or y = 2x − 1.</p>
+<p>3.1.2</p>
+<p>The Slope of a Curve</p>
+<p>Deﬁnition 3.1.3. The slope of a curve C at a point P is the slope of the tangent line to C at P</p>
+<p>if such a tangent line exists. In particular, the slope of the graph of y = f (x) at the point x0 is</p>
+<p>f (x0 + h) − f (x0 )</p>
+<p>.</p>
+<p>h→0</p>
+<p>h</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.1.4. Find the slope of the curve y = x2 at the point x = −2.</div>
+<p>lim</p>
+<p>Solution. If x = −2, then y = 4, so the slope is</p>
+<p>m =</p>
+<p>(x0 )</p>
+<p>limh→0 f (x0 +h)−f</p>
+<p>h</p>
+<p>=</p>
+<p>−4</p>
+<p>limh→0 (−2+h)</p>
+<p>h</p>
+<p>=</p>
+<p>−4</p>
+<p>limh→0 4−4h+h</p>
+<p>h</p>
+<p>2</p>
+<p>2</p>
+<p>= limh→0 −4h+h</p>
+<p>= limh→0 (−4 + h) = −4.</p>
+<p>h</p>
+<p>2</p>
+<p>30</p>
+</div>
+</section></div>
+<div id="tab-18" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>The average rate of change in a quantity over a period of time is the amount of change divided</p>
+<p>by the time it takes. For instance, average speed is distance traveled divided by the elapsed time,</p>
+<p>say, in km/hour,etc.</p>
+<p>3.2</p>
+<p>The Derivative</p>
+<p>Deﬁnition 3.2.1. The derivative of a function f is another function f ′ (read as ”f prime”)</p>
+<p>deﬁned by</p>
+<p>f (x + h) − f (x)</p>
+<p>f ′ (x) = lim</p>
+<p>h→0</p>
+<p>h</p>
+<p>at all points x for which the limit exists (i.e., is a ﬁnite real number). If f ′ (x) exists, we say that</p>
+<p>f is diﬀerentiable at x otherwise, it is said to be non-diﬀerentiable at x.</p>
+<p>Remark. Note that the domain of f ′ is the subset of dom(f ) where f ′ is deﬁned. That is, The</p>
+<p>domain of the derivative f ′ is the set of numbers x in the domain of f where the graph of f</p>
+<p>has a non-vertical tangent line. Dom(f ′ ) of f ′ may be smaller than dom(f ) because it contains</p>
+<p>only those points in dom(f ) at which f is diﬀerentiable. Values of x in dom(f ) where f is not</p>
+<p>diﬀerentiable and that are not endpoints of dom(f ) are singular points of f .</p>
+<p>Remark. The value of the derivative of f at a particular point x0 can be expressed as a limit in</p>
+<h3>either of two ways:</h3>
+<p>f (x0 + h) − f (x0 )</p>
+<p>f (x) − f (x0 )</p>
+<p>= lim</p>
+<p>.</p>
+<p>x→x0</p>
+<p>h→0</p>
+<p>h</p>
+<p>x − x0</p>
+<p>f ′ (x0 ) = lim</p>
+<p>In the second limit x0 +h is replaced by x, so that h = x−x0 and h → 0 is equivalent to x → x0 . The</p>
+<p>process of calculating the derivative f ′ of a given function f is called diﬀerentiation. A function</p>
+<p>is diﬀerentiable on a set S if it is diﬀerentiable at every point x in S. Polynomial functions are</p>
+<p>diﬀerentiable, as are rational functions and trigonometric functions (in their domains). Composites</p>
+<p>of diﬀerentiable functions are diﬀerentiable, and so are sums, diﬀerences, products, powers, and</p>
+<p>quotients of diﬀerentiable functions, where deﬁned. Derivatives are the functions we use to measure</p>
+<p>the rates at which things change.</p>
+<p>3.2.1</p>
+<p>Right Derivative and Left Derivative</p>
+<p>(a)</p>
+<p>(a)</p>
+<p>f+′ (a) = limh→0+ f (a+h)−f</p>
+<p>and f−′ (a) = limh→0− f (a+h)−f</p>
+<p>h</p>
+<p>h</p>
+<p>3.2.2</p>
+<p>Leibniz Notation</p>
+<p>Because functions can be written in diﬀerent ways, it is useful to have more than one notation for</p>
+<p>derivatives. If y = f (x), we can use the dependent variable y to represent the function, and we</p>
+<p>can denote the derivative of the function with respect to x in any of the following ways:</p>
+<p>Dx y = y ′ =</p>
+<p>d</p>
+<p>dy</p>
+<p>=</p>
+<p>f (x) = f ′ (x) = Dx f (x) = Df (x).</p>
+<p>dx</p>
+<p>dx</p>
+<p>Often the most convenient way of referring to the derivative of a function given explicitly as an</p>
+<p>d</p>
+<p>expression in the variable x is to write dx</p>
+<p>(read ad ”d dx”) in front of that expression. The symbol</p>
+<p>d</p>
+<p>is a diﬀerential operator and should be read ”the derivative with respect to x of . . .” The</p>
+<p>dx</p>
+<p>3.2. THE DERIVATIVE</p>
+<p>31</p>
+<p>dy</p>
+<p>d</p>
+<p>notations dx</p>
+<p>and dx</p>
+<p>f (x) are called Leibniz notations for the derivative, after Gottfried Wilhelm</p>
+<p>Leibniz (1646-1716), one of the creators of calculus, who used such notations.</p>
+<p>The main ideas of calculus were developed independently by Leibniz and Isaac Newton (16421727). Newton used notations similar to the prime y ′ notations.</p>
+<p>(x)]</p>
+<p>dy</p>
+<p>The Newton quotient [f (x+h)−f</p>
+<p>, whose limit we take to determine the derivative dx</p>
+<p>(read ad</p>
+<p>h</p>
+<p>∆y</p>
+<p>”dy dx”), can be written in the form ∆x , where ∆y = f (x + h) − f (x) is the increment of y and</p>
+<p>∆x = (x + h) − x = h is the corresponding increment in x as we pass from the point (x, f (x)) to</p>
+<p>the point (x + h, f (x + h)) on the graph of f .</p>
+<p>dy</p>
+<p>∆y</p>
+<p>Figure 3.3: dx</p>
+<p>= lim∆x→0 ∆x</p>
+<p>3.2.3</p>
+<p>Diﬀerentiability and Continuity</p>
+<p>Recall that we have deﬁned diﬀerentiability of a function f (x) at x0 in terms of a limit. If this</p>
+<p>limit does not exists, then we said that f is non-diﬀerentiable at x = x0 . Geometrically, the</p>
+<p>non-diﬀerentiability of f at x = x0 can manifest itself in several diﬀerent ways. First of all, the</p>
+<p>graph of f (x) could have no tangent line at x = x0 . Secondly, the graph could have a vertical</p>
+<p>tangent line at x = x0 .</p>
+<p>Closely related to the concept of diﬀerentiability is the concept of continuity. Note that every</p>
+<p>diﬀerentiable function at x = a is continuous there. However, a function may be continuous at</p>
+<p>x = a but still not be diﬀerentiable there. For instance, the absolute value function f (x) = |x| is</p>
+<p>continuous on R but not diﬀerentiable at x = 0.</p>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.2.2. (Diﬀerentiability implies continuity). If a function f is diﬀerentiable at</span>
+<p>x, then f is continuous at x.</p>
+<p>Proof. Since f is diﬀerentiable at x, we know that</p>
+<p>f (x + h) − f (x)</p>
+<p>= f ′ (x)</p>
+<p>h→→0</p>
+<p>h</p>
+<p>lim</p>
+<p>32</p>
+</div>
+</section></div>
+<div id="tab-19" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>exists. But using the limit theorems, we have</p>
+<p>(</p>
+<p>)</p>
+<p>(</p>
+<p>)</p>
+<p>(x)</p>
+<p>limh→→0 f (x + h) − f (x) = limh→→0 f (x+h)−f</p>
+<p>(h)</p>
+<p>h</p>
+<p>=</p>
+<p>(f ′ (x))(0) = 0.</p>
+<p>This is equivalent to</p>
+<p>lim f (x + h) = f (x),</p>
+<p>h→→0</p>
+<p>which says that f is continuous at x.</p>
+<p>3.3</p>
+<p>Diﬀerentiation Rules</p>
+<p>If every derivative had to be calculated directly from the deﬁnition(Method of First Principles),</p>
+<p>calculus would indeed be a painful subject. In this section we show how to diﬀerentiate functions rapidly-without having to apply the deﬁnition each time. We now give several examples of</p>
+<p>the calculation of derivatives algebraically from the deﬁnition of derivative(by Method of First</p>
+<p>Principles). Some of these are the basic building blocks from which more complicated derivatives</p>
+<p>can be calculated later.</p>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.1. (Rule 1: Derivative of a Constant and a Linear Function)</span>
+<p>If f (x) = ax + b, then f ′ (x) = a.</p>
+<p>Proof. Using the deﬁnition (First Principles)</p>
+<p>f ′ (x) =</p>
+<p>=</p>
+<p>(x)</p>
+<p>limh→0 f (x+h)−f</p>
+<p>h</p>
+<p>limh→0 a(x+h)+b−(ax+b)</p>
+<p>h</p>
+<p>= limh→0 ah</p>
+<p>= a.</p>
+<p>h</p>
+<p>A consequence of this result is that the derivative of a constant function is zero. That is, if</p>
+<p>g(x) = c (constant), then g ′ (x) = 0.</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.2. (Rule 2: Derivative of a Power Function)</span>
+<p>If f (x) = xr , then f ′ (x) = rxr−1 , when xr makes sense as a real number.</p>
+<p>Proof. Let r = n, a positive integer. Note that</p>
+<p>]</p>
+<p>[</p>
+<p>n−1</p>
+<p>n−2</p>
+<p>n−3 2</p>
+<p>n−2</p>
+<p>n−1</p>
+<p>.</p>
+<p>a − b = (a − b) a</p>
+<p>+ a b + a b + · · · + ab</p>
+<p>+b</p>
+<p>n</p>
+<p>n</p>
+<p>3.3. DIFFERENTIATION RULES</p>
+<p>33</p>
+<p>If f (x) = xn , a = x + h and b = x, then a − b = h, and,</p>
+<p>limh→0 (x+h)h −x</p>
+<p>n</p>
+<p>f ′ (x) =</p>
+<p>n</p>
+<p>n terms each with limit xn−1 as h approaches zero</p>
+<p>= limh→0</p>
+<p>[z</p>
+<p>}|</p>
+<p>{]</p>
+<p>n−1</p>
+<p>n−1</p>
+<p>n−2</p>
+<p>n−3 2</p>
+<p>h (x + h)</p>
+<p>+ (x + h) x + (x + h) x + · · · + x</p>
+<p>h</p>
+<p>n terms</p>
+<p>=</p>
+<p>=</p>
+<p>[z</p>
+<p>}|</p>
+<p>{]</p>
+<p>n−1</p>
+<p>n−1</p>
+<p>n−1</p>
+<p>n−1</p>
+<p>+x</p>
+<p>+x</p>
+<p>+ ··· + x</p>
+<p>lim→0 x</p>
+<p>nxn−1 .</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.3. (Rule 3: Constant Multiple Rule)</span>
+<p>If f is a diﬀerentiable function of x and k is a constant, the</p>
+<p>d</p>
+<p>df</p>
+<p>(k.f ) = k. .</p>
+<p>dx</p>
+<p>dx</p>
+<p>Proof. Easy and left as an exercise.</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.4. (Rule 4: Sum and Diﬀerence Rule)</span>
+<p>If f and g are a diﬀerentiable functions of x then their sum and diﬀerence are diﬀerentiable at</p>
+<p>every point where f and g are both diﬀerentiable. At such points,</p>
+<p>d</p>
+<p>df</p>
+<p>dg</p>
+<p>(f ± g) =</p>
+<p>± .</p>
+<p>dx</p>
+<p>dx dx</p>
+<p>Proof. Exercise.</p>
+<p>This rule can also be generalized to a ﬁnite set of functions.</p>
+<p>Second and Higher Order Derivatives The derivative</p>
+<p>y′ =</p>
+<p>dy</p>
+<p>dx</p>
+<p>is the ﬁrst derivative of y with respect to x. If the ﬁrst derivative is also a diﬀerentiable function,</p>
+<p>then its derivative</p>
+<p>dy ′</p>
+<p>d dy</p>
+<p>d2 y</p>
+<p>y ′′ =</p>
+<p>=</p>
+<p>( ) = 2,</p>
+<p>dx</p>
+<p>dx dx</p>
+<p>dx</p>
+<p>is called the second derivative of f with respect to x. If y ′′ (” y double prime” ) is diﬀerentiable,</p>
+<p>then its derivative</p>
+<p>dy ′′</p>
+<p>(”y triple prime”)</p>
+<p>y ′′′ =</p>
+<p>dx</p>
+<p>is the third derivative of f with respect to x and so on. Thus</p>
+<p>y (n) =</p>
+<p>d (n−1)</p>
+<p>y</p>
+<p>(”y super n”)</p>
+<p>dx</p>
+<p>denotes the nth derivativeof y with respect to x.</p>
+<p>34</p>
+</div>
+</section></div>
+<div id="tab-20" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.5. (Rule 5: The Product Rule)</span>
+<p>The product of two diﬀerentiable functions f and g of x is diﬀerentiable and</p>
+<p>d</p>
+<p>dg</p>
+<p>df</p>
+<p>(f.g) = f</p>
+<p>+g .</p>
+<p>dx</p>
+<p>dx</p>
+<p>dx</p>
+<p>Proof. Let f and g of x be diﬀerentiable functions of x. Then</p>
+<p>(f g)′ (x) =</p>
+<p>(x)g(x)</p>
+<p>limh→0 f (x+h)g(x+h)−f</p>
+<p>h</p>
+<p>(x)g(x+h)−f (x)g(x)</p>
+<p>limh→0 f (x+h)g(x+h)−f (x)g(x+h)+f</p>
+<p>h</p>
+<p>=</p>
+<p>[</p>
+<p>]</p>
+<p>(x)</p>
+<p>g(x+h)−g(x)</p>
+<p>= limh→0 [ f (x+h)−f</p>
+<p>]g(x</p>
+<p>+</p>
+<p>h)</p>
+<p>+</p>
+<p>f</p>
+<p>(x)[</p>
+<p>]</p>
+<p>h</p>
+<p>h</p>
+<p>=</p>
+<p>f ′ (x)g(x) + f (x)g ′ (x)</p>
+<p>Note that to get to the last line of the proof, we have used the fact that g is continuous(since it</p>
+<p>is diﬀerentiable and hence g(x + h) → g(x) as h → 0).</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.6. (Rule 5: The Quotient Rule)</span>
+<p>At a point where g ̸= 0, the quotient y = fg of two diﬀerentiable functions of x is diﬀerentiable</p>
+<p>and</p>
+<p>df</p>
+<p>dg</p>
+<p>− f dx</p>
+<p>d ( f ) g dx</p>
+<p>=</p>
+<p>.</p>
+<p>dx g</p>
+<p>g2</p>
+<p>Proof.Let f and g of x be diﬀerentiable functions of x and suppose g(x) ̸= 0. Then</p>
+<p>f (x+h)</p>
+<p>( fg )′ (x) =</p>
+<p>=</p>
+<p>−</p>
+<p>f (x)</p>
+<p>limh→0 g(x+h)h g(x)</p>
+<p>(x)g(x+h))</p>
+<p>limh→0 g(x)f (x+h−f</p>
+<p>hg(x+h)g(x)</p>
+<p>(x)+g(x)f (x)−f (x)g(x+h)</p>
+<p>= limh→0 g(x)f (x+h)−g(x)f</p>
+<p>hg(x+h)g(x)</p>
+<p>g(x)[</p>
+<p>f (x+h)−f (x)</p>
+<p>g(x+h)−g(x)</p>
+<p>]−f (x)[</p>
+<p>]</p>
+<p>h</p>
+<p>h</p>
+<p>=</p>
+<p>limh→0</p>
+<p>=</p>
+<p>g(x)f ′ (x)−f (x)g ′ (x)</p>
+<p>[g(x)]2</p>
+<p>g(x+h)g(x)</p>
+<p>Note that to get to the last line of the proof, we have used the fact that g is continuous(since it</p>
+<p>is diﬀerentiable and hence g(x + h) → g(x) as h → 0).</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.3.7. (Rule 6: The Chain Rule)</span>
+<p>If f f (u) is diﬀerentiable at u = g(x), and g(x) is diﬀerentiable at x, then the composite function</p>
+<p>f ◦ g(x) = f (g(x)) is diﬀerentiable at x, and (f ◦ g)′ (x) = f ′ (g(x))g ′ (x).</p>
+<p>3.3. DIFFERENTIATION RULES</p>
+<p>35</p>
+<p>Proof 1. Suppose that f is diﬀerentiable at the point u = g(x) and that g is diﬀerentiable at x.</p>
+<p>Let the function E(k) be deﬁned by</p>
+<p>E(0) =</p>
+<p>E(k) =</p>
+<p>0,</p>
+<p>f (u+k)−f (u)</p>
+<p>= f ′ (u),</p>
+<p>k</p>
+<p>if k ̸= 0.</p>
+<p>By the deﬁnition of derivative, limk→0 E(k) = f ′ (u) − f ′ (u) = 0 = E(0), and so E(k) is continuous</p>
+<p>at k = 0. Also, whether k = 0 or not, we have</p>
+<p>f (u + k) − f (u) = (f ′ (u) + E(k))k.</p>
+<p>Now, put u = g(x) and k = g(x + h) − g(x), so that u + k = g(x + h), and obtain</p>
+<p>f (g(x + h)) − f (g(x)) = (f ′ (g(x) + E(k))(g(x + h) − g(x)).</p>
+<p>Since g is diﬀerentiable at x, limh→0 g(x+h)−g(x)</p>
+<p>= g ′ (x).</p>
+<p>h</p>
+<p>Also, g is continuous at x, so limh→0 k = limh→0 (g(x + h) − g(x)) = 0. Since E is continuous at 0,</p>
+<p>limh→0 E(k) = limk→0 E(k) = E(0) = 0.</p>
+<p>Hence</p>
+<p>f (g(x+h))−f (g(x))</p>
+<p>[f (g(x))]′ =</p>
+<p>lim</p>
+<p>h )</p>
+<p>( h→0</p>
+<p>′</p>
+<p>= limh→0 f (g(x) + E(k)) g(x+h)−g(x)</p>
+<p>h</p>
+<p>(</p>
+<p>)</p>
+<p>′</p>
+<p>′</p>
+<p>=</p>
+<p>f (g(x)) + 0 g (x)</p>
+<p>=</p>
+<p>f ′ (g(x))g ′ (x).</p>
+<p>Proof 2.</p>
+<p>[f (g(x))]′ =</p>
+<p>(g(x))</p>
+<p>limh→0 f (g(x+h))−f</p>
+<p>h</p>
+<p>=</p>
+<p>(g(x)) (g(x+h)−g(x))</p>
+<p>limh→0 f (g(x+h))−f</p>
+<p>.</p>
+<p>g(x+h)−g(x)</p>
+<p>h</p>
+<p>=</p>
+<p>(u) (g(x+h)−g(x))</p>
+<p>.</p>
+<p>limh→0 f (u+k)−f</p>
+<p>k</p>
+<p>h</p>
+<p>= f ′ (u)g ′ (x) = f ′ (g(x))g ′ (x).</p>
+<p>Idea of the proof. Introduce g(x+h)−g(x)in the numerator and denominator and let g(x) = u</p>
+<p>and g(x + h) = u + k. Note k→ 0 as h → 0.</p>
+<p>Remark. The Chain Rule tells us how to diﬀerentiate composites of functions whose derivatives</p>
+<p>we already know. If y = f (u), where u = g(x), then y = f (g(x)) and:</p>
+<p>dy</p>
+<p>times as fast as u is changing;</p>
+<p>at u, y is changing du</p>
+<p>times as fast as x is changing.</p>
+<p>at x, u is changing du</p>
+<p>dx</p>
+<p>dy du</p>
+<p>Therefore, at x, y = f (u) = f (g(x)) is changing du</p>
+<p>times as fast as x is changing. That is</p>
+<p>dx</p>
+<p>dy du</p>
+<p>dy</p>
+<p>=</p>
+<p>,</p>
+<p>dx</p>
+<p>du dx</p>
+<p>dy</p>
+<p>where du</p>
+<p>is evaluated at u = g(x).</p>
+<p>36</p>
+</div>
+</section></div>
+<div id="tab-21" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>Figure 3.4: Chain Rule</p>
+<p>√</p>
+<p>x2 + 1</p>
+<p>√</p>
+<p>Solution Here y = f (g(x)), where f (u) = u and g(x) = x2 + 1. Since f ′ (u) = 2√1 u , g ′ (x) =</p>
+<p>2x, then by the Chain Rule</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.3.8. Find the derivative of y =</div>
+<p>dy</p>
+<p>d</p>
+<p>= dx</p>
+<p>(f (g(x)))</p>
+<p>dx</p>
+<p>= f ′ (g(x))g ′ (x)</p>
+<p>√1 (2x)</p>
+<p>=</p>
+<p>2</p>
+<p>=</p>
+<p>=</p>
+<p>g(x)</p>
+<p>√1</p>
+<p>(2x)</p>
+<p>2 x2 +1</p>
+<p>x</p>
+<p>√</p>
+<p>2 x2 +1</p>
+<p>Usually, when applying the Chain Rule, we do not introduce symbols to represent the functions</p>
+<p>being composed, but rather just proceed to calculate the derivative of the ”outside” function and</p>
+<p>then multiply by the derivative of whatever is ”inside.” You can say to yourself: ”the derivative</p>
+<p>of f of something is f’ of that thing, multiplied by the derivative of that thing.” This is called the</p>
+<p>”Inside-Outside” Rule.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.3.9. Find the derivatives of</div>
+<p>(a). y = (8x − 3)5</p>
+<p>(b). y = f (xt) = sin(x2 − 4)</p>
+<p>(</p>
+<p>) 14</p>
+<p>1</p>
+<p>(c). y = 3x + (2x+1)</p>
+<p>3</p>
+<p>(d). y = cos2 (3x)</p>
+<p>Solution.</p>
+<p>dy</p>
+<p>(a). Let u = 7x − 3. Thus y = u10 . Clearly, du</p>
+<p>= 10y 9 and du</p>
+<p>= 7. Thus by the Chain Rule</p>
+<p>dx</p>
+<p>dy</p>
+<p>dy du</p>
+<p>9</p>
+<p>9</p>
+<p>= du dx = 10u (7) = 10u = 70(7x − 3).</p>
+<p>dx</p>
+<p>dy</p>
+<p>dy</p>
+<p>dy du</p>
+<p>(b). Let u = x2 − 4. Then y = sin u and du</p>
+<p>= cos u and du</p>
+<p>= 2x. Thus dx</p>
+<p>= du</p>
+<p>=</p>
+<p>dx</p>
+<p>dx</p>
+<p>cos u.(2x) = 2x cos(x2 − 4).</p>
+<p>Repeated Use. We sometimes have to use the Chain Rule two or more times to get the job done.</p>
+<p>(c).</p>
+<p>dy</p>
+<p>dx</p>
+<p>=</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>− 34 d</p>
+<p>(3x + (2x+1)</p>
+<p>(3x + (2x+1)</p>
+<p>3)</p>
+<p>3)</p>
+<p>4</p>
+<p>dx</p>
+<p>=</p>
+<p>1</p>
+<p>1</p>
+<p>3</p>
+<p>d</p>
+<p>− 32</p>
+<p>(3x + (2x+1)</p>
+<p>(3 − (2x+1)</p>
+<p>3)</p>
+<p>4 ) dx (2x + 1)</p>
+<p>4</p>
+<p>=</p>
+<p>−4</p>
+<p>3</p>
+<p>2</p>
+<p>2</p>
+<p>(1 − (2x+1)</p>
+<p>.</p>
+<p>4 )(3x + (2x+1)3 )</p>
+<p>4</p>
+<p>3</p>
+<p>3.4. DERIVATIVES OF TRIGONOMETRIC AND INVERSE TRIGONOMETRIC FUNCTIONS37</p>
+<p>(d).</p>
+<p>d</p>
+<p>cos2 (3x)</p>
+<p>dx</p>
+<p>d</p>
+<p>= 2 cos 3x. dx</p>
+<p>(cos 3x)</p>
+<p>(P ower and Chain Rule)</p>
+<p>d</p>
+<p>= 2 cos 3x(− sin 3x) dx</p>
+<p>(3x)</p>
+<p>(Chain Rule again)</p>
+<p>=</p>
+<p>2 cos 3x(− sin 3x)(3)</p>
+<p>=</p>
+<p>−6 cos 3x sin 3x.</p>
+<p>Note. The choice of which rule to use in solving a diﬀerentiation problem can make a diﬀerence</p>
+<p>in how much work you have to do.</p>
+<p>3.4</p>
+<p>Derivatives of Trigonometric and Inverse Trigonometric Functions</p>
+<p>Trigonometric functions are important because so much of the phenomena we want information</p>
+<p>about are periodic(heart rhythms, earthquakes, tides, weather,etc). Continuous periodic functions</p>
+<p>can always be expressed in terms of sines and cosines, so the derivatives of sines and cosines play</p>
+<p>an important role in describing important changes.</p>
+<p>Some Special Limits</p>
+<p>(1). limθ→0 sinθ θ = 1.</p>
+<p>(2). lim h → 0 cos hh−1 = 0.</p>
+<p>3.4.1</p>
+<p>Derivative of Sine and Cosine</p>
+<p>d</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.4.1. dx</span>
+<p>sin x = cos x.</p>
+<p>Proof. We use the Deﬁnition/First Principles.</p>
+<p>d</p>
+<p>sin x</p>
+<p>dx</p>
+<p>=</p>
+<p>limh→0 sin(x+h)−sinx</p>
+<p>h</p>
+<p>=</p>
+<p>limh→0 sin x cos h+cosh x sin h−sinx</p>
+<p>=</p>
+<p>x sin h</p>
+<p>limh→0 sin x(cos h−1)+cos</p>
+<p>h</p>
+<p>= limh→0 sin x. limh→0 (cos hh−1) + cos x. limh→0 sinh h</p>
+<p>=</p>
+<p>sin x(0) + (cos x).(1)</p>
+<p>=</p>
+<p>cos x.</p>
+<p>d</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.4.2. dx</span>
+<p>cos x = − sin x.</p>
+<p>38</p>
+</div>
+</section></div>
+<div id="tab-22" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>Proof. We use the Deﬁnition/First Principles.</p>
+<p>d</p>
+<p>cos x</p>
+<p>dx</p>
+<p>=</p>
+<p>x</p>
+<p>limh→0 cos(x+h)−cos</p>
+<p>h</p>
+<p>=</p>
+<p>limh→0 cos x cos h−sinh x sin h−cos x</p>
+<p>=</p>
+<p>x sin h</p>
+<p>limh→0 cos x(cos h−1)−sin</p>
+<p>h</p>
+<p>= limh→0 cos x. limh→0 (cos hh−1) − sin x. limh→0 sinh h</p>
+<p>=</p>
+<p>cos x(0) − (sin x).(1)</p>
+<p>=</p>
+<p>− sin x.</p>
+<p>d</p>
+<p>Recall that sin( Π2 − x) = cos x and cos( Π2 − x) = sin x. Using the Chain Rule we have: dx</p>
+<p>cos x =</p>
+<p>d</p>
+<p>Π</p>
+<p>Π</p>
+<p>sin( 2 − x) = cos( 2 − x)(−1) = −sinx.</p>
+<p>dx</p>
+<p>3.4.2</p>
+<p>Derivatives of other Basic Trigonometric Functions</p>
+<p>Because sin x and cos x are diﬀerentiable functions of x, the related functions</p>
+<p>sin x</p>
+<p>tan x = cos</p>
+<p>x</p>
+<p>sec x = cos1 x</p>
+<p>x</p>
+<p>cot x = cos</p>
+<p>sin x</p>
+<p>csc x = sin1 x</p>
+<p>are diﬀerentiable at every value of x at which they are deﬁned(i.e. their domain). Their derivatives,</p>
+<h3>calculated using the Quotient Rule are:</h3>
+<p>d</p>
+<p>tan x = sec2 x</p>
+<p>dx</p>
+<p>d</p>
+<p>sec x = sec x tan x</p>
+<p>dx</p>
+<p>d</p>
+<p>cot x = csc2 x</p>
+<p>dx</p>
+<p>d</p>
+<p>csc x = − csc x cot x</p>
+<p>dx</p>
+<p>dy</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.4.3. Find dx</div>
+<p>if y = tan x.</p>
+<p>Solution.</p>
+<p>d</p>
+<p>tan x</p>
+<p>dx</p>
+<p>=</p>
+<p>=</p>
+<p>d</p>
+<p>d</p>
+<p>(sin x)−sin x dx</p>
+<p>(cos x)</p>
+<p>cos x dx</p>
+<p>d sin x</p>
+<p>=</p>
+<p>2</p>
+<p>dx cos x</p>
+<p>cos x</p>
+<p>2 x+sin2 x</p>
+<p>cos x−sin x(− sin x)</p>
+<p>= cos cos</p>
+<p>2x</p>
+<p>cos2 x</p>
+<p>=</p>
+<p>1</p>
+<p>= sec2 x.</p>
+<p>cos2 x</p>
+<p>dy</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.4.4. Find dx</div>
+<p>if y = sec x.</p>
+<p>Solution.</p>
+<p>d</p>
+<p>d</p>
+<p>1</p>
+<p>0. cos x − 1(− sin x)</p>
+<p>sin x</p>
+<p>sin x 1</p>
+<p>sec x =</p>
+<p>(</p>
+<p>)=</p>
+<p>=</p>
+<p>=</p>
+<p>= tan x sec x.</p>
+<p>2</p>
+<p>2</p>
+<p>dx</p>
+<p>dx cos x</p>
+<p>cos x</p>
+<p>cos x</p>
+<p>cos x cos x</p>
+<p>Exercises.</p>
+<p>1. Find the derivatives of the following functions</p>
+<p>3.5. DERIVATIVES OF EXPONENTIAL AND LOGARITHMIC FUNCTIONS</p>
+<p>39</p>
+<p>(a). y = 3x + cot( x2 )</p>
+<p>3</p>
+<p>(b). y = ( sin(2x)</p>
+<p>)</p>
+<p>Solutions.</p>
+<p>(a). 3 − 12 csc2 ( x2 )</p>
+<p>(b). −6 csc(2x) cot(2x)</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.4.5. Find the tangent and normal lines to the curve y = tan πx</div>
+<p>at the point (1, 1).</p>
+<p>4</p>
+<p>Solution. The slope of the tangent to y = tan πx</p>
+<p>at the point (1, 1) is</p>
+<p>4</p>
+<p>dy</p>
+<p>π</p>
+<p>πx</p>
+<p>π</p>
+<p>π</p>
+<p>π √</p>
+<p>π</p>
+<p>|x=1 = sec2 ( )|x=1 = sec2 ( ) = ( 2)2 = .</p>
+<p>dx</p>
+<p>4</p>
+<p>4</p>
+<p>4</p>
+<p>4</p>
+<p>4</p>
+<p>2</p>
+<p>π</p>
+<p>π</p>
+<p>π</p>
+<p>The tangent line is y = 1 + 2 (x − 1) or y = 2 x − 2 + 1.</p>
+<p>The normal has slope − π2 , so its point-slope equation is y = 1 − π2 (x − 1) or y = π2 x + π2 + 1.</p>
+<p>We now consider derivatives of inverse trigonometric functions.</p>
+<p>• The function y = sin−1 x</p>
+<p>(−1 < x < 1) has its inverse x = sin y</p>
+<p>(− π2 < y < π2 ) are</p>
+<p>inverses of each other. Thus</p>
+<p>d</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>√</p>
+<p>√</p>
+<p>sin−1 x =</p>
+<p>=</p>
+<p>=</p>
+<p>=</p>
+<p>.</p>
+<p>dx</p>
+<p>(sin y)′</p>
+<p>cos y</p>
+<p>1 − x2</p>
+<p>1 − sin2 y</p>
+<p>• The function y = cos−1 x</p>
+<p>(−1 < x < 1) has its inverse x = cos y</p>
+<p>(0 < y < π) are</p>
+<p>inverses of each other. Thus</p>
+<p>d</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>√</p>
+<p>√</p>
+<p>=</p>
+<p>−</p>
+<p>cos−1 x =</p>
+<p>=</p>
+<p>=</p>
+<p>−</p>
+<p>.</p>
+<p>dx</p>
+<p>(cos y)′</p>
+<p>− sin y</p>
+<p>1 − x2</p>
+<p>1 − cos2 y</p>
+<p>• The function y = tan−1 x</p>
+<p>(−∞ < x < ∞) has its inverse x = tan y</p>
+<p>inverses of each other. Thus</p>
+<p>d</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>2</p>
+<p>tan−1 x =</p>
+<p>=</p>
+<p>cos</p>
+<p>y</p>
+<p>=</p>
+<p>=</p>
+<p>.</p>
+<p>2</p>
+<p>dx</p>
+<p>(tan y)′</p>
+<p>1 + tan y</p>
+<p>1 + x2</p>
+<p>• The function y = cot−1 x</p>
+<p>inverses of each other. Thus</p>
+<p>(−∞ < x < ∞) has its inverse x = cot y</p>
+<p>(− π2 < y < π2 ) are</p>
+<p>(0 < y < π) are</p>
+<p>d</p>
+<p>1</p>
+<p>1</p>
+<p>cot−1 x =</p>
+<p>=−</p>
+<p>.</p>
+<p>′</p>
+<p>dx</p>
+<p>(cot y)</p>
+<p>1 + x2</p>
+<p>3.5</p>
+<p>Derivatives of Exponential and Logarithmic Functions</p>
+<p>The exponentialy = ax (0 < a ̸= 1) and logarithm function x = loga y (0 < y < ∞), are inverses</p>
+<p>of each other. By the deﬁnition of the derivative/First Principles:</p>
+<p>d x</p>
+<p>a</p>
+<p>dx</p>
+<p>= lim∆x→0 a</p>
+<p>x+∆x −ax</p>
+<p>∆x</p>
+<p>= ax lim∆x→0 a ∆x−1</p>
+<p>∆x</p>
+<p>=</p>
+<p>ax ln a.</p>
+<p>40</p>
+</div>
+</section></div>
+<div id="tab-23" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>In particular, if a = e,</p>
+<p>d x</p>
+<p>e = ex ln e = ex .</p>
+<p>dx</p>
+<p>For the logarithmic function y = loga x, consider a point x > 0. By the deﬁnition of derivative</p>
+<p>d</p>
+<p>loga x</p>
+<p>dx</p>
+<p>ax</p>
+<p>= lim∆x→0 loga (x+∆x)−log</p>
+<p>∆x</p>
+<p>∆x</p>
+<p>=</p>
+<p>log (1+</p>
+<p>)</p>
+<p>1</p>
+<p>lim∆x→0 a ∆x x</p>
+<p>x</p>
+<p>x</p>
+<p>Since lim∆x→0 loga (1+t)</p>
+<p>= loga e , by substituting t = ∆x</p>
+<p>, it follows that</p>
+<p>t</p>
+<p>x</p>
+<p>d</p>
+<p>loga e</p>
+<p>loga x =</p>
+<p>................(⋆)</p>
+<p>dx</p>
+<p>x</p>
+<p>Note that this result can be deduced by using</p>
+<p>(loga y)′ =</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>loga e</p>
+<p>= x</p>
+<p>=</p>
+<p>=</p>
+<p>.</p>
+<p>x</p>
+<p>′</p>
+<p>(a )</p>
+<p>x ln a</p>
+<p>y ln a</p>
+<p>y</p>
+<p>By setting a = e, in (⋆), we ﬁnd</p>
+<p>d</p>
+<p>1</p>
+<p>ln x =</p>
+<p>dx</p>
+<p>x</p>
+<p>3.6</p>
+<p>(x > 0)</p>
+<p>Derivatives of Hyperbolic and Inverse Hyperbolic Functions</p>
+<p>d</p>
+<p>d ex + e−x</p>
+<p>ex − e−x</p>
+<p>cosh x =</p>
+<p>(</p>
+<p>)=</p>
+<p>= sinh x.</p>
+<p>dx</p>
+<p>dx</p>
+<p>2</p>
+<p>2</p>
+<p>Similarly,</p>
+<p>d</p>
+<p>sinh x = cosh x.</p>
+<p>dx</p>
+<p>d</p>
+<p>d sinh x</p>
+<p>tanh x = dx</p>
+<p>( cosh x )</p>
+<p>dx</p>
+<p>=</p>
+<p>cosh2 x−sinh2 x</p>
+<p>cosh2 x</p>
+<p>=</p>
+<p>1</p>
+<p>cosh2 x</p>
+<p>=</p>
+<p>(sech x)2</p>
+<p>Likewise</p>
+<p>d</p>
+<p>coth x = −(csch x)2</p>
+<p>dx</p>
+<p>Now, we compute the derivatives of the inverse hyperbolic functions.</p>
+<p>√</p>
+<p>√</p>
+<p>d</p>
+<p>1</p>
+<p>d</p>
+<p>x2 − 1 + x</p>
+<p>√</p>
+<p>√</p>
+<p>cosh−1 x =</p>
+<p>[ln(x + x2 − 1)] =</p>
+<p>=√</p>
+<p>, x > 1.</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>dx</p>
+<p>dx</p>
+<p>(x + x − 1) x − 1</p>
+<p>x −1</p>
+<p>√</p>
+<p>d</p>
+<p>d</p>
+<p>1</p>
+<p>sinh−1 x =</p>
+<p>[ln(x + x2 + 1)] = · · · = √</p>
+<p>2</p>
+<p>dx</p>
+<p>dx</p>
+<p>x +1</p>
+<p>3.7. DERIVATIVES AND INDETERMINATE LIMITS OF TYPE 00 AND ∞</p>
+<p>∞</p>
+<p>41</p>
+<p>d</p>
+<p>d 1 1+x</p>
+<p>1 1−x</p>
+<p>2</p>
+<p>1</p>
+<p>tanh−1 x =</p>
+<p>[ ln</p>
+<p>]= [</p>
+<p>.</p>
+<p>]=</p>
+<p>, |x| < 1.</p>
+<p>2</p>
+<p>dx</p>
+<p>dx 2 1 − x</p>
+<p>2 1 + x (1 − x)</p>
+<p>1 − x2</p>
+<p>and</p>
+<p>3.7</p>
+<p>d</p>
+<p>1</p>
+<p>coth−1 x =</p>
+<p>,</p>
+<p>dx</p>
+<p>1 − x2</p>
+<p>|x| > 1.</p>
+<p>Derivatives and Indeterminate limits of type 00 and ∞</p>
+<p>∞</p>
+<p>∞</p>
+<p>Indeterminate limits of type 00 and ∞</p>
+<p>can be evaluated using L’Hôpital’s Rule.</p>
+<p>3.7.1</p>
+<p>L’Hôpital’s First Rule for the Indeterminate form 00</p>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.7.1. (L’Hôpital’s First Rule)Suppose that the functions f and g are diﬀerentiable</span>
+<p>in a deleted σ− neighborhood (a − σ, a + σ) − {a} (σ > 0) of a point a. Moreover, suppose that</p>
+<p>lim f (x) = lim g(x) = 0,</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>′</p>
+<p>(x)</p>
+<p>and g(x) ̸= 0 in the deleted neighborhood of a. Then if the limit limx→a fg′ (x)</p>
+<p>exists, then so does</p>
+<p>(x)</p>
+<p>and</p>
+<p>limx→a fg(x)</p>
+<p>f (x)</p>
+<p>f ′ (x)</p>
+<p>= lim ′</p>
+<p>.</p>
+<p>x→a g(x)</p>
+<p>x→a g (x)</p>
+<p>lim</p>
+<p>′</p>
+<p>(x)</p>
+<p>Remark. If it turns out that the quotient fg′ (x)</p>
+<p>is again indeterminate, then L’Hôpital’s Rule can</p>
+<p>be applied a second, a third, etc, time and</p>
+<p>f (x)</p>
+<p>f ′ (x)</p>
+<p>f ′′ (x)</p>
+<p>= lim ′</p>
+<p>= lim ′′</p>
+<p>.</p>
+<p>x→a g(x)</p>
+<p>x→a g (x)</p>
+<p>x→a g (x)</p>
+<p>lim</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.2. Compute the limit limx→0 cosxx−1</div>
+<p>.</p>
+<p>2</p>
+<p>Solution. The quotient has the indeterminate form 00 , and so</p>
+<p>cos x − 1</p>
+<p>− sin x</p>
+<p>− cos x</p>
+<p>−1</p>
+<p>= lim</p>
+<p>= lim</p>
+<p>=</p>
+<p>.</p>
+<p>2</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>x</p>
+<p>2x</p>
+<p>2</p>
+<p>2</p>
+<p>lim</p>
+<p>Remark. Suppose that f and g are deﬁned on the set R − [−σ, σ] and g ′ (x) ̸= 0, x ∈ R − [−σ, σ]</p>
+<p>(σ > 0). Assume that the limit</p>
+<p>f (x)</p>
+<p>..................................(⋆)</p>
+<p>x→∞ g(x)</p>
+<p>lim</p>
+<p>exists. Then the functions g1 (t) = g( 1t ) = g(x) and f1 (t) = f ( 1t ) = f (x) (where t = x1 ) are deﬁned</p>
+<p>and diﬀerentiable on −1</p>
+<p>< t < 1δ (t ̸= 0).</p>
+<p>δ</p>
+<p>′</p>
+<p>Besides, the derivative g1 (t) ̸= 0 in the deleted 1δ -neighborhood of the point t = 0 takes the form</p>
+<p>1</p>
+<p>1</p>
+<p>g1′ (t) = g ′ ( )(− 2 ) = g ′ (x)(−x2 ) ̸= 0.</p>
+<p>t</p>
+<p>t</p>
+<p>42</p>
+</div>
+</section></div>
+<div id="tab-24" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>On the other hand, the existence of the limit (⋆) implies the following limit exists</p>
+<p>f1′ ( 1t )</p>
+<p>f ′ (x)</p>
+<p>f1′ (t)</p>
+<p>=</p>
+<p>lim</p>
+<p>=</p>
+<p>lim</p>
+<p>......(⋆⋆)</p>
+<p>t→0 g ′ ( 1 )</p>
+<p>x→∞ g ′ (x)</p>
+<p>t→0 g1′ (t)</p>
+<p>1 t</p>
+<p>lim</p>
+<p>Therefore by the theorem, the limit</p>
+<p>f1 (t)</p>
+<p>f (x)</p>
+<p>= lim</p>
+<p>t→0 g1 (t)</p>
+<p>x→∞ g(x)</p>
+<p>lim</p>
+<p>exists and</p>
+<p>f (x)</p>
+<p>f1 (t)</p>
+<p>f ′ (t)</p>
+<p>f ′ (x)</p>
+<p>= lim</p>
+<p>= lim 1′</p>
+<p>= lim ′</p>
+<p>.</p>
+<p>x→∞ g(x)</p>
+<p>t→0 g1 (t)</p>
+<p>t→0 g1 (t)</p>
+<p>x→∞ g (x)</p>
+<p>lim</p>
+<p>2</p>
+<p>x</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.3. Find limx→0 ln(1+x</div>
+<p>2)</p>
+<p>Solution. This is an indeterminate form 00 . By the theorem we have</p>
+<p>lim+</p>
+<p>x→0</p>
+<p>x2</p>
+<p>2x</p>
+<p>= lim+ 1 = lim+ 2x(1 + x2 ) = 0.</p>
+<p>2</p>
+<p>x→0</p>
+<p>ln(1 + x ) x→0 1+x2</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.4. Find limx→∞ x ln(1 + x1 ).</div>
+<p>Solution. Obviously,</p>
+<p>− x(x+1)</p>
+<p>ln(1 + x1 )</p>
+<p>1</p>
+<p>x</p>
+<p>lim x ln(1 + ) = lim</p>
+<p>=</p>
+<p>lim</p>
+<p>= lim</p>
+<p>= 1.</p>
+<p>1</p>
+<p>1</p>
+<p>x→∞</p>
+<p>x→∞</p>
+<p>x→∞</p>
+<p>x→∞</p>
+<p>x</p>
+<p>x+1</p>
+<p>− x2</p>
+<p>x</p>
+<p>1</p>
+<p>3.7.2</p>
+<p>L’Hôpital’s Second Rule for the Indeterminate form ∞</p>
+<p>∞</p>
+<p>Recall that if two functions f and g are deﬁned in a neighborhood of a pointx = a, such that</p>
+<p>(x)</p>
+<p>limx→a f (x) = ∞, limx→a g(x) = ∞, then we say that the quotient fg(x)</p>
+<p>has the indeterminate</p>
+<p>∞</p>
+<p>form ∞ at x = a.</p>
+</div>
+<div class="theorem-box"><span class="theorem-title">Theorem  3.7.5. (L’Hôpital’s Second Rule)Suppose that the functions f and g are diﬀerentiable in a deleted σ− neighborhood (a − σ, a + σ) − {a} (σ > 0) of a point a. Moreover, suppose</span>
+<p>that</p>
+<p>lim f (x) = lim g(x) = ∞,</p>
+<p>x→a</p>
+<p>x→a</p>
+<p>′</p>
+<p>(x)</p>
+<p>and g ′ (x) ̸= 0 in the deleted neighborhood of a. Then if the limit limx→a fg′ (x)</p>
+<p>.......(⋆⋆) exists, then</p>
+<p>(x)</p>
+<p>so does limx→a fg(x)</p>
+<p>and</p>
+<p>f ′ (x)</p>
+<p>f (x)</p>
+<p>= lim ′</p>
+<p>.</p>
+<p>x→a g (x)</p>
+<p>x→a g(x)</p>
+<p>lim</p>
+<p>′</p>
+<p>Remark. If the limit (⋆⋆) becomes ∞, then so limx→a fg ′(x)</p>
+<p>= 0, it follows that limx→a fg(x)</p>
+<p>= 0.</p>
+<p>(x)</p>
+<p>(x)</p>
+<p>Hence, we have</p>
+<p>f (x)</p>
+<p>= ∞.</p>
+<p>lim</p>
+<p>x→a g(x)</p>
+<p>√</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.6. Find limx→0+ x ln x.</div>
+<p>3.7. DERIVATIVES AND INDETERMINATE LIMITS OF TYPE 00 AND ∞</p>
+<p>∞</p>
+<p>Solution. limx→0+</p>
+<p>√</p>
+<p>x ln x = limx→0+ ln−x1 = limx→0+</p>
+<p>x</p>
+<p>2</p>
+<p>1</p>
+<p>x</p>
+<p>3</p>
+<p>1</p>
+<p>(− 2 )x− 2</p>
+<p>= −2 limx→0+</p>
+<p>√</p>
+<p>43</p>
+<p>x = 0.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.7. Find limx→∞ lnxx .</div>
+<p>1</p>
+<p>Solution. limx→∞ lnxx = limx→∞ 1x = limx→∞ x1 = 0.</p>
+<p>n</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.8. Find limx→∞ xex .</div>
+<p>n</p>
+<p>n−1</p>
+<p>Solution. limx→∞ xex = limx→∞ nxex</p>
+<p>3.7.3</p>
+<p>n−2</p>
+<p>= limx→∞ nxex</p>
+<p>= · · · = limx→∞ en!x = 0.</p>
+<p>Indeterminate forms 0.∞, ∞ − ∞, 1∞ , 00 , 0∞ , ∞0</p>
+<p>The indeterminate forms 0.∞, ∞ − ∞, 1∞ , 00 , ∞0 can be converted by algebraic substitutions and</p>
+<p>tricks into a from of type 00 or ∞</p>
+<p>and L’Hôpital’s Rule used to compute them.</p>
+<p>∞</p>
+<p>Suppose that we try to ﬁnd the limit of y = f (x)g(x) where g(x > 0), when the limits of f and</p>
+<p>g as x → a are such that one of the indeterminate forms 1∞ , 00 , 0∞ , ∞0 is produced. First, we</p>
+</div>
+<h3>calculate the logarithm:</h3>
+<p>ln y = g(x) ln f (x).</p>
+<p>For each of these three cases, ln y = g(x) ln f (x) has the form 0.∞ as x → a. Thus, it is easy to</p>
+<p>see that if</p>
+<p>z = p(x)q(x), .........(⋆)</p>
+<p>where limx→a p(x) = 0, limx→a q(x) = ∞,</p>
+<p>the indeterminate form 0.∞ can be converted by algebraic substitutions into either the form 00 or</p>
+<p>∞</p>
+<p>.</p>
+<p>∞</p>
+<p>Expressing (⋆) in the form</p>
+<p>p(x)</p>
+<p>z = 1 .......(⋆⋆)</p>
+<p>q(x)</p>
+<p>or</p>
+<p>z=</p>
+<p>q(x)</p>
+<p>1 .......(⋆ ⋆ ⋆)</p>
+<p>p(x)</p>
+<p>we see that (⋆⋆) and (⋆ ⋆ ⋆) have the indeterminate forms 00 and ∞</p>
+<p>, respectively.</p>
+<p>∞</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.9. Find limx→0 xx .</div>
+<p>Solution. This is of indeterminate form 00 . Let y = xx . Then ln y = x ln x = ln1x , and by passing</p>
+<p>x</p>
+<p>to the limit as x → 0, we have</p>
+<p>lim x ln x = lim</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>ln x</p>
+<p>1</p>
+<p>x</p>
+<p>= lim</p>
+<p>1</p>
+<p>x</p>
+<p>x→0 − 12</p>
+<p>x</p>
+<p>Therefore ln limx→0 y = 0, and so limx→0 xx = e0 = 1.</p>
+<p>= − lim x = 0.</p>
+<p>x→0</p>
+<p>44</p>
+</div>
+</section></div>
+<div id="tab-25" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>1</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.7.10. Find limx→0 (1 + x2 ) x2 .</div>
+<p>1</p>
+<p>Solution. This is of indeterminate form 1∞ . Let y = (1 + x2 ) x2 . Then ln y = x12 ln(1 + x2 ), and</p>
+<p>by passing to the limit as x → 0 we have</p>
+<p>1</p>
+<p>( 1+x</p>
+<p>1</p>
+<p>ln(1 + x2 )</p>
+<p>1</p>
+<p>2 )(2x)</p>
+<p>2</p>
+<p>ln(1</p>
+<p>+</p>
+<p>x</p>
+<p>)</p>
+<p>=</p>
+<p>lim</p>
+<p>=</p>
+<p>lim</p>
+<p>=</p>
+<p>lim</p>
+<p>= 1.</p>
+<p>x→0 1 + x2</p>
+<p>x→0 x2</p>
+<p>x→0</p>
+<p>x→0</p>
+<p>x2</p>
+<p>2x</p>
+<p>lim</p>
+<p>1</p>
+<p>Therefore ln limx→0 y = 1, and so limx→0 (1 + x2 ) x2 = e.</p>
+<p>Exercises. 1. Use L’Hôpital’s Rule to ﬁnd the limits</p>
+<p>x−x</p>
+<p>(a). limx→0 tan</p>
+<p>, Ans. 2</p>
+<p>x−sin x</p>
+<p>ax</p>
+<p>, Ans. ab .</p>
+<p>(b). limx→0 sin</p>
+<p>sin bx</p>
+<p>√</p>
+<p>3</p>
+<p>tan x−1</p>
+<p>(c). limx→ π4 2 sin</p>
+<p>Ans. 13 .</p>
+<p>2 x−1 ,</p>
+<p>(d). limx→ π4 (tan x)tan 2x , Ans. 1e .</p>
+<p>ax)</p>
+<p>(e). limx→0 ln(cos</p>
+<p>, Ans. ( ab )2 .</p>
+<p>ln(cos bx)</p>
+<p>−x</p>
+<p>(f). limx→a ax−a</p>
+<p>x</p>
+<p>3.8</p>
+<p>a</p>
+<p>(a > 0), Ans. aa (ln a − 1).</p>
+<p>Diﬀerentiation of Implicit and Parametric Functions</p>
+<p>In this section we consider functions deﬁned implicitly and functions deﬁned parametrically.</p>
+<p>3.8.1</p>
+<p>Implicit Diﬀerentiation</p>
+<p>Sometimes we are not given y as a function of x explicitly, but instead have an equation connecting</p>
+<p>dy</p>
+<p>them which we may be unable to solve explicitly for either x or y. We may still want to ﬁnd dx</p>
+<p>.</p>
+<p>dy</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.1. Find dx</div>
+<p>if y 2 = x.</p>
+<p>Solution. We diﬀerentiate both sides of the equation with respect to x, treating y as a diﬀerentiable but otherwise unknown function of x. Therefore</p>
+<p>y2</p>
+<p>=</p>
+<p>x</p>
+<p>dy</p>
+<p>= 1 (Chain Rule)</p>
+<p>2y dx</p>
+<p>dy</p>
+<p>dx</p>
+<p>=</p>
+<p>1</p>
+<p>2y</p>
+<p>dy</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.2. Find the gradient dx</div>
+<p>at the point (1,2) on the curve whose equation is x3 −</p>
+<p>5xy 2 + y 3 + 11 = 0.</p>
+<p>3.8. DIFFERENTIATION OF IMPLICIT AND PARAMETRIC FUNCTIONS</p>
+<p>45</p>
+<p>Solution. We can not ﬁnd y(x) explicitly in terms of x. We therefore have to use the Chain Rule</p>
+<p>to diﬀerentiate the y 2 and y 3 terms and the product rule for the second term involving x and y.</p>
+<p>Diﬀerentiating with respect to x, we have</p>
+<p>3x2 − 5(x.2y</p>
+<p>dy</p>
+<p>dy</p>
+<p>+ y 2 ) + 3y 2</p>
+<p>=0</p>
+<p>dx</p>
+<p>dx</p>
+<p>Rearranging this gives</p>
+<p>(3y 2 − 10xy)</p>
+<p>and therefore</p>
+<p>dy</p>
+<p>= 5y 2 − 3x2 ,</p>
+<p>dx</p>
+<p>dy</p>
+<p>5y 2 − 3x2</p>
+<p>= 2</p>
+<p>.</p>
+<p>dx</p>
+<p>3y − 10xy</p>
+<p>The gradient at the point (1,2) is then found by substituting these values for x and y the expression, giving −17</p>
+<p>.</p>
+<p>8</p>
+<p>2</p>
+<p>d y</p>
+<p>3</p>
+<p>2</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.3. Find dx</div>
+<p>2 if 2x − 3y = 7.</p>
+<p>dy</p>
+<p>:</p>
+<p>Solution. We diﬀerentiate both sides with respect to x to ﬁnd y ′ = dx</p>
+<p>2x3 − 3y 2</p>
+<p>=</p>
+<p>7</p>
+<p>d</p>
+<p>d</p>
+<p>(2x3 ) − dx</p>
+<p>(3y 2 )</p>
+<p>dx</p>
+<p>=</p>
+<p>d</p>
+<p>(7)</p>
+<p>dx</p>
+<p>6x2 − 6yy ′</p>
+<p>=</p>
+<p>0</p>
+<p>x2 − yy ′</p>
+<p>y′</p>
+<p>=</p>
+<p>=</p>
+<p>x2</p>
+<p>y</p>
+<p>0</p>
+<p>(when y ̸= 0).</p>
+</div>
+<h3>We now apply the Quotient Rule to ﬁnd y ′′ :</h3>
+<p>y ′′ =</p>
+<p>d x2</p>
+<p>2xy − x2 y ′</p>
+<p>2x x2 ′</p>
+<p>( )=</p>
+<p>=</p>
+<p>− 2y .</p>
+<p>dx y</p>
+<p>y2</p>
+<p>y</p>
+<p>y</p>
+<p>Finally, we substitute y ′ = xy to express y ′′ in terms of x and y:</p>
+<p>2</p>
+<p>y ′′ =</p>
+<p>3.8.2</p>
+<p>2x x2 x2</p>
+<p>2x</p>
+<p>− 2( ) =</p>
+<p>− x4 y 3 .</p>
+<p>y</p>
+<p>y y</p>
+<p>y</p>
+<p>Logarithmic Diﬀerentiation</p>
+<p>This is an application of implicit diﬀerentiation.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.4. Diﬀerentiate y = xsin x .</div>
+<p>Solution. We take logarithms of both sides of the equation to give</p>
+<p>ln y = ln(xsin x ) = sin x ln x.</p>
+<p>46</p>
+</div>
+</section></div>
+<div id="tab-26" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>We deal with the LHS using implicit diﬀerentiation, and the RHS using the product rule. This</p>
+<p>gives</p>
+<p>1 dy</p>
+<p>1</p>
+<p>= cos x. ln x + sin x.( ).</p>
+<p>y dx</p>
+<p>x</p>
+<p>Therefore</p>
+<p>dy</p>
+<p>= y(cos x. ln x + sin x).</p>
+<p>dx</p>
+<p>3.8.3</p>
+<p>Parametric Diﬀerentiation</p>
+<p>Equations of curves are often given parametrically. For example the ellipse is sometimes speciﬁed</p>
+<p>by</p>
+<p>x = a cos t, y = b sin t, 0 ≤ t ≤ 2π.</p>
+<p>dy</p>
+<p>We want to ﬁnd dx</p>
+<p>(the gradient), but the parametric equations can only be diﬀerentiated with</p>
+<p>respect to t. We can approach this in two ways.</p>
+<p>Firstly, we can use the Chain Rule to give</p>
+<p>dy</p>
+<p>dy dx</p>
+<p>=</p>
+<p>,</p>
+<p>dt</p>
+<p>dx dt</p>
+<p>so</p>
+<p>dy</p>
+<p>dy</p>
+<p>dt</p>
+<p>,</p>
+<p>= dx</p>
+<p>dx</p>
+<p>dt</p>
+<p>provided dx</p>
+<p≯= 0.</p>
+<p>dt</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.5. Find the gradient at an arbitrary point t on the ellipse speciﬁed by x = a cos t, y =</div>
+<p>b sin t, 0 ≤ t ≤ 2π.</p>
+<p>Solution. The gradient is given by</p>
+<p>dy</p>
+<p>dy</p>
+<p>b cos t</p>
+<p>b</p>
+<p>dt</p>
+<p>= dx</p>
+<p>=</p>
+<p>= − cot t.</p>
+<p>dx</p>
+<p>−a sin t</p>
+<p>a</p>
+<p>dt</p>
+<p>Note that here sin t ̸= 0, and thus t excludes the points 0, ±π, ±2π, ..., where the tangent to the</p>
+<p>ellipse is parallel to the y-axis.</p>
+<p>dy</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.6. Find dx</div>
+<p>given that x = t2 , y = t3 .</p>
+<p>Solution. These are parametric equations of a curve known as a semicubical parabola. The</p>
+<p>derivative is given</p>
+<p>dy</p>
+<p>3t</p>
+<p>dy</p>
+<p>3t2</p>
+<p>dt</p>
+<p>= dx</p>
+<p>=</p>
+<p>(t ̸= 0).</p>
+<p>=</p>
+<p>dx</p>
+<p>2t</p>
+<p>2</p>
+<p>dt</p>
+<p>We can also eliminate the parameter t to give y 3 = x3 , and so we could also ﬁnd the derivative</p>
+<p>using implicit diﬀerentiation, as follows</p>
+<p>2y</p>
+<p>2</p>
+<p>dy</p>
+<p>and so, dx</p>
+<p>= 3x</p>
+<p>,</p>
+<p>2y</p>
+<p>(y ̸= 0).</p>
+<p>dy</p>
+<p>= 3x2 ,</p>
+<p>dx</p>
+<p>3.8. DIFFERENTIATION OF IMPLICIT AND PARAMETRIC FUNCTIONS</p>
+<p>47</p>
+<p>2</p>
+<p>d y</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.7. Given x = a cos t, y = b sin t, 0 ≤ t ≤ 2π, ﬁnd dx</div>
+<p>2.</p>
+<p>Solution. It is possible to ﬁnd a general formula for the second derivative. We write</p>
+<p>d2 y</p>
+<p>dY</p>
+<p>=</p>
+<p>,</p>
+<p>2</p>
+<p>dx</p>
+<p>dx</p>
+<p>dy</p>
+<p>where Y = dx</p>
+<p>. Applying parametric diﬀerentiation formula to Y gives</p>
+<p>dY</p>
+<p>dY</p>
+<p>dt</p>
+<p>= dx</p>
+<p>.</p>
+<p>dx</p>
+<p>dt</p>
+<p>Thus</p>
+<p>dY</p>
+<p>−b</p>
+<p>csc2 t</p>
+<p>dY</p>
+<p>b</p>
+<p>d2 y</p>
+<p>dt</p>
+<p>a</p>
+<p>=</p>
+<p>= dx =</p>
+<p>=− 2 3 ,</p>
+<p>2</p>
+<p>dx</p>
+<p>dt</p>
+<p>−a sin t</p>
+<p>a sin t</p>
+<p>dt</p>
+<p>provided that sin t ̸= 0.</p>
+<p>2</p>
+<p>d y</p>
+<p>Caution. A common mistake is to try to ﬁnd dx</p>
+<p>2 by diﬀerentiating the formula obtained for</p>
+<p>dy</p>
+<p>with respect to x. This WRONG!</p>
+<p>dx</p>
+<p>3.8.4</p>
+<p>Diﬀerentiating Inverse Functions using Implicit Diﬀerentiation</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.8.8. Find the derivative of y = sinh−1 x.</div>
+<p>Solution. Suppose that y = sinh−1 x, so that x = sinh y. Diﬀerentiating with respect to x gives</p>
+<p>1 = cosh y</p>
+<p>so that</p>
+<p>dy</p>
+<p>,</p>
+<p>dx</p>
+<p>dy</p>
+<p>1</p>
+<p>=</p>
+<p>.</p>
+<p>dx</p>
+<p>cosh y</p>
+<p>We want the answer in terms of x, so we have to ﬁnd cosh y in terms of x = sinh y. Using the</p>
+<p>hyperbolic identity</p>
+<p>cosh2 y − sinh2 y = 1,</p>
+<p>gives</p>
+<p>√</p>
+<p>cosh y = 1 + sinh2 y,</p>
+<p>where we use the positive square root because cosh y is always positive. Therefore</p>
+<p>dy</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>=</p>
+<p>=√</p>
+<p>=√</p>
+<p>.</p>
+<p>2</p>
+<p>dx</p>
+<p>cosh y</p>
+<p>1 + x2</p>
+<p>1 + sinh y</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Exercise  Use implicit diﬀerentiation to verify the derivatives of inverse trigonometric and hyperbolic functions proved earlier.</div>
+<p>48</p>
+<p>3.9</p>
+</div>
+</section></div>
+<div id="tab-27" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>Linear Approximations and Diﬀerentials</p>
+<p>Sometimes we can approximate complicated functions with simpler ones that give the accuracy</p>
+<p>we want for speciﬁc applications.</p>
+<p>3.9.1</p>
+<p>Diﬀerentials</p>
+<p>∆y</p>
+<p>The Newton quotient ∆x</p>
+<p>is a quotient of two quantities ∆y and ∆x. If y is a continuous function</p>
+<p>dy</p>
+<p>of x, then ∆y → 0 as ∆x → 0, so dx</p>
+<p>is the meaningless quantity 00 . We refer to dx as the</p>
+<p>diﬀerential of x and dy as the diﬀerential of y as a function of x and dx:</p>
+<p>dy =</p>
+<p>dy</p>
+<p>dx = f ′ (x)dx.</p>
+<p>dx</p>
+<p>For example, if y = x2 , then dy = 2xdx.</p>
+<p>Remark. The diﬀerentials dy and dx were originally regarded (by Leibniz and his successors as</p>
+<p>”infinitesimals”(meaning inﬁnitely small but nonzero)). If one quantity, say y, is a function of</p>
+<p>another quantity x, that is, y = f (x), we sometimes want to know how a change in the value of x</p>
+<p>by an amount ∆x will aﬀect the value of y. The exact change ∆x in y is given by</p>
+<p>∆y = f (x + ∆x) − f (x),</p>
+<p>but if the change ∆x is small, then we can get a good approximation to ∆y by using the fact that</p>
+<p>∆y</p>
+<p>dy</p>
+<p>is approximately the derivative dx</p>
+<p>. Thus</p>
+<p>∆x</p>
+<p>∆y =</p>
+<p>∆y</p>
+<p>dy</p>
+<p>∆x ≈</p>
+<p>∆x = f ′ (x)∆x.</p>
+<p>∆x</p>
+<p>dx</p>
+<p>It is often convenient to represent this approximation in terms of diﬀerentials; if we denote the</p>
+<p>change in x by dx instead of ∆x, then the change ∆y in y is approximated by the diﬀerential dy,</p>
+<p>that is</p>
+<p>∆y ≈ dy = f ′ (x)dx.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.1. Without using a calculator, determine by approximately how much the value</div>
+<p>of sin x increases as x increases from π3 to π3 + 0.006. To 3 decimal places, what is the value of</p>
+<p>sin( π3 + 0.006)?</p>
+<p>Solution. If y = sin x, x = π3 ≈ 1.0472, and dx = 0.006, then</p>
+<p>1</p>
+<p>π</p>
+<p>dy = cos xdx = cos( )dx = (0.006) = 0.003.</p>
+<p>3</p>
+<p>2</p>
+<p>Thus the change in the value of sin x is approximately 0.003, and</p>
+<p>√</p>
+<p>π</p>
+<p>π</p>
+<p>3</p>
+<p>sin( + 0.006) ≈ sin( ) + 0.003 =</p>
+<p>+ 0.003 = 0.869,</p>
+<p>3</p>
+<p>3</p>
+<p>2</p>
+<p>rounded to 3 decimal places.</p>
+<p>3.9. LINEAR APPROXIMATIONS AND DIFFERENTIALS</p>
+<p>49</p>
+<p>Sometimes changes in a quantity are measured with respect to the size of the quantity. The</p>
+<p>relative change in x is the ratio dx</p>
+<p>if x changes by amount dx. The percentage change in x is the</p>
+<p>x</p>
+</div>
+<h3>relative change expressed as a percentage:</h3>
+<p>relative change in x =</p>
+<p>dx</p>
+<p>x</p>
+<p>percentage relative change in x = 100</p>
+<p>dx</p>
+<p>x</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.2. By approximately what percentage does the area of a circle increase if the radius</div>
+<p>increases by 2%?</p>
+<p>Solution. The area A os a circle is given in terms of radius r by A = πr2 . Thus</p>
+<p>∆A ≈ dA =</p>
+<p>dA</p>
+<p>dr = 2πrdr.</p>
+<p>dr</p>
+<p>We divide this approximation by A = πr2 to get an approximation that links the relative changes</p>
+</div>
+<h3>in A and r:</h3>
+<p>∆A</p>
+<p>dA</p>
+<p>2πrdr</p>
+<p>dr</p>
+<p>≈</p>
+<p>=</p>
+<p>=2 .</p>
+<p>2</p>
+<p>A</p>
+<p>A</p>
+<p>πr</p>
+<p>r</p>
+<p>2</p>
+<p>If r increases by 2%, then dr = 100</p>
+<p>r, so</p>
+<p>∆A</p>
+<p>2</p>
+<p>4</p>
+<p>≈2</p>
+<p>=</p>
+<p>.</p>
+<p>A</p>
+<p>100</p>
+<p>100</p>
+<p>Thus, A increases by approximately 4%.</p>
+<p>3.9.2</p>
+<p>Linearizations are Linear Replacement Formulas</p>
+<p>Remark. The tangent to a curve y = f (x) lies close to the curve near the point of tangency. For</p>
+<p>a small interval to either side, the y-values along the tangent line give good approximations to the</p>
+<p>y-values on the curve. Therefore, to simplify the expression for the function near this point, we</p>
+<p>propose to replace the formula for f over this interval by the formula for its tangent line. If the</p>
+<p>tangent passes through the point P (a, f (a)) with slope f ′ (a), then its point-slope equation is</p>
+<p>y − f (a) = f ′ (a)(x − a)</p>
+<p>or</p>
+<p>y = f (a) + f ′ (a)(x − a).</p>
+<p>, the tangent line is the graph of the function</p>
+<p>L(x) = f (a) + f ′ (a)(x − a)..........(⋆)</p>
+<p>For as long as the line remains close to the graph of f , L(x) will give a good approximation to f (x).</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.3. Find the linearization of f (x) =</div>
+<p>√</p>
+<p>1 + x at x = 0.</p>
+<p>50</p>
+</div>
+</section></div>
+<div id="tab-28" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>√</p>
+<p>1</p>
+<p>Solution. We evaluate (⋆) for f (x) = 1 + x and a = 0. The derivative of f (x) = 21 (1 + x)− 2 =</p>
+<p>√1</p>
+<p>. Its value at x = 0 is 12 . We substitute this along with a = 0 and f (0) = 1 into (⋆):</p>
+<p>2 1+x</p>
+<p>1</p>
+<p>x</p>
+<p>L(x) = f (a) + f ′ (a)(x − a) = 1 + (x − 0) = 1 + .</p>
+<p>2</p>
+<p>2</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.4. Find the linearization of f (x) = tan x.</div>
+<p>Solution. f (x) = tan x, a = 0. Since f (0) = 0, f ′ (0) = sec( 0) = 1, we have L(x) = 0 + 1(x − 0) =</p>
+<p>x. Near x = 0</p>
+<p>tan x ≈ x.</p>
+<p>√</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.5. Use linear approximation formula to estimate 1.1.</div>
+<p>√</p>
+<p>Solution. Let f (x) = x. Then we must compute f (1.1). By deﬁnition of derivative,</p>
+<p>√</p>
+<p>√</p>
+<p>∆x</p>
+<p>f (x + ∆x) − f (x)</p>
+<p>x + ∆x − x</p>
+<p>1</p>
+<p>′</p>
+<p>√</p>
+<p>f (x) = lim</p>
+<p>= lim</p>
+<p>= lim</p>
+<p>√ = √ .</p>
+<p>∆x→0</p>
+<p>∆x→0 ∆x( x + ∆x +</p>
+<p>∆x→0</p>
+<p>∆x</p>
+<p>∆x</p>
+<p>2 x</p>
+<p>x)</p>
+<p>Setting x = 1, x + ∆x = 1.1, it follows that</p>
+<p>f (1.1) ≈ f (1) + f ′ (1)(0.1)</p>
+<p>or</p>
+<p>√</p>
+<p>Consequently,</p>
+<p>√</p>
+<p>1.1 ≈</p>
+<p>√</p>
+<p>1</p>
+<p>1 + √ (0.1) = 1.05.</p>
+<p>2 1</p>
+<p>1.1 ≈ 1.05.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.6. Use linear approximation formula to estimate sin 46◦ .</div>
+<p>Solution. Let f (x) = sin x. Then we must compute f (46). Clearly, f ′ (x) = cos x and by linear</p>
+<p>approximation</p>
+<p>sin(x + ∆x) ≈ sin x + cos x∆x.</p>
+<p>π</p>
+<p>π</p>
+<p>We estimate the value of sin 46◦ . Since x + ∆x = π4 + 180</p>
+<p>(1◦ = 180</p>
+<p>radians), and x = π4 , we have</p>
+<p>sin 46◦ = sin(</p>
+<p>or</p>
+<p>π</p>
+<p>π</p>
+<p>π</p>
+<p>π</p>
+<p>π</p>
+<p>+</p>
+<p>) ≈ sin +</p>
+<p>cos ,</p>
+<p>4 180</p>
+<p>4 180</p>
+<p>4</p>
+<p>√</p>
+<p>√</p>
+<p>2</p>
+<p>2 π</p>
+<p>sin 46 ≈</p>
+<p>+</p>
+<p>= 0.7071 + 0.7071(0.0175) = 0.7194.</p>
+<p>2</p>
+<p>2 180</p>
+<p>◦</p>
+<p>3.9.3</p>
+<p>Average and Instantaneous Rates of Change</p>
+<p>Deﬁnition 3.9.7. The average rate of change of a function f (x) with respect to x over an</p>
+<p>interval from a to a + h is</p>
+<p>f (a + h) − f (a)</p>
+<p>.</p>
+<p>h</p>
+<p>The (instantaneous) rate of change of f with respect to x at x = a is the derivative</p>
+<p>f (a + h) − f (a)</p>
+<p>,</p>
+<p>h→0</p>
+<p>h</p>
+<p>f ′ (a) = lim</p>
+<p>provided the limit exists.</p>
+<p>3.10. EXERCISES</p>
+<p>51</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  3.9.8. How fast is area A of a circle increasing with respect to its radius when the</div>
+<p>radius is 5 m?</p>
+<p>Solution. The rate of change of the area with respect to the radius is</p>
+<p>dA</p>
+<p>d</p>
+<p>= (πr2 ) = 2πr.</p>
+<p>dr</p>
+<p>dr</p>
+<p>When r = 5 m, the area is changing at the rate of 2π(5) = 10π m2 /min. This means that a small</p>
+<p>change ∆r m in the radius when the radius is 5 m would result in a change of about 10π m2 in</p>
+<p>the area of the circle.</p>
+<p>3.10</p>
+<p>Exercises</p>
+<p>dy</p>
+<p>1.(a). Use First Principles to ﬁnd dx</p>
+<p>for each of the following functions.</p>
+<p>(i). y = f (x) = x2 .</p>
+<p>(ii). y = cos(2x).</p>
+<p>1</p>
+<p>(iii). y = 2x</p>
+<p>.</p>
+<p>.</p>
+<p>(iv). y = 2−x</p>
+<p>2+x</p>
+<p>(v). y = eαx .</p>
+<p>(vi). y = loga x.</p>
+<p>Solution(vi). Let y = loga x. Then y + △y = loga (a + △x). Thus</p>
+<p>△y = loga (x + △x) − loga x = loga</p>
+<p>x + △x</p>
+<p>△x</p>
+<p>= loga (1 +</p>
+<p>).</p>
+<p>x</p>
+<p>x</p>
+<p>Therefore</p>
+<p>x</p>
+<p>△y</p>
+<p>1</p>
+<p>△x</p>
+<p>1 x</p>
+<p>△x</p>
+<p>1</p>
+<p>△x △x</p>
+<p>=</p>
+<p>loga (1 +</p>
+<p>)=</p>
+<p>loga (1 +</p>
+<p>) = loga (1 +</p>
+<p>)</p>
+<p>△x</p>
+<p>△x</p>
+<p>x</p>
+<p>x △x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>and</p>
+<p>[</p>
+<p>] 1</p>
+<p>x</p>
+<p>x</p>
+<p>dy</p>
+<p>1</p>
+<p>△x △x</p>
+<p>1</p>
+<p>△x △x</p>
+<p>=</p>
+<p>lim log (1 +</p>
+<p>) = loga lim (1 +</p>
+<p>) ) = loga e.</p>
+<p>△x→0</p>
+<p>dx</p>
+<p>x △x→0 a</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>d</p>
+<p>When a = e, loga e = loge e = 1 and dx</p>
+<p>(ln x) = x1 .</p>
+<p>(b). Find the derivatives of</p>
+<p>2</p>
+<p>1−x</p>
+<p>(i). y = 1+x</p>
+<p>2.</p>
+<p>52</p>
+</div>
+</section></div>
+<div id="tab-29" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+<p>(ii). y = (2 + 3t )−10 .</p>
+<p>(iii). y =</p>
+<p>√ √</p>
+<p>x x.</p>
+<p>(iv). y = xsin(x) .</p>
+<p>(v). y = sec(2x3 + 1).</p>
+<p>(vi). y = ax .</p>
+<p>dy</p>
+<p>dy</p>
+<p>d</p>
+<p>Solution. Let y = ax . Then ln y = x ln a and dx</p>
+<p>(ln y) = y1 dx</p>
+<p>= ln a. Thus dx</p>
+<p>= y ln a = ax ln a.</p>
+<p>d</p>
+<p>When a = e, ln a = ln e = 1 and we have dx</p>
+<p>(ex ) = ex .</p>
+<p>(c). Show that the derivative of y = f (x) = |x| does not exist at x = 0.</p>
+<p>Solution. This function is continuous at all values of x. For x < 0, f (x) = −x and</p>
+<p>= −1; for x > 0, f (x) = x and f ′ (x) = 1.</p>
+<p>f (x) = limh→0 − (x+h)−(−x)</p>
+<p>h</p>
+<p>(0)</p>
+<p>At x = 0, f (x) = 0 and limh→0 f (0+h)−f</p>
+<p>= limh→0 |h|</p>
+<p>. As h → 0− , |h|</p>
+<p>→ −1; but as</p>
+<p>h</p>
+<p>h</p>
+<p>h</p>
+<p>|h|</p>
+<p>+</p>
+<p>h → 0 , h → 1.</p>
+<p>Hence the derivative does not exist.</p>
+<p>′</p>
+<p>dy</p>
+<p>2.(a). Find dx</p>
+<p>in each case.</p>
+<p>(i). x3 − xy + y 3 = 1.</p>
+<p>(ii). x2 y + xy 2 = 6.</p>
+<p>(iii). y 3 + y = 2 cos x at the point (0, 1).</p>
+<p>(iv). y = ln(x2 + 3x + 1).</p>
+<p>2</p>
+<p>+1</p>
+<p>(v). y = ln( xx3 −x</p>
+<p>).</p>
+<p>(b). Find the tangent line to the curve</p>
+<p>(i). x3 + y 2 = 2 at the point (1, 1).</p>
+<p>3</p>
+<p>Solution: y = − 32 x + 52</p>
+<p>3</p>
+<p>(ii). x 2 + 2y 2 = 17. Solution: y = − 14 + 17</p>
+<p>4</p>
+<p>(iii). x3 y 3 + y 2 = x + y at the point (1, 1).</p>
+<p>(iv). x +</p>
+<p>√</p>
+<p>xy = 6 at the point (4, 1).</p>
+<p>2</p>
+<p>dy</p>
+<p>d y</p>
+<p>(c).(i). Given that xy + x − 2y − 1 = 0, ﬁnd dx</p>
+<p>and dx</p>
+<p>2.</p>
+<p>3.10. EXERCISES</p>
+<p>(ii). If y = ln(x +</p>
+<p>53</p>
+<p>√</p>
+<p>1</p>
+<p>1 + x2 ), show that y ′ = √1+x</p>
+<p>2.</p>
+<p>dy</p>
+<p>3.(a). If x = cos(2t − 1) and y = sin(3t + 1), ﬁnd dx</p>
+<p>.</p>
+<p>x</p>
+<p>dy</p>
+<p>(b). Find dx</p>
+<p>if y = xx .</p>
+<p>4. Suppose that the temperature at a certain location t hours after noon on a certain day is T ◦ C,</p>
+<p>where T = 31 t3 − 3t2 + 8t + 10 (for 0 ≤ t ≤ 5). How fast is the temperature rising or falling at</p>
+<p>1 : 00 pm? at 3 : 00 pm? At what instants is the temperature stationary?</p>
+<p>Solution. The rate of change of the temperature is dT</p>
+<p>= t2 − 6t + 8 = (t − 2)(t − 4).</p>
+<p>dt</p>
+<p>• If t = 1, then dT</p>
+<p>= 3, so the temperature is rising at the rate of 3 degrees C/h at 1 : 00pm.</p>
+<p>dt</p>
+<p>• If t = 3, then dT</p>
+<p>= −1, so the temperature is falling at the rate of 1 degree C/h at 3 : 00pm.</p>
+<p>dt</p>
+<p>• The temperature is stationary when dT</p>
+<p>= 0, that is, at 2 : 00 pm and 4 : 00 pm.</p>
+<p>dt</p>
+<p>2</p>
+<p>5.(a). If z = tan x2 , then show that dx</p>
+<p>= 1+z</p>
+<p>2,</p>
+<p>dz</p>
+<p>2</p>
+<p>2z</p>
+<p>1−z</p>
+<p>sin x = 1+z</p>
+<p>2 and cos x = 1+z 2 .</p>
+<p>(b). Find the linearization of the given function at the given point.</p>
+<p>(i). y = x2 about x = 3.</p>
+<p>(ii). y =</p>
+<p>√</p>
+<p>4 − x about x = 0.</p>
+<p>(iii). y = sin x about x = π.</p>
+<p>(c).(i). By approximately how much does the area of a square increase if its side length increases</p>
+<p>from 10 cm to 10.4 cm?</p>
+<p>(ii). By about how much must the length of a cube decrease from 20 cm to reduce the volume</p>
+<p>of the cube by 12 cm3 ?</p>
+<p>54</p>
+</section></div>
+<div id="tab-30" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<h3>CHAPTER 3. DIFFERENTIATION OF FUNCTIONS OF A SINGLE VARIABLE</h3>
+</section></div>
+<div id="tab-31" class="tab-section">
+<section class="glass-panel"><h2></h2>
+<p>Chapter 4</p>
+<h3>ANTI-DERIVATIVES OF</h3>
+<h3>FUNCTIONS AND APPLICATIONS</h3>
+<h3>TO AREAS</h3>
+<p>Throughout Chapter 3 we have been concerned with the problem of ﬁnding the derivative f ′ of</p>
+<p>a given function f . The reverse problem-given the derivative f ′ , ﬁnd f -is also interesting and</p>
+<p>important. It is the problem studied in integral calculus and is generally more diﬃcult to solve</p>
+<p>than the problem of ﬁnding a derivative.</p>
+<p>4.1</p>
+<p>Anti-Derivatives</p>
+<p>We begin by deﬁning an anti derivative of a function f to be a function F whose derivative is f .</p>
+<p>It is appropriate to require that F ′ (x) = f (x) on an interval.</p>
+<p>Deﬁnition 4.1.1. An antiderivative of a function f on an interval I is another function F</p>
+<p>satisfying F ′ (x) = f (x) for x in I. The reverse process of determining F from f is called antidiﬀerentiation or integration.</p>
+<p>Remark. Antiderivatives are not unique; indeed, if C is any constant, then F (x) = x+ is an</p>
+<p>antiderivative of f (x) = 1 on any interval. You can always add a constant to an antiderivative</p>
+<p>F of a function f on an interval and get another antiderivative of f . More importantly, all</p>
+<p>antiderivatives of f on an interval can be obtained by adding constants to any particular one. If</p>
+<p>F and G are both antiderivatives of I on an interval I, then</p>
+<p>d</p>
+<p>(G(x) + F (x)) = f (x) − f (x) = 0,</p>
+<p>dx</p>
+<p>on I, so G(x) − F (x) = C (a constant) on I. Thus G(x) = F (x) + C on I.</p>
+<p>4.1.1</p>
+<p>Indeﬁnite Integral of a Function</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.1.2. If f (x) is a derivative, the set of all antiderivatives of f is called the indeﬁnite</div>
+<p>integral of f , denoted by the symbols</p>
+<p>∫</p>
+<p>f (x)dx.</p>
+<p>55</p>
+<p>56 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>∫</p>
+<p>The sign is called an integral sign. The function f is the integrand of the integral and x is</p>
+<p>the variable of integration.</p>
+<p>Remark. We have already seen that all the anti-derivatives F of f diﬀer by a constant. We</p>
+<p>indicate this by writing</p>
+<p>∫</p>
+<p>f (x)dx = F (x) + C.</p>
+<p>(⋆)</p>
+<p>The constant C is called the constant of integration. Equation (⋆) is read as ”The indeﬁnite</p>
+<p>integral of f with respect to x is F (x) + C”. When we ﬁnd F (x) + C, we say that we have evaluated the indeﬁnite integral.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.1.3.</div>
+<p>F unction f (x) antiderivative Reversed derivative f ormula</p>
+<p>cos x</p>
+<p>sin x + C</p>
+<p>d</p>
+<p>sin x = cos x</p>
+<p>dx</p>
+<p>sin x</p>
+<p>− cos x + C</p>
+<p>d</p>
+<p>(− cos x) = sin x</p>
+<p>dx</p>
+<p>3x2</p>
+<p>x3 + C</p>
+<p>d 3</p>
+<p>x = 3x2</p>
+<p>dx</p>
+<p>√</p>
+<p>x+C</p>
+<p>d √</p>
+<p>x = 2√1 x</p>
+<p>dx</p>
+<p>− x1 + C</p>
+<p>d</p>
+<p>(− x1 ) = x12</p>
+<p>dx</p>
+<p>1</p>
+<p>√</p>
+<p>2 x</p>
+<p>1</p>
+<p>x2</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.1.4. Evaluate (x2 − 2x + 5)dx</div>
+<p>Solution.</p>
+<p>An antiderivative of f (x)=x2 −2x+5</p>
+<p>z</p>
+<p>}|</p>
+<p>{</p>
+<p>x3</p>
+<p>− x2 + 5x</p>
+<p>3</p>
+<p>∫</p>
+<p>(x2 − 2x + 5)dx =</p>
+<p>+C.</p>
+<p>∫</p>
+<p>Remark. To evaluate f (x)dx, ﬁnd an antiderivative F (x) of f (x) and then add a constant C.</p>
+<p>4.1.2</p>
+<p>Integration Formulas</p>
+<p>∫</p>
+<p>n+1</p>
+<p>1. xn dx = xn+1 + C (n ̸= −1) (Power Rule)</p>
+<p>∫</p>
+<p>2. ∫ sin kxdx = − coskkx + C (Chain Rule)</p>
+<p>3. ∫ cos kxdx = sinkkx + C (Chain Rule)</p>
+<p>4. ∫ sec2 xdx = tan x + C</p>
+<p>5. ∫ sec x tan xdx = sec x + C</p>
+<p>6. ∫ cscx dx = − cot x + C</p>
+<p>7. csc x cot xdx = −cscx + C</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.1.5. a).</div>
+<p>∫</p>
+<p>6</p>
+<p>x5 dx = x6 + C</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+<p>b).</p>
+<p>c).</p>
+<p>∫</p>
+<p>∫</p>
+<p>57</p>
+<p>sin 2xdx = − cos22x + C</p>
+<p>∫</p>
+<p>cos x2 dx =</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.1.6.</div>
+<p>∫</p>
+<p>cos 12 x =</p>
+<p>sin 12 x</p>
+<p>1</p>
+<p>2</p>
+<p>+C=2sin x2 + C</p>
+<p>x cos xdx = x sin x + cos x + C</p>
+<p>Reason: The derivative of the right-hand side is the integrand:</p>
+<p>d</p>
+<p>(x sin x + cos x + C) = x cos x + sin x − sin x + 0 = x cos x.</p>
+<p>dx</p>
+<p>4.1.3</p>
+<p>1.</p>
+<p>∫ dF</p>
+<p>dx</p>
+<p>d</p>
+<p>2. dx</p>
+<p>3.</p>
+<p>4.</p>
+<p>5.</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>Rules for Indeﬁnite Integrals</p>
+<p>dx = F (x) + C</p>
+<p>f (x)dx = f (x)</p>
+<p>kf (x)dx = k</p>
+<p>∫</p>
+<p>−f (x)dx = −</p>
+<p>f (x)dx (k a constant)</p>
+<p>∫</p>
+<p>f (x)</p>
+<p>[f (x) ± g(x)]dx =</p>
+<p>4.2</p>
+<p>∫</p>
+<p>f (x)dx ±</p>
+<p>∫</p>
+<p>g(x)dx</p>
+<p>Techniques of Integration</p>
+<p>This section is completely concerned with how to evaluate integrals.</p>
+<p>4.2.1</p>
+<p>Integration by Substitution</p>
+<p>A change of variable can often turn an unfamiliar integral into one we can evaluate. The method</p>
+<p>of doing this is called the Substitution Method.</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.1. Evaluate (x + 2)5 dx</div>
+<p>Solution. Let u = x + 2. Then du = dx. Therefore</p>
+<p>∫</p>
+<p>∫</p>
+<p>u6</p>
+<p>(x + 2)6</p>
+<p>5</p>
+<p>(x + 2) dx = u5 du =</p>
+<p>+C =</p>
+<p>+ C.</p>
+<p>6</p>
+<p>6</p>
+<p>∫√</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.2. Evaluate</div>
+<p>4x − 1dx</p>
+<p>Solution. Let u = 4x − 1. Then du = 4dx or dx = 14 du. Thus</p>
+<p>∫</p>
+<p>√</p>
+<p>1</p>
+<p>4x − 1dx =</p>
+<p>4</p>
+<p>∫</p>
+<p>3</p>
+<p>3</p>
+<p>1 u2</p>
+<p>1</p>
+<p>1 3</p>
+<p>u du = 3 + C = u 2 + C = (4x − 1) 2 + C.</p>
+<p>4 2</p>
+<p>6</p>
+<p>6</p>
+<p>1</p>
+<p>2</p>
+<p>58 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.3. Evaluate</div>
+<p>∫</p>
+<p>cos(7x + 5)dx</p>
+<p>Solution. Let u = 7x + 5. Then du = 7dx or dx = 71 du. Thus</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>cos(7x + 5)dx = cos udu = sin u + C = sin(7x + 5) + C.</p>
+<p>7</p>
+<p>7</p>
+<p>7</p>
+<p>∫ 2</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.4. Evaluate x sin(x3 )dx.</div>
+<p>Solution. Let u = x3 . Then du = 3x2 dx or x2 dx = 13 du. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>x sin(x )dx = sin u. du =</p>
+<p>sin udu = (− cos u) + C = − cos(x3 ) + C.</p>
+<p>3</p>
+<p>3</p>
+<p>3</p>
+<p>3</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.5. Evaluate cos12 2x dx.</div>
+<p>1</p>
+<p>Solution. Note that sec 2x = 2x</p>
+<p>. Let u = 2x. Then du = 2dx or dx = 12 du. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>2</p>
+<p>2</p>
+<p>dx = sec 2xdx = sec u. du =</p>
+<p>sec2 udu = tan u + C = tan 2x + C.</p>
+<p>2</p>
+<p>cos 2x</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.6. Evaluate sin4 x cos xdx.</div>
+<p>Solution. Let u = sin x. Then du = cos xdx or cos xdx = du. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>u5</p>
+<p>sin5 x</p>
+<p>4</p>
+<p>4</p>
+<p>sin x cos xdx = u du =</p>
+<p>+C =</p>
+<p>+ C.</p>
+<p>5</p>
+<p>5</p>
+<p>4.2.2</p>
+<p>Integration by Parts</p>
+<p>Our next general method for anti-diﬀerentiation is called Integration by Parts. Just as the</p>
+<p>method of substitution can be regarded as inverse to the Chain Rule for diﬀerentiation, so the</p>
+<p>method for integration by parts is inverse to the Product Rule for diﬀerentiation. Suppose that</p>
+<p>U (x) and V (x) are two diﬀerentiable functions. According to the Product Rule,</p>
+<p>)</p>
+<p>d(</p>
+<p>dV</p>
+<p>dU</p>
+<p>U (x).V (x) = U (x)</p>
+<p>+ V (x) .</p>
+<p>dx</p>
+<p>dx</p>
+<p>dx</p>
+<p>Integrating both sides of this equation and transposing terms yields</p>
+<p>∫</p>
+<p>∫</p>
+<p>dU</p>
+<p>dV</p>
+<p>U (x) dx = U (x)V (x) − V (x) dx,</p>
+<p>dx</p>
+<p>dx</p>
+<p>or more simply,</p>
+<p>∫</p>
+<p>∫</p>
+<p>U dV = U V −</p>
+<p>V dU.</p>
+<p>In each application of the method, we break up the given</p>
+<p>∫ integrand into a product of two</p>
+<p>pieces, U and V ′ , where∫ V ′ is readily integrated and where V U ′ dx is usually (but not always)</p>
+<p>a simpler integral than U V ′ dx. The technique is called integration by parts because it replaces</p>
+<p>one integral with the sum of an integrated term and another integral that remains to be evaluated.</p>
+<p>That is, it accomplishes only part of the original integration.</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.7. Evaluate</div>
+<p>∫</p>
+<p>59</p>
+<p>xex dx.</p>
+<p>Solution. Let U = x, dv = ex dx. Then dU = dx and V = ex . Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>x</p>
+<p>x</p>
+<p>xe dx = xe − ex dx = xex − ex + C.</p>
+<p>Note: In general, do not include a constant of integration with V or on the right-hand side until</p>
+<p>the last integral has been evaluated.</p>
+<p>Choices should be made for U and dV in various situations. An improper choice can result in</p>
+<p>making an integral more diﬃcult rather than easier. Look for a factor of the integrand that is</p>
+<p>easily integrated, and include dx with that factor to make up dV . Then V is the remaining factor</p>
+<p>of the integrand. Sometimes it is necessary to take dV = dx only. When breaking up an integrand</p>
+<p>using integration by parts, choose U and dV so that, if possible, V dU is ”simpler ” (easier to</p>
+<p>integrate) than U dV .</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example </div>
+<p>4.2.8. ∫Use integration by</p>
+<p>∫</p>
+</div>
+<h3>∫ parts−1to evaluate:</h3>
+<p>∫</p>
+<p>2</p>
+<p>a). ln xdx b). x sin xdx c). x tan xdx d). sin−1 xdx</p>
+<p>Solution.</p>
+<p>, V = x. Thus</p>
+<p>a). Let U = ln x, dV = dx. Then dU = dx</p>
+<p>x</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>ln xdx = x ln x − x dx = x ln x − x + C.</p>
+<p>x</p>
+<p>b). We apply integration by parts method twice: let U = x2 , dV = sin xdx. Then dU = 2xdx, V =</p>
+<p>− cos x. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>x2 sin xdx = −x2 cos x + 2</p>
+<p>x cos xdx.</p>
+<p>Now, let U = x, dV = cos xdx. Then dU = dx, V = sin x. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>x sin xdx = −x cos x + 2 x cos xdx = −x cos x + 2(x sin x − sin xdx)</p>
+<p>= −x2 cos x + 2x sin x + 2 cos x + C.</p>
+<p>1 2</p>
+<p>dx</p>
+<p>c). Let U = tan−1 x, dV = xdx. Then dU = 1+x</p>
+<p>2 , V = 2 x . Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1 2</p>
+<p>1</p>
+<p>x2</p>
+<p>1 2</p>
+<p>1</p>
+<p>1</p>
+<p>−1</p>
+<p>−1</p>
+<p>−1</p>
+<p>x tan xdx = x tan x −</p>
+<p>dx = x tan x −</p>
+<p>(1 −</p>
+<p>)dx</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>1+x</p>
+<p>2</p>
+<p>2</p>
+<p>1 + x2</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>= x2 tan−1 x − x + tan−1 x + C.</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>−1</p>
+<p>dx</p>
+<p>d). Let U = sin x, dV = dx. Then dU = √1−x2 , V = x. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>x</p>
+<p>−1</p>
+<p>−1</p>
+<p>dx.</p>
+<p>sin xdx = x sin x − √</p>
+<p>1 − x2</p>
+<p>Now we use integration by substitution. Let u = 1 − x2 . Then du = −2xdx Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>x</p>
+<p>1</p>
+<p>−1</p>
+<p>−1</p>
+<p>−1</p>
+<p>u− 2 du = x sin−1 x + u 2 + C</p>
+<p>sin xdx = x sin x − √</p>
+<p>dx = x sin x +</p>
+<p>2</p>
+<p>2</p>
+<p>1−x</p>
+<p>60 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>= x sin−1 x +</p>
+<p>√</p>
+<p>1 − x2 + C.</p>
+<p>Remark. The following are two useful rules of thumb for choosing U and dV :</p>
+<p>(i) If the integrand involves a polynomial multiplied by an exponential, a sine or a cosine, or</p>
+<p>some other readily integrable function, try U equals the polynomial and dV equals the rest.</p>
+<p>(ii) If the integrand involves a logarithm, an inverse trigonometric function, or some other</p>
+<p>function that is not readily integrable but whose derivative is readily calculated, try that function</p>
+<p>for U and let d V equal the rest.</p>
+<p>(Of course, these ”rules” come with no guarantee. They may fail to be helpful if ”the rest” is</p>
+<p>not of a suitable form. There remain many functions that cannot be anti-diﬀerentiated by any</p>
+<p>2</p>
+<p>standard techniques; e.g., ex .)</p>
+<p>The following two examples illustrate a frequently occurring and very useful phenomenon. It</p>
+<p>may happen after one or two integrations by parts, with the possible application of some known</p>
+<p>identity, that the original integral reappears on the right-hand side. Unless its coeﬃcient there is</p>
+<p>1, we have an equation that can be solved for that integral.</p>
+<p>∫</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.9. Evaluate I = sec3 xdx</div>
+<p>Solution. We start by integrating by parts: let U = sec x, dV = sec2 xdx. Then dU =</p>
+<p>sec x tan xdx, V = tan x. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>3</p>
+<p>2</p>
+<p>I = sec xdx = sec x tan x − sec x tan xdx = sec x tan x − sec x(secx − 1)dx</p>
+<p>∫</p>
+<p>= sec x tan x −</p>
+<p>∫</p>
+<p>sec xdx −</p>
+<p>3</p>
+<p>Solving for I, we have</p>
+<p>∫</p>
+<p>sec3 xdx = I =</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.10. Evaluate I =</div>
+<p>∫</p>
+<p>sec xdx = sec x tan x − I + ln | sec x + tan x|.</p>
+<p>1</p>
+<p>1</p>
+<p>sec x tan x + ln | sec x + tan x| + C.</p>
+<p>2</p>
+<p>2</p>
+<p>eax cos bxdx</p>
+<p>Solution. If either a = 0 or b = 0, the integral is easy to evaluate. So let us assume that a ̸= 0</p>
+<p>and b ̸= 0. Let U = eax , dV = cos bxdx. Then dU = aeax dx, V = 1b sin bx. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>1 ax</p>
+<p>a</p>
+<p>ax</p>
+<p>eax sin bxdx.</p>
+<p>I = e cos bxdx = e sin bx −</p>
+<p>b</p>
+<p>b</p>
+<p>Now, let U = eax , dv = sin bxdx. Then dU = aeax dx, V = − cosb bx . Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>) 1</p>
+<p>1 ax</p>
+<p>a ( 1 ax</p>
+<p>a</p>
+<p>a</p>
+<p>a2</p>
+<p>ax</p>
+<p>I = e cos bxdx = e sin bx− − e cos bx+</p>
+<p>eax cos bxdx = eax sin bx+ 2 eax cos bx− 2 I.</p>
+<p>b</p>
+<p>b</p>
+<p>b</p>
+<p>b</p>
+<p>b</p>
+<p>b</p>
+<p>b</p>
+<p>Thus</p>
+<p>(1 +</p>
+<p>Hence</p>
+<p>∫</p>
+<p>a2</p>
+<p>1 ax</p>
+<p>a ax</p>
+<p>)I</p>
+<p>=</p>
+<p>e</p>
+<p>sin</p>
+<p>bx</p>
+<p>+</p>
+<p>e cos bx + C1 .</p>
+<p>b2</p>
+<p>b</p>
+<p>b2</p>
+<p>beax sin bx + aeax cos bx</p>
+<p>+ C.</p>
+<p>e cos bxdx = I =</p>
+<p>a2 + b2</p>
+<p>ax</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+<p>4.2.3</p>
+<p>61</p>
+<p>Integration of Rational Functions</p>
+<p>In this subsection we are concerned with integrals of the form</p>
+<p>∫</p>
+<p>P (x)</p>
+<p>dx,</p>
+<p>Q(x)</p>
+<p>where P and Q are polynomials in x. We need normally concern ourselves only with rational</p>
+<p>P (x)</p>
+<p>functions Q(x)</p>
+<p>where the degree of P is less than that of Q. If the degree of P equals or exceeds</p>
+<p>P (x)</p>
+<p>the degree of Q, then we can use ”long division” to express the fraction Q(x)</p>
+<p>as a polynomial</p>
+<p>R(x)</p>
+<p>plus another fraction Q(x)</p>
+<p>, where R, the remainder in the division, has degree less than that of Q.</p>
+<p>Without loss of generality(WLOG), we will also consider the case where P (x) and Q(x) has no</p>
+<p>common roots.</p>
+<p>Deﬁnition 4.2.11. If the degree of the numerator P (x) is less than that of the denominator Q(x),</p>
+<p>P (x)</p>
+<p>then we say that the rational function Q(x)</p>
+<p>is a proper function.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.12. Evaluate</div>
+<p>∫ x3 +3x2</p>
+<p>x2 +1</p>
+<p>dx</p>
+<p>Solution. The numerator has degree 3 and the denominator has degree 2, so we use long division</p>
+<p>to get</p>
+<p>x3 + 3x2</p>
+<p>x+3</p>
+<p>=x+3− 2</p>
+<p>.</p>
+<p>2</p>
+<p>x +1</p>
+<p>x +1</p>
+<p>Thus</p>
+<p>∫ 3</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>x + 3x2</p>
+<p>x</p>
+<p>3</p>
+<p>1</p>
+<p>1</p>
+<p>dx = (x+3)dx−</p>
+<p>dx−</p>
+<p>dx = x2 +3x− ln(x2 +1)−3 tan−1 x+C.</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>x +1</p>
+<p>x +1</p>
+<p>x +1</p>
+<p>2</p>
+<p>2</p>
+<p>∫ x</p>
+<p>beginexampleEvaluate 2x−1</p>
+<p>dx</p>
+<p>Solution. The numerator and the denominator have the same degree 1, so division is again</p>
+</div>
+<h3>required. We use a method called ”short division”:</h3>
+<p>x</p>
+<p>1 2x</p>
+<p>1 2x − 1 + 1</p>
+<p>1</p>
+<p>1</p>
+<p>=</p>
+<p>=</p>
+<p>= (1 +</p>
+<p>).</p>
+<p>2x − 1</p>
+<p>2 2x − 1</p>
+<p>2 2X − 1</p>
+<p>2</p>
+<p>2X − 1</p>
+<p>Thus</p>
+<p>∫</p>
+<p>x</p>
+<p>1</p>
+<p>dx =</p>
+<p>2x − 1</p>
+<p>2</p>
+<p>∫</p>
+<p>(1 +</p>
+<p>1</p>
+<p>x 1</p>
+<p>)dx = + ln |2x − 1| + C.</p>
+<p>2x − 1</p>
+<p>2 4</p>
+<p>Linear and Quadratic Denominators</p>
+<p>• Suppose that Q(x) is linear. That is Q(x) = ax + b. Then</p>
+<p>∫</p>
+<p>c</p>
+<p>c</p>
+<p>dx = ln |ax + b| + C.</p>
+<p>ax + b</p>
+<p>a</p>
+<p>• Suppose that Q(x) is quadratic,i.e. of degree 2. For purposes of this discussion we can assume</p>
+<p>that Q(x) is either of the form x2 +a2 or x2 −a2 , since completing the square and making change of</p>
+<p>variable can always reduce a quadratic to this form. Since P (x) can be at most a linear function,</p>
+<p>P (x) = Ax + B, we are led to consider the following four integrals</p>
+<p>62 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>∫</p>
+<p>xdx</p>
+<p>,</p>
+<p>x2 + a2</p>
+<p>∫</p>
+<p>xdx</p>
+<p>,</p>
+<p>x 2 − a2</p>
+<p>∫</p>
+<p>dx</p>
+<p>,</p>
+<p>x2 + a 2</p>
+<p>∫</p>
+<p>dx</p>
+<p>.</p>
+<p>x2 − a 2</p>
+<p>The ﬁrst two integrals yield to the substitution u = x2 ± a2 . The third is a known integral. In the</p>
+<p>fourth integral, notice that</p>
+<p>1</p>
+<p>x2 − a 2</p>
+<p>=</p>
+<p>1</p>
+<p>A</p>
+<p>B</p>
+<p>=</p>
+<p>+</p>
+<p>.</p>
+<p>(x − a)(x + a)</p>
+<p>x−a x+a</p>
+<p>That is Ax+Aa+Bx−Ba</p>
+<p>= 1. Equating like coeﬃcients of like terms we have</p>
+<p>x2 −a2</p>
+<p>A+B = 0</p>
+<p>Aa − Ba = 1</p>
+<p>1</p>
+<p>1</p>
+<p>Solving, we have A = 2a</p>
+<p>, B = − 2a</p>
+<p>. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>dx</p>
+<p>1</p>
+<p>dx</p>
+<p>1</p>
+<p>dx</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>x−a</p>
+<p>=</p>
+<p>−</p>
+<p>=</p>
+<p>ln |x − a| −</p>
+<p>ln |x + a| + C =</p>
+<p>ln |</p>
+<p>| + C.</p>
+<p>2</p>
+<p>2</p>
+<p>x −a</p>
+<p>2a</p>
+<p>x − a 2a</p>
+<p>x+a</p>
+<p>2a</p>
+<p>2a</p>
+<p>2a</p>
+<p>x+a</p>
+<h3>In summary. we have:</h3>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>xdx</p>
+<p>x2 +a2</p>
+<p>=</p>
+<p>1</p>
+<p>ln(x2 + a2 ) + C</p>
+<p>2</p>
+<p>xdx</p>
+<p>x2 −a2</p>
+<p>=</p>
+<p>1</p>
+<p>ln(x2 − a2 ) + C</p>
+<p>2</p>
+<p>dx</p>
+<p>x2 +a2</p>
+<p>=</p>
+<p>1</p>
+<p>tan−1 x + C</p>
+<p>a</p>
+<p>dx</p>
+<p>x2 −a2</p>
+<p>=</p>
+<p>1</p>
+<p>ln | x−a</p>
+<p>|+C</p>
+<p>2a</p>
+<p>x+a</p>
+<p>The technique used above, involving the writing of a complicated fraction as a sum of simpler</p>
+<p>fractions, is called the Method of Partial Fractions. Suppose that a polynomial Q(x) is of</p>
+<p>degree n and that its highest degree term is xn (with coeﬃcient 1). Suppose also that Q factors</p>
+<p>into a product of n distinct linear (degree 1) factors, say,</p>
+<p>Q(x) = (x − a1 )(x − a2 )...(x − an ),</p>
+<p>P (x)</p>
+<p>where ai ̸= aj if i ̸= j, 1 ≤ i, j ≤ n. If P (x) is a polynomial of degree smaller than n, then Q(x)</p>
+<p>has a partial fraction decomposition of the form</p>
+<p>A1</p>
+<p>A2</p>
+<p>An</p>
+<p>P (x)</p>
+<p>=</p>
+<p>+</p>
+<p>+ ··· +</p>
+<p>,</p>
+<p>Q(x)</p>
+<p>x − a1 x − a2</p>
+<p>x − an</p>
+<p>where A1 , A2 , · · · , An are constants to be determined.</p>
+<p>∫ x+4</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.13. x2 −5x+6</div>
+<p>dx</p>
+<p>Solution. Note that</p>
+<p>x+4</p>
+<p>x2 − 5x + 6</p>
+<p>=</p>
+<p>x+4</p>
+<p>A</p>
+<p>B</p>
+<p>=</p>
+<p>+</p>
+<p>.</p>
+<p>(x − 2)(x − 3)</p>
+<p>x−2 x−3</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+<p>63</p>
+<p>That is,</p>
+<p>x + 4 = Ax + Bx − 3A − 2B.</p>
+<p>That is A + B = 1 and −3A − 2B = 4, and upon solving we have A = −6, B = 7. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>x+4</p>
+<p>1</p>
+<p>1</p>
+<p>dx = −6</p>
+<p>dx + 7</p>
+<p>dx = −6 ln |x − 2| + 7 ln |x − 3| + C.</p>
+<p>2</p>
+<p>x − 5x + 6</p>
+<p>x−2</p>
+<p>x−3</p>
+<p>∫ 3</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.14. xx3 +2</div>
+<p>dx</p>
+<p>−3</p>
+<p>Solution. The numerator and denominator have same degree, so we must divide:</p>
+<p>∫</p>
+<p>∫ 3</p>
+<p>∫</p>
+<p>x+2</p>
+<p>x +2</p>
+<p>x+2</p>
+<p>)dx</p>
+<p>=</p>
+<p>x</p>
+<p>+</p>
+<p>dx.</p>
+<p>dx</p>
+<p>=</p>
+<p>(1</p>
+<p>+</p>
+<p>x3 − 3</p>
+<p>x3 − x2</p>
+<p>x3 − x2</p>
+</div>
+<h3>Using the method of partial fractions, we have:</h3>
+<p>x+2</p>
+<p>x+2</p>
+<p>A</p>
+<p>B</p>
+<p>C</p>
+<p>=</p>
+<p>= +</p>
+<p>+</p>
+<p>.</p>
+<p>3</p>
+<p>2</p>
+<p>x −x</p>
+<p>x(x − 1)(x + 1)</p>
+<p>x x−1 x+1</p>
+<p>Thus we have A + B + C = 0, B − C = 0, −A = 2, and thus A = −2, B = 23 and C = 12 . Thus</p>
+<p>∫</p>
+<p>x3 + 2</p>
+<p>dx = x−2</p>
+<p>x3 − 3</p>
+<p>∫</p>
+<p>dx 3</p>
+<p>+</p>
+<p>x 2</p>
+<p>∫</p>
+<p>3</p>
+<p>1</p>
+<p>dx+</p>
+<p>x−1</p>
+<p>2</p>
+<p>∫</p>
+<p>3</p>
+<p>3</p>
+<p>1</p>
+<p>dx = x−2 ln |x|+ ln |x−1|+ ln |x+1|+C.</p>
+<p>x+1</p>
+<p>2</p>
+<p>2</p>
+<p>We next consider a rational function whose denominator has a quadratic factor that is a sum of</p>
+<p>sqaures and cannot be further factored into a product of real linear factors.</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.15. Evaluate</div>
+<p>∫ 2+3x+x2</p>
+<p>x(x2 +1)</p>
+<p>dx</p>
+<p>Solution. No division is required here since degree of numerator is less than degree of denominator.</p>
+<p>The appropriate form of decomposition turns out to be</p>
+<p>2 + 3x + x2</p>
+<p>A Bx + C</p>
+<p>= + 2</p>
+<p>.</p>
+<p>2</p>
+<p>x(x + 1)</p>
+<p>x</p>
+<p>x +1</p>
+<p>Equating coeﬃcients, we have A + B = 1, C = 3, A = 2. Hence A = 2, B = −1, and C = 3. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>2 + 3x + x2</p>
+<p>1</p>
+<p>x</p>
+<p>1</p>
+<p>1</p>
+<p>dx</p>
+<p>=</p>
+<p>2</p>
+<p>dx−</p>
+<p>dx+3</p>
+<p>dx</p>
+<p>=</p>
+<p>2</p>
+<p>ln</p>
+<p>|x|−</p>
+<p>ln(x2 +1)+3 tan−1 x+C.</p>
+<p>x(x2 + 1)</p>
+<p>x</p>
+<p>x2 + 1</p>
+<p>x2 + 1</p>
+<p>2</p>
+<p>Completing the Square</p>
+<p>Quadratic expressions of the form Ax2 + Bx + C can be written as</p>
+<p>Ax2 + Bx + C =</p>
+<p>A(x2 + B</p>
+<p>x + CA )</p>
+<p>A</p>
+<p>2</p>
+<p>B</p>
+<p>C</p>
+<p>B2</p>
+<p>= A(x2 + B</p>
+<p>x + 4A</p>
+<p>2 + A − 4A2 )</p>
+<p>A</p>
+<p>2</p>
+<p>B 2</p>
+<p>) + 4AC−B</p>
+<p>=</p>
+<p>A(x + 2A</p>
+<p>4A</p>
+<p>B</p>
+<p>The substitution u = x + 2A</p>
+<p>should then be made.</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.16. EvaluateI = x31+1 dx</div>
+<p>64 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>Solution. Note that Q(x) = x3 + 1 = (x + 1)(x2 − x + 1). The latter factor has no real roots and</p>
+<p>hence has no real linear sub-factors. We have</p>
+<p>1</p>
+<p>1</p>
+<p>Bx + C</p>
+<p>=</p>
+<p>=</p>
+<p>+</p>
+<p>.</p>
+<p>x3 + 1</p>
+<p>(x + 1)(x2 − x + 1)</p>
+<p>x + 1 x2 − x + 1</p>
+<p>Equating coeﬃcients we have A+B = 0, −A+B+C = 0, A+C = 1. Hence A = 31 , B = − 13 , C = 23 .</p>
+<p>We thus have</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>dx</p>
+<p>1</p>
+<p>dx</p>
+<p>1</p>
+<p>1</p>
+<p>dx</p>
+<p>I=</p>
+<p>dx =</p>
+<p>−</p>
+<p>= ln |x + 1| −</p>
+<p>.</p>
+<p>3</p>
+<p>2</p>
+<p>2</p>
+<p>x +1</p>
+<p>3</p>
+<p>x+1 3</p>
+<p>x −x+1</p>
+<p>3</p>
+<p>3</p>
+<p>x −x+1</p>
+<p>Completing squares, x2 − x + 1 = (x − 21 )2 + 34 . Thus</p>
+<p>∫</p>
+<p>I=</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>dx = ln |x + 1| −</p>
+<p>3</p>
+<p>x +1</p>
+<p>3</p>
+<p>3</p>
+<p>∫</p>
+<p>x − 21 − 32</p>
+<p>.</p>
+<p>(x − 12 )2 + 34</p>
+<p>Now letting u = x − 21 , we have du = dx. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>u</p>
+<p>1</p>
+<p>I=</p>
+<p>dx = ln |x + 1| −</p>
+<p>3 +</p>
+<p>3</p>
+<p>2</p>
+<p>2</p>
+<p>x +1</p>
+<p>3</p>
+<p>3</p>
+<p>2</p>
+<p>u +4</p>
+<p>u + 34</p>
+<p>3</p>
+<p>1 2</p>
+<p>2u</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>2x − 1</p>
+<p>= ln(u2 + ) + √ tan−1 ( √ ) + C = ln |x + 1| − ln(x2 − x + 1) + √ tan−1 ( √ ) + C.</p>
+<p>4</p>
+<p>2 3</p>
+<p>3</p>
+<p>6</p>
+<p>3</p>
+<p>3</p>
+<p>3</p>
+<p>Denominators with Repeated Factors</p>
+<p>We require one ﬁnal reﬁnement of the method of partial fractions. If any of the linear or quadratic</p>
+<p>P (x)</p>
+<p>factors of Q(x) is repeated (say, m times), then the partial fraction decomposition of Q(x)</p>
+<p>requires</p>
+<p>m distinct fractions corresponding to that factor. The denominators of these fractions have exponents increasing from 1 to m, and the numerators are all constants where the repeated factor is</p>
+<p>linear or linear where the repeated factor is quadratic.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.17. EvaluateI =</div>
+<p>∫</p>
+<p>1</p>
+<p>dx</p>
+<p>x(x−1)2</p>
+<p>Solution. The appropriate partial fraction decomposition is</p>
+<p>1</p>
+<p>A</p>
+<p>B</p>
+<p>C</p>
+<p>=</p>
+<p>+</p>
+<p>+</p>
+<p>.</p>
+<p>x(x − 1)2</p>
+<p>x x − 1 (x − 1)2</p>
+<p>Equating coeﬃcients of x2 , x, and 1, we have</p>
+<p>A+B</p>
+<p>= 0</p>
+<p>−2A + B + C = 0</p>
+<p>A</p>
+<p>= 1</p>
+<p>Hence A = 1, B = −1, C = 1, and</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>dx = dx −</p>
+<p>dx +</p>
+<p>dx = ln |x| − ln |x − 1| −</p>
+<p>+C</p>
+<p>I=</p>
+<p>2</p>
+<p>2</p>
+<p>x(x − 1)</p>
+<p>x</p>
+<p>x−1</p>
+<p>(x − 1)</p>
+<p>x−1</p>
+<p>= ln |</p>
+<p>x</p>
+<p>1</p>
+<p>|−</p>
+<p>+ C.</p>
+<p>x−1</p>
+<p>x−1</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+<p>4.2.4</p>
+<p>65</p>
+<p>Inverse Substitutions</p>
+<p>The Inverse Trigonometric Substitutions</p>
+</div>
+<h3>Three very useful inverse substitutions are:</h3>
+<p>x = a sin θ, x = a tan θ, x = a sec θ.</p>
+<h3>These corresponds to the direct substitutions:</h3>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>a</p>
+<p>θ = sin−1 , θ = tan−1 , θ = sec−1 = cos−1 .</p>
+<p>a</p>
+<p>a</p>
+<p>a</p>
+<p>x</p>
+<p>Inverse Sine Substitutions</p>
+<p>√</p>
+<p>Integrals involving a2 − x2 where a √> 0 can be reduced to a simpler form by means of the</p>
+<p>substitution x = a sin θ. Observe that a2 − x2 makes sense if −a ≤ x ≤ a, which corresponds to</p>
+<p>− π2 ≤ θ ≤ π2 . Since cos θ ≥ 0, for such θ we have</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>2</p>
+<p>2</p>
+<p>a − x = a2 (1 − sin2 θ) = a2 cos2 θ = a cos θ.</p>
+<p>√</p>
+<p>Therefore cos θ =</p>
+<p>a2 −x2</p>
+<p>a</p>
+<p>and tan θ = √a2x−x2 .</p>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.18. Evaluate</div>
+<p>∫</p>
+<p>1</p>
+<p>3</p>
+<p>(5−x2 ) 2</p>
+<p>dx</p>
+<p>√</p>
+<p>√</p>
+<p>Solution. Let x = 5 sin θ. Then dx = 5 cos θdθ. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫ √</p>
+<p>1</p>
+<p>5 cos θdθ</p>
+<p>1</p>
+<p>x</p>
+<p>1</p>
+<p>1</p>
+<p>4</p>
+<p>sec2 θdθ = tan θ + C = √</p>
+<p>=</p>
+<p>+ C.</p>
+<p>3 dx =</p>
+<p>3</p>
+<p>5</p>
+<p>5</p>
+<p>5 5 − x2</p>
+<p>(5 − x2 ) 2</p>
+<p>5 2 cos3 θ</p>
+<p>Inverse Tangent Substitutions</p>
+<p>√</p>
+<p>1</p>
+<p>Integrals involving a2 + x2 or x2 +a</p>
+<p>2 (a > 0) are often simpliﬁed by the substitution x = a tan θ.</p>
+<p>Since x can take any any real value, we have − π2 ≤ θ ≤ π2 or sec θ > 0 and</p>
+<p>√</p>
+<p>√</p>
+<p>a2 + x2 = a 1 + tan2 θ = a sec θ.</p>
+<p>Therefore sin θ = √a2x+x2 and cos θ = √a2a+x2 .</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.19. Evaluate</div>
+<p>∫</p>
+<p>√ 1</p>
+<p>dx</p>
+<p>4+x2</p>
+<p>Solution. Let x = 2 tan θ. Then dx = 2 sec2 θdθ. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>2 sec2 θ</p>
+<p>√</p>
+<p>dθ = sec θ dθ = ln | sec θ + tan θ| + C</p>
+<p>dx =</p>
+<p>2 sec θ</p>
+<p>4 + x2</p>
+<p>√</p>
+<p>√</p>
+<p>4 + x2 x</p>
+<p>= ln |</p>
+<p>+ | + C = ln( 4 + x2 + x) + C1 ,</p>
+<p>2</p>
+<p>2</p>
+<p>where C1 = C − ln 2.</p>
+<p>66 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.20. Evaluate</div>
+<p>∫</p>
+<p>1</p>
+<p>dx</p>
+<p>(1+9x2 )</p>
+<p>Solution. Let 3x = tan θ. Then 3dx = sec2 θdθ and 1 + 9x2 = secθ . Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>sec2 θdθ</p>
+<p>dx =</p>
+<p>=</p>
+<p>cos2 θdθ = (θ + sin θ cos θ) + C</p>
+<p>2</p>
+<p>4</p>
+<p>(1 + 9x )</p>
+<p>3</p>
+<p>sec θ</p>
+<p>3</p>
+<p>6</p>
+<p>=</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>3x</p>
+<p>.√</p>
+<p>+C</p>
+<p>tan−1 3x + √</p>
+<p>2</p>
+<p>6</p>
+<p>6 1 + 9x</p>
+<p>1 + 9x2</p>
+<p>=</p>
+<p>1</p>
+<p>1</p>
+<p>x</p>
+<p>tan−1 3x + .</p>
+<p>+ C.</p>
+<p>6</p>
+<p>2 1 + 9x2</p>
+<p>Inverse Secant Substitutions</p>
+<p>√</p>
+<p>Integrals involving x2 − a2 (where a > 0) can be simpliﬁed</p>
+<p>θ.</p>
+<p>√ substitution x√= a sec</p>
+<p>√ by using the</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>But we must be careful with this substitution. Although x − a = a sec θ − 1 = a √tan θ =</p>
+<p>a| tan θ|, we cannot always drop the absolute value from the tangent. Observe that x2 − a2</p>
+<p>makes sense for x ≥ a and for x ≤ −a.</p>
+<p>• If x ≥ a, then 0 ≤ θ = sec−1 xa = cosa x < π2 , and tan θ ≥ 0.</p>
+<p>• If x ≤ −a, then π2 < θ = sec−1 xa = cosa x ≤ π, and tan θ ≤ 0.</p>
+<p>In the ﬁrst case</p>
+<p>√</p>
+<p>x2 − a2 = a tan θ and in the second case</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.21. Find I =</div>
+<p>∫</p>
+<p>√</p>
+<p>x2 − a2 = −a tan θ.</p>
+<p>√ dx</p>
+<p>x2 −a2</p>
+<p>Solution. Assume x ≥ a.</p>
+<p>√</p>
+<p>If x = sec θ, then dx = a sec θ tan θdθ and x2 − a2 = a tan θ. Thus,</p>
+<p>∫</p>
+<p>I=</p>
+<p>dx</p>
+<p>√</p>
+<p>=</p>
+<p>2</p>
+<p>x − a2</p>
+<p>∫</p>
+<p>√</p>
+<p>√</p>
+<p>x2 − a 2</p>
+<p>x</p>
+<p>sec θdθ = ln | sec θ+tan θ|+C = ln | +</p>
+<p>|+C = ln |x+ x2 − a2 |+C1 ,</p>
+<p>a</p>
+<p>a</p>
+<p>where C1 = C − ln a.</p>
+<p>If x ≤ −a, let u = −x so that u ≥ a and du = −dx. We have</p>
+<p>∫</p>
+<p>I=−</p>
+<p>√</p>
+<p>√</p>
+<p>du</p>
+<p>1</p>
+<p>x + x2 − a2</p>
+<p>2</p>
+<p>2</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>= − ln |u + u − a | + C1 = ln |</p>
+<p>.</p>
+<p>| + C1</p>
+<p>u2 − a2</p>
+<p>−x + x2 − a2 x + x2 − a2</p>
+<p>= ln |</p>
+<p>x+</p>
+<p>√</p>
+<p>√</p>
+<p>x 2 − a2</p>
+<p>|</p>
+<p>+</p>
+<p>C</p>
+<p>=</p>
+<p>ln</p>
+<p>|x</p>
+<p>+</p>
+<p>x2 − a2 | + C2 ,</p>
+<p>1</p>
+<p>−a2</p>
+<p>where C2 = C1 − 2 ln a. Thus, in either case, we have</p>
+<p>I = ln |x +</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.22. Find I =</div>
+<p>∫</p>
+<p>√ 1</p>
+<p>dx</p>
+<p>2x−x2</p>
+<p>√</p>
+<p>x2 − a2 | + C.</p>
+<p>4.2. TECHNIQUES OF INTEGRATION</p>
+<p>∫</p>
+<p>Solution.</p>
+<p>I=</p>
+<p>1</p>
+<p>√</p>
+<p>dx =</p>
+<p>2x − x2</p>
+<p>∫</p>
+<p>67</p>
+<p>dx</p>
+<p>√</p>
+<p>=</p>
+<p>1 − (1 − 2x + x2 )</p>
+<p>∫</p>
+<p>dx</p>
+<p>√</p>
+<p>.</p>
+<p>1 − (x − 1)2</p>
+<p>Now, if we let u = x − 1, then du = dx. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>du</p>
+<p>dx</p>
+<p>√</p>
+<p>√</p>
+<p>√</p>
+<p>I=</p>
+<p>=</p>
+<p>dx =</p>
+<p>= sin−1 u + C = sin−1 (x − 1) + C.</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>2x − x</p>
+<p>1−u</p>
+<p>1 − (x − 1)</p>
+<p>∫</p>
+<p>x</p>
+<p>beginexampleFind I = 4x2 +12x+13</p>
+<p>dx</p>
+<p>Solution.</p>
+<p>∫</p>
+<p>I=</p>
+<p>x</p>
+<p>dx =</p>
+<p>2</p>
+<p>4x + 12x + 13</p>
+<p>∫</p>
+<p>xdx</p>
+<p>1</p>
+<p>=</p>
+<p>9</p>
+<p>2</p>
+<p>4</p>
+<p>4(x + 3x + 4 + 1</p>
+<p>∫</p>
+<p>xdx</p>
+<p>.</p>
+<p>(x + 32 )2 + 1</p>
+<p>Let u = x + 23 . Then du = dx. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>x</p>
+<p>xdx</p>
+<p>1</p>
+<p>xdx</p>
+<p>I=</p>
+<p>dx =</p>
+<p>=</p>
+<p>9</p>
+<p>2</p>
+<p>2</p>
+<p>4x + 12x + 13</p>
+<p>4</p>
+<p>4(x + 3x + 4 + 1)</p>
+<p>(x + 32 )2 + 1</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>udu</p>
+<p>du</p>
+<p>3</p>
+<p>=</p>
+<p>−</p>
+<p>.</p>
+<p>2</p>
+<p>2</p>
+<p>4</p>
+<p>u +1 8</p>
+<p>u +1</p>
+<p>In the ﬁrst integral, let v = u2 + 1, thus dv = 2udu. Therefore,</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>x</p>
+<p>1</p>
+<p>udu</p>
+<p>3</p>
+<p>du</p>
+<p>1</p>
+<p>dv 3</p>
+<p>I=</p>
+<p>dx</p>
+<p>=</p>
+<p>−</p>
+<p>=</p>
+<p>− tan−1 u</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>4x + 12x + 13</p>
+<p>4</p>
+<p>u +1 8</p>
+<p>u +1</p>
+<p>8</p>
+<p>v</p>
+<p>8</p>
+<p>1</p>
+<p>3</p>
+<p>1</p>
+<p>3</p>
+<p>3</p>
+<p>ln |v| − tan−1 u + C = ln(4x2 + 12x + 13) − tan−1 (x + ) + C1 ,</p>
+<p>8</p>
+<p>8</p>
+<p>8</p>
+<p>8</p>
+<p>2</p>
+<p>where C1 = C − ln84 .</p>
+<p>=</p>
+<p>4.2.5</p>
+<p>Inverse Hyperbolic Substitutions</p>
+<p>As an alternative to the inverse secant substitution x = a sec θ to simplify integrals involving</p>
+<p>√</p>
+<p>x2 − a2 (where x ≥ a > 0) we can use the inverse hyperbolic</p>
+<p>cosine substitution x = a cosh u.</p>
+<p>√</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>Since cosh u − 1 = sinh u, this substitution produces x − a = a sinh u. To express u in terms</p>
+<p>of x, we need the result, note that</p>
+<p>√</p>
+<p>cosh−1 x = ln(x + x2 − 1), x ≥ 1.</p>
+<p>∫</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.23. Find I = √xdx</div>
+<p>(where a > 0)</p>
+<p>2 −a2 ,</p>
+<p>Solution. Note that this problem has been solved using the inverse secant substitution. Again</p>
+<p>we assume x ≥ a(the case where x ≤ −1 can be handled similarly.) Using the substitution</p>
+<p>x = a cosh u, so that dx = a sinh udu, we have</p>
+<p>√</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>x</p>
+<p>x</p>
+<p>a sinh u</p>
+<p>dx</p>
+<p>x2</p>
+<p>√</p>
+<p>du = du = u + C = cosh−1 + C = ln( +</p>
+<p>−1 )+C</p>
+<p>=</p>
+<p>I=</p>
+<p>a sinh u</p>
+<p>a</p>
+<p>a</p>
+<p>a2</p>
+<p>x2 − a2</p>
+<p>68 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>= ln(x +</p>
+<p>√</p>
+<p>x2 − a2 ) + C1 ,</p>
+<p>where C1 = C − ln a.</p>
+<p>Similarly, the inverse hyperbolic substitution x = a sinh u can</p>
+<p>of the inverse</p>
+<p>√ be used instead</p>
+<p>1</p>
+<p>2</p>
+<p>2</p>
+<p>tangent substitution x = a tan θ to simplify integrals involving x + a or x2 +a2 . In this case, we</p>
+<p>have dx = a cosh udu and x2 + a2 = a2 cosh2 u, and we may need the result that</p>
+<p>√</p>
+<p>sinh2 x = ln(x + x2 + 1),</p>
+<p>which is valid for all x.</p>
+<p>4.2.6</p>
+<p>Other Inverse Substitutions</p>
+<p>√</p>
+<p>ax + b can be made simpler with the substitution ax + b = u2 .</p>
+<p>∫ 1</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.24. Find 1+√</div>
+<p>dx</p>
+<p>2x</p>
+<p>Integrals involving</p>
+<p>Solution. Let 2x = u2 . Then 2dx = 2udu. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>u</p>
+<p>1+u−1</p>
+<p>1</p>
+<p>√ dx =</p>
+<p>du =</p>
+<p>du = (1 −</p>
+<p>)du.</p>
+<p>1+u</p>
+<p>1+u</p>
+<p>1+u</p>
+<p>1 + 2x</p>
+<p>Let v = 1 + u and hence dv = du. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>√</p>
+<p>√</p>
+<p>1</p>
+<p>dv</p>
+<p>1</p>
+<p>√ dx = (1 −</p>
+<p>)du = u −</p>
+<p>= u − ln |v| + C = 2x − ln(1 + 2x) + C.</p>
+<p>1+u</p>
+<p>v</p>
+<p>1 + 2x</p>
+<p>√</p>
+<p>Sometimes integrals involving n ax + b will be much simpliﬁed by the hybrid substitution ax+b =</p>
+<p>un , adx = nun−1 du.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.25. Find</div>
+<p>∫</p>
+<p>√x</p>
+<p>dx</p>
+<p>1+ 3 3x+2</p>
+<p>Solution. Let 3x + 2 = u3 . Then 3dx = 3u2 du. Thus</p>
+<p>∫</p>
+<p>∫ 3</p>
+<p>∫</p>
+<p>x</p>
+<p>1 u5</p>
+<p>u −2 2</p>
+<p>1</p>
+<p>4</p>
+<p>√</p>
+<p>dx</p>
+<p>=</p>
+<p>u</p>
+<p>du</p>
+<p>=</p>
+<p>(u</p>
+<p>−</p>
+<p>2u)du</p>
+<p>=</p>
+<p>( − u2 ) + C</p>
+<p>3u</p>
+<p>3</p>
+<p>3 5</p>
+<p>1 + 3 3x + 2</p>
+<p>√</p>
+<p>)</p>
+<p>√</p>
+<p>1 ( ( 3 3x + 2)5</p>
+<p>− ( 3 3x + 2)2 + C.</p>
+<p>=</p>
+<p>3</p>
+<p>5</p>
+<p>If more than one fractional power is present, it may be possible to eliminate all of them at once.</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.26. Evaluate</div>
+<p>∫</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>x 2 (1+x) 3</p>
+<p>dx</p>
+<p>Solution. Eliminate both the square root and the cube root by using the inverse substitution</p>
+<p>x = u6 (6 is chosen because it is the LCM of 2 and 3). Let x = u6 . Then dx = 6u5 du. Thus</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>1</p>
+<p>u2</p>
+<p>u5 du</p>
+<p>=</p>
+<p>6</p>
+<p>du</p>
+<p>dx</p>
+<p>=</p>
+<p>6</p>
+<p>1</p>
+<p>1</p>
+<p>u3 (1 + u2 )</p>
+<p>1 + u2</p>
+<p>x 2 (1 + x) 3</p>
+<p>4.3. THE DEFINITE INTEGRAL</p>
+<p>∫</p>
+<p>=6</p>
+<p>(1 −</p>
+<p>69</p>
+<p>1</p>
+<p>1</p>
+<p>1</p>
+<p>)du = 6(u − tan−1 u) + C = 6(x 6 − tan−1 x 6 ) + C.</p>
+<p>2</p>
+<p>1+u</p>
+<p>The tan( 2θ ) Substitution</p>
+<p>There is a certain special substitution that can transform an integral whose integrand is a rational</p>
+<p>function of sinθ and cosθ (i.e., a quotient of polynomials in sinθ and cosθ into a rational function</p>
+<p>of x. The substitution is x = tan 2θ or, equivalently, θ = 2 tan−1 x. Observe that</p>
+<p>cos2</p>
+<p>θ</p>
+<p>1 θ</p>
+<p>1</p>
+<p>1</p>
+<p>=</p>
+<p>=</p>
+<p>,</p>
+<p>=</p>
+<p>θ</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>sec 2</p>
+<p>1 + x2</p>
+<p>1 + tan 2</p>
+<p>so</p>
+<p>cos θ = 2 cos2</p>
+<p>sin θ = 2 sin2</p>
+<p>θ</p>
+<p>2</p>
+<p>1 − x2</p>
+<p>−1=</p>
+<p>−</p>
+<p>1</p>
+<p>=</p>
+<p>2</p>
+<p>1 + x2</p>
+<p>1 + x2</p>
+<p>θ</p>
+<p>θ</p>
+<p>θ</p>
+<p>θ</p>
+<p>2x</p>
+<p>cos = 2 tan cos2 =</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>2</p>
+<p>1 + x2</p>
+<p>Also dx = 12 sec2 2θ dθ, so</p>
+<p>θ</p>
+<p>2dx</p>
+<p>dθ = 2 cos2 dx =</p>
+<p>.</p>
+<p>2</p>
+<p>1 + x2</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.27. Evaluate</div>
+<p>∫</p>
+<p>1</p>
+<p>2+cos θdθ</p>
+<p>2</p>
+<p>2dx</p>
+<p>Solution. Let x = tan 2θ . Then cos θ = 1−x</p>
+<p>and dθ = 1+x</p>
+<p>2 . Thus</p>
+<p>1+x2</p>
+<p>∫</p>
+<p>1</p>
+<p>dx =</p>
+<p>2 + cos θ</p>
+<p>∫</p>
+<p>2dx</p>
+<p>1+x2</p>
+<p>2</p>
+<p>2 + 1−x</p>
+<p>1+x2</p>
+<p>∫</p>
+<p>=2</p>
+<p>1</p>
+<p>3 + x3</p>
+<p>2</p>
+<p>x</p>
+<p>2</p>
+<p>1</p>
+<p>θ</p>
+<p>= √ tan−1 √ + C = √ tan−1 ( tan ) + C.</p>
+<p>3</p>
+<p>2</p>
+<p>3</p>
+<p>3</p>
+<p>3</p>
+<p>∫ dx</p>
+<p>dx</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.2.28. Evaluate cos</div>
+<p>x</p>
+<p>2</p>
+<p>2dt</p>
+<p>Solution. Taking into account that cos x = 1−t</p>
+<p>and dx = 1+t</p>
+<p>2 , we ﬁnd that</p>
+<p>1+t2</p>
+<p>∫</p>
+<p>4.3</p>
+<p>dx</p>
+<p>dx =</p>
+<p>cos x</p>
+<p>∫</p>
+<p>2dt</p>
+<p>1+t2</p>
+<p>2</p>
+<p>2 + 1−t</p>
+<p>1+t2</p>
+<p>∫</p>
+<p>=2</p>
+<p>1 + tan x2</p>
+<p>dt</p>
+<p>1+t</p>
+<p>=</p>
+<p>ln</p>
+<p>|</p>
+<p>|</p>
+<p>+</p>
+<p>C</p>
+<p>=</p>
+<p>ln</p>
+<p>|</p>
+<p>| + C.</p>
+<p>1 + t2</p>
+<p>1−t</p>
+<p>1 − tan x2</p>
+<p>The Deﬁnite Integral</p>
+<p>∫b</p>
+<p>The deﬁnite integral of f (x) over [a, b], denoted by a f (x)dx is a number; it is not a function of</p>
+<p>x. It depends on the numbers a and b and on the particular function f , but not on the variable</p>
+<p>x. It is deﬁned</p>
+<p>∫</p>
+<p>b</p>
+<p>f (x)dx = [F (x) + C]|ba = F (b) − F (a),</p>
+<p>a</p>
+<p>where F is an antiderivative of f .</p>
+<p>(⋆)</p>
+<p>70 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>Deﬁnition 4.3.1. Let f (x) be a function whose domain contains the closed interval [a, b]. Suppose</p>
+<p>F (x)</p>
+<p>∫ nis an antiderivative for f (x). Then the deﬁnite integral of f (x) from x = a to x = b, denoted</p>
+<p>by a f (x)dx is deﬁned as</p>
+<p>∫ b</p>
+<p>f (x)dx = [F (x) + C]|x=b</p>
+<p>x=a = F (b) − F (a).</p>
+<p>a</p>
+<p>Here, a is called the lower bound/limit of integration and b is called the upper bound/limit</p>
+<p>of integration.</p>
+<p>Observe that the diﬀerence F (b) − F (a) does not depend on C, because</p>
+<p>(F (b) + C) − (F (a) + C) = F (b) − F (a).</p>
+<p>Formula (⋆) is called</p>
+<p>∫ a the Newton-Leibniz formula. Note that in (⋆) if a = b, then the integral</p>
+<p>is zero. That is a f (x)dx = 0.</p>
+<p>The techniques of integration can be used to evaluate deﬁnite integrals.</p>
+<p>4.3.1</p>
+<p>Properties of the Deﬁnite Integral</p>
+<p>∫b</p>
+<p>∫a</p>
+<p>1. a f (x)dx = − b f (x)dx</p>
+<p>∫b</p>
+<p>∫b</p>
+<p>2. a kf (x)dx = k a f (x)dx</p>
+<p>∫b</p>
+<p>∫b</p>
+<p>∫b</p>
+<p>3. a [f (x) + g(x)]dx = a f (x)dx + a g(x)dx</p>
+<p>∫b</p>
+<p>∫c</p>
+<p>∫b</p>
+<p>4. a f (x)dx = a f (x)dx + c f (x)dx where</p>
+<p>c ∈ [a, b]</p>
+<p>If a function F is an antiderivative of f on the half-interval [a, ∞) and limx→∞ F (x) exists, then</p>
+<p>∫ ∞</p>
+<p>∫ x</p>
+<p>f (x)dx = lim F (x) − F (a) = lim</p>
+<p>f (t)dt.</p>
+<p>x→∞</p>
+<p>a</p>
+<p>Similarly</p>
+<p>∫ ∞</p>
+<p>x→∞</p>
+<p>∫ c</p>
+<p>f (x)dx =</p>
+<p>−∞</p>
+<p>∫ ∞</p>
+<p>f (x)dx +</p>
+<p>−∞</p>
+<p>a</p>
+<p>f (x)dx.</p>
+<p>c</p>
+<p>Such integrals are called improper integrals.</p>
+<p>∫1</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.2. Find 0 √dx</div>
+<p>1−x</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.3. Solution. The integrand is not deﬁned at x = 1, and so as an improper integral,</div>
+<p>we can write</p>
+<p>∫ 1</p>
+<p>∫ x</p>
+<p>√</p>
+<p>dx</p>
+<p>dt</p>
+<p>√</p>
+<p>√</p>
+<p>= lim−</p>
+<p>= lim− (−2 1 − x) − (−2) = 2.</p>
+<p>1 − x x→1 0</p>
+<p>1 − t x→1</p>
+<p>0</p>
+<p>∫ ∞ dx</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.4. Find 1 x2</div>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.5. Solution. The interval of integration is the inﬁnite interval [0, ∞).</div>
+<p>∫ ∞</p>
+<p>∫ ∞</p>
+<p>dt</p>
+<p>1</p>
+<p>dx</p>
+<p>=</p>
+<p>lim</p>
+<p>=</p>
+<p>lim</p>
+<p>(−</p>
+<p>) − (−1) = 1.</p>
+<p>x→∞ 1</p>
+<p>x→∞</p>
+<p>x2</p>
+<p>t2</p>
+<p>x</p>
+<p>1</p>
+<p>∫1</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.6. Evaluate 0 2x(x2 + 1)5 dx</div>
+<p>4.4. APPLICATIONS OF THE DEFINITE INTEGRAL</p>
+<p>71</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.3.7. Solution:Method 1. Let u = x2 + 1, du = 2xdx. Then</div>
+<p>∫ 1</p>
+<p>∫</p>
+<p>x2 + 1</p>
+<p>u6</p>
+<p>2</p>
+<p>5</p>
+<p>2x(x + 1) dx = u5 du =</p>
+<p>+C =</p>
+<p>+ C.</p>
+<p>6</p>
+<p>6</p>
+<p>0</p>
+<p>Consequently,</p>
+<p>∫ 1</p>
+<p>x2 + 1 1 26 16</p>
+<p>21</p>
+<p>2x(x + 1) dx =</p>
+<p>|0 =</p>
+<p>−</p>
+<p>= .</p>
+<p>6</p>
+<p>6</p>
+<p>6</p>
+<p>2</p>
+<p>0</p>
+<p>2</p>
+<p>5</p>
+<p>Method 2. Let u = x2 + 1, du = 2xdx; however, we also apply the substitution to the limits of</p>
+<p>integration as well. When x = 0, we have u = 02 + 1 = 1; and when x = 1, we have u = 12 + 1 = 2.</p>
+<p>Therefore</p>
+<p>∫ 1</p>
+<p>∫ 2</p>
+<p>u6 2 26 16</p>
+<p>21</p>
+<p>2</p>
+<p>5</p>
+<p>5</p>
+<p>2x(x + 1) dx =</p>
+<p>u du = |1 =</p>
+<p>−</p>
+<p>= .</p>
+<p>6</p>
+<p>6</p>
+<p>6</p>
+<p>2</p>
+<p>0</p>
+<p>1</p>
+<p>4.4</p>
+<p>Applications of the Deﬁnite Integral</p>
+<p>We give concepts of length, area and volume analytic deﬁnitions using the concept of the deﬁnite</p>
+<p>integral.</p>
+<p>4.4.1</p>
+<p>Area and the Deﬁnite Integral</p>
+<p>Area as a Limit</p>
+<p>Let f be a continuous, positive valued function on [a, b] and suppose we want to compute the</p>
+<p>area of f under the graph of f from x = a to x = b. We may approximate the area by partitioning</p>
+<p>the region into n trapezia (subdivide [a, b] into n equal intervals each of length ∆x) and ﬁnding</p>
+<p>the area of each trapezia and add the areas up.</p>
+<p>A = lim (</p>
+<p>n</p>
+<p>∑</p>
+<p>n→∞</p>
+<p>f (xi )∆x),</p>
+<p>i=1</p>
+<p>where ∆x = b−a</p>
+<p>and xi is the right-hand endpoint of the ith interval [xi−1 , xi ].</p>
+<p>n</p>
+<p>Note that the deﬁnite integral exists if the limit is a ﬁnite number. The actual area A is given by</p>
+<p>the deﬁnite integral</p>
+<p>∫</p>
+<p>b</p>
+<p>A=</p>
+<p>f (x)dx.</p>
+<p>(⋆).</p>
+<p>a</p>
+<p>Note that the approximation to area approaches the actual area as n → ∞. Thus</p>
+<p>∫ b</p>
+<p>A=</p>
+<p>n</p>
+<p>∑</p>
+<p>f (x)dx = lim (</p>
+<p>f (xi )∆x).</p>
+<p>n→∞</p>
+<p>a</p>
+<p>i=1</p>
+<p>It can be shown that the partitioning points xi need not be equally spaced as long as the longest</p>
+<p>interval nears zero as n increases without bound. The deﬁnite integral deﬁned here is called a</p>
+<p>Riemann integral.</p>
+<p>If f (x) < 0 on [a, b], then the integral (⋆) is a non-positive number,−A. Since the area is nonnegative, we deﬁne</p>
+<p>∫</p>
+<p>b</p>
+<p>|f (x)|dx.</p>
+<p>A=</p>
+<p>a</p>
+<p>72 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>Let f1 , f2 be continuous functions with f1 (x) ≥ f (x2 ) for x ∈ [a, b]. Then the area A of the region</p>
+<p>bounded by the curves y = f1 (x) and y = f2 (x) and the vertical lines x = a, x = b is</p>
+<p>∫ b</p>
+<p>[f (x) − g(x)]dx</p>
+<p>A=</p>
+<p>(⋆⋆)</p>
+<p>a</p>
+<p>More generally, consider a continuous function f with a graph that crosses the x-axis at ﬁnitely</p>
+<p>many points xi , i = 1, 2, ..., k between a and b. Then we write</p>
+<p>∫ b</p>
+<p>∫ b</p>
+<p>∫ x1</p>
+<p>∫</p>
+<p>x2</p>
+<p>A=</p>
+<p>f (x)dx =</p>
+<p>f (x)dx +</p>
+<p>a f (x)dx + · · · +</p>
+<p>f (x)dx.</p>
+<p>a</p>
+<p>a</p>
+<p>xk</p>
+<p>x1</p>
+<p>∫b</p>
+<p>Hence, we see that a f (x)dx is equal to the area under y = f (x) above the x-axis, minus the area</p>
+<p>over y = f (x) below the x-axis.</p>
+<p>Finally, let f1 , f2 be continuous, with f1 (y) ≥ f2 (y) for y ∈ [c, d]. Then the area A of the region</p>
+<p>bounded by the curves x = f1 (y) and x = f2 (y) and the vertical lines y = c and y = d is</p>
+<p>∫ d</p>
+<p>[f1 (y) − f2 (y)]dy.</p>
+<p>A=</p>
+<p>c</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.4.1. Find the area A of the region bounded by the curves y = xα and x = y α .</div>
+<p>1</p>
+<p>Solution. The points of intersection of these curves are (0, 0) and (1, 1). Because x α ≥ xα for all</p>
+<p>xin [0, 1], it follows that</p>
+<p>∫ 1</p>
+<p>1</p>
+<p>α</p>
+<p>(x − x )dx =</p>
+<p>A=</p>
+<p>0</p>
+<p>α</p>
+<p>( αx α+1</p>
+<p>α</p>
+<p>α+1</p>
+<p>−</p>
+<p>xα+1 ) α − 1</p>
+<p>=</p>
+<p>.</p>
+<p>α+1</p>
+<p>α+1</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.4.2. Find the area A of the region bounded by the curve y = sin x, x ∈ [0, 2π] and</div>
+<p>the x-axis.</p>
+<p>∫ 2π</p>
+<p>∫π</p>
+<p>∫ 2π</p>
+<p>Solution. A = 0 | sin x|dx = 0 sin xdx+| π sin xdx| = −(cos π −cos 0)+|−(cos 2π −cos π)| =</p>
+<p>2 + | − 2| = 4.</p>
+<p>4.4. APPLICATIONS OF THE DEFINITE INTEGRAL</p>
+<p>73</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.4.3. Find the area A of the region bounded by the parabola f (x) = 2 − x2 and the</div>
+<p>line g(x) = −x.</p>
+<p>Solution. Notice that the curves intersect at the points (−1, 1) and (2, −2) by solving 2−x2 = −x.</p>
+<p>∫ 2</p>
+<p>∫ 2</p>
+<p>9</p>
+<p>A=</p>
+<p>[f (x) − g(x)]dx =</p>
+<p>(2 − x2 + x)dx = · · · = .</p>
+<p>2</p>
+<p>−1</p>
+<p>−1</p>
+<p>Figure 4.1: Area of region bounded by f and g</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.4.4. Find the area A of the region bounded by the x-axis and f (x) = x2 + x − 6.</div>
+<p>Solution. The zeros of f (x) = x2 + x − 6 are (−3, 0) and (2, 0). Since the x axis has equation</p>
+<p>y = 0, the desired area can be considered as the area of a region between the two curves y = 0</p>
+<p>and f (x) = x2 + x − 6. Thus</p>
+<p>∫ 2</p>
+<p>125</p>
+<p>A=</p>
+<p>.</p>
+<p>[0 − (x2 + x − 6)]dx =</p>
+<p>6</p>
+<p>3</p>
+<p>Figure 4.2: Area below the x-axis</p>
+</div>
+<div class="example-box"><div class="example-badge">Example</div><div class="example-header">Example  4.4.5. Find the area A of the region bounded by the x-axis, f (x) = x3 , a = −3 and</div>
+<p>b = 3.</p>
+<p>74 CHAPTER 4. ANTI-DERIVATIVES OF FUNCTIONS AND APPLICATIONS TO AREAS</p>
+<p>Solution.</p>
+<p>Figure 4.3: Area of region symmetric to the x-axis</p>
+<p>From the graph, part of the region falls below the x-axis and part above. Note that</p>
+<p>∫ 3</p>
+<p>x3 dx = 0.</p>
+<p>−3</p>
+<p>This is incorrect. Since the region below the x-axis gives a negative value for the area and the</p>
+<p>part above the x-axis gives a positive value for the area, then the area A is</p>
+<p>∫ 0</p>
+<p>∫ 3</p>
+<p>81</p>
+<p>81</p>
+<p>81</p>
+<p>3</p>
+<p>= .</p>
+<p>A=|</p>
+<p>x dx| +</p>
+<p>x3 dx = | − | +</p>
+<p>4</p>
+<p>4</p>
+<p>2</p>
+<p>−3</p>
+<p>0</p>
+<p>Another way of approaching the problem is to realize that the region below the x-axis is symmetric</p>
+<p>to the region above the x-axis and therefore</p>
+<p>∫ 3</p>
+<p>∫ 0</p>
+<p>3</p>
+<p>A=2</p>
+<p>x dx or A = 2|</p>
+<p>x3 dx|.</p>
+<p>0</p>
+<p>−3</p>
+<p>Summary. The area of a region bounded by two or more curves can be found by integration.</p>
+<p>The integrand is g(x) − f (x) when g(x) ≥ f (x) for all x in the interval of integration. The bounds</p>
+<p>of integration are usually found by determining the points of intersection of the curves. In some</p>
+<p>cases it may be necessary to use more than one integral. If f (x) or (g(x) − f (x)) crosses the x-axis</p>
+<p>in [a, b], then more than one integral may be necessary.</p>
+<p>4.5</p>
+<p>Exercises and Some Solved Problems</p>
+<p>1. Evaluate</p>
+<p>(i).</p>
+<p>∫</p>
+<p>cos2 xdx</p>
+</div>
+<h3>Soln:</h3>
+<p>∫</p>
+<p>∫</p>
+<p>cos2 xdx = 12 (1 + cos 2x)dx = x2 + 14 sin 2x + c.</p>
+<p>4.5. EXERCISES AND SOME SOLVED PROBLEMS</p>
+<p>(ii).</p>
+<p>∫</p>
+<p>75</p>
+<p>sin4 xdx</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>∫</p>
+<p>Soln: sin4 xdx = 14 (1 − cos 2x)2 dx = 14 (1 − 2 cos 2x + cos2 2x)dx = x4 − 41 sin 2x + 18 (1 +</p>
+<p>1</p>
+<p>1</p>
+<p>cos 4x)dx = x4 − 41 sin 2x + x8 + 32</p>
+<p>sin 4x + c = 38 x − 14 sin 2x + 32</p>
+<p>sin 4x + c.</p>
+<p>(iii). 2 cos(2x3 + 1)dx</p>
+<p>∫ ln x</p>
+<p>(iv).</p>
+<p>(v).</p>
+<p>x</p>
+<p>∫</p>
+<p>(vi).</p>
+<p>dx</p>
+<p>x cos xdx</p>
+<p>∫ ln(ln x)</p>
+<p>(vii).</p>
+<p>(viii).</p>
+<p>x</p>
+<p>∫</p>
+<p>dx</p>
+<p>dθ</p>
+<p>cos θ(1+sin θ)</p>
+<p>∫√</p>
+<p>a2 − x2 dx</p>
+<p>2. Find the area of the plane region bounded by the given curves.</p>
+<p>(i). y = x, y = x2</p>
+<p>(ii). y = x3 , y = x</p>
+<p>(iii). y = x1 , 2x + 2y = 5</p>
+<p>Index</p>
+<p>bijection, 5</p>
+<p>cardinality</p>
+<p>set, 2</p>
+<p>Cartesian product, 3</p>
+<p>Chain Rule, 32</p>
+<p>complement</p>
+<p>set, 2</p>
+<p>Continuity</p>
+<p>ϵ − δ deﬁnition, 20</p>
+<p>Continuity Test, 20</p>
+<p>continuous function, 20</p>
+<p>Derivative, 28</p>
+<p>Left, 28</p>
+<p>Right, 28</p>
+<p>Derivatives</p>
+<p>Exponential Functions, 37</p>
+<p>Logarithmic Functions, 37</p>
+<p>indeterminate forms, 39</p>
+<p>trigonometric functions, 35</p>
+<p>Diﬀerentiable, 28</p>
+<p>function, 28</p>
+<p>Diﬀerentials, 46</p>
+<p>Diﬀerentiation, 28</p>
+<p>implicit, 42</p>
+<p>logarithmic, 43</p>
+<p>parametric, 42</p>
+<p>rules, 30</p>
+<p>Discontinuity, 21</p>
+<p>of second kind, 22</p>
+<p>types, 21</p>
+<p>Domain</p>
+<p>function, 5</p>
+<p>empyty</p>
+<p>set, 2</p>
+<p>Exponential function, 8</p>
+<p>Function, 5</p>
+<p>range, 5</p>
+<p>anti-derivative, 51</p>
+<p>anti-diﬀerentiation, 51</p>
+<p>diﬀerentiable, 28</p>
+<p>domain, 5</p>
+<p>limit, 8</p>
+<p>non-diﬀerentiable, 28</p>
+<p>onto, 5</p>
+<p>Functions</p>
+<p>hyperbolic, 38</p>
+<p>Implicit</p>
+<p>Diﬀerentiation, 42</p>
+<p>Indeterminate</p>
+<p>limits, 19</p>
+<p>Injective</p>
+<p>function, 5</p>
+<p>Integers, 3</p>
+<p>Integral</p>
+<p>indeﬁnite, 51</p>
+<p>deﬁnite, 65</p>
+<p>Riemann, 67</p>
+<p>Integrand, 51</p>
+<p>Integration, 51</p>
+<p>constant, 51</p>
+<p>by parts, 54</p>
+<p>rational functions, 57</p>
+<p>substitution, 53</p>
+<p>techinques, 53</p>
+<p>Jump discontinuity, 21</p>
+<p>L’Hôpital’s First Rule, 39</p>
+<p>L’Hôpital’s Second Rule, 40</p>
+<p>Left</p>
+<p>derivative, 28</p>
+<p>Left continuity, 22</p>
+<p>Leibniz Notation, 28</p>
+<p>Limit, 8</p>
+<p>formal deﬁnition, 9</p>
+<p>left-hand limit, 12</p>
+<p>76</p>
+<h3>INDEX</h3>
+<p>right-hand limit, 12</p>
+<p>Limit Theorems, 11</p>
+<p>Limits</p>
+<p>at Inﬁnity, 16</p>
+<p>at inﬁnity, 15</p>
+<p>indeterminate, 19</p>
+<p>inﬁnite, 17</p>
+<p>one-sided, 14</p>
+<p>Linear</p>
+<p>approximations, 46</p>
+<p>Linearizations, 47</p>
+<p>Logarithm</p>
+<p>natural, 7</p>
+<p>Logarithmic</p>
+<p>diﬀerentiation, 43</p>
+<p>Logarithmic function, 8</p>
+<p>Naperian logarithm, 7</p>
+<p>Natural</p>
+<p>numbers, 3</p>
+<p>one-to-one</p>
+<p>function, 5</p>
+<p>onto</p>
+<p>function, 5</p>
+<p>Polynomial, 8</p>
+<p>Product Rule, 32</p>
+<p>Proper</p>
+<p>subset, 2</p>
+<p>Quotient Rule, 32</p>
+<p>Range</p>
+<p>function, 5</p>
+<p>Rates of change</p>
+<p>instantaneous, 48</p>
+<p>Rational</p>
+<p>function, 7</p>
+<p>Right</p>
+<p>derivative, 28</p>
+<p>Right continuity, 22</p>
+<p>Sandwich(Squeeze) Theorem, 18</p>
+<p>Set</p>
+<p>equality, 2</p>
+<p>set, 1</p>
+<p>complement, 2</p>
+<p>diﬀerence, 2</p>
+<p>77</p>
+<p>elements, 1</p>
+<p>empty, 2</p>
+<p>intersection, 2</p>
+<p>union, 2</p>
+<p>universal, 2</p>
+<p>set</p>
+<p>cardinality , 2</p>
+<p>Singular point, 28</p>
+<p>Slope</p>
+<p>curve, 27</p>
+<p>tangent line, 26</p>
+<p>Surjective</p>
+<p>function, 5</p>
+<p>Uniformly continuous, 21</p>
+<p>universal</p>
+<p>set, 2</p>
+<p>Universe of discourse , 2</p>
+<p>Whole</p>
+<p>numbers, 3</p>
+</section></div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <!-- AI GENERATED NAV GOES HERE -->
+        
+        <div class="nav-item active" onclick="switchTab(1, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(2, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(3, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(4, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(5, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(6, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(7, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(8, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(9, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(10, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(11, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(12, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(13, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(14, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(15, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(16, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(17, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(18, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(19, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(20, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(21, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(22, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(23, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(24, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(25, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(26, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(27, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(28, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(29, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(30, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+        <div class="nav-item" onclick="switchTab(31, '')">
+            <span class="nav-icon">●</span>
+            <span></span>
+        </div>
+        
+    </nav>
+
+    <script>
+        // --- Sound Engine ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+                gainNode.gain.setValueAtTime(0.05, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            }
+        }
+
+        // --- Tab Logic ---
+        function switchTab(id, title) {
+            playSound('tap');
+            document.getElementById('header-title').innerText = title;
+            document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('tab-' + id);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Try to find the nav item that was clicked (or match by index if generated)
+            // For generated navs, we might pass 'this' or rely on index
+            const navItems = document.querySelectorAll('.nav-item');
+            if (navItems[id - 1]) navItems[id - 1].classList.add('active');
+
+            document.getElementById('content-viewport').scrollTop = 0;
+        }
+    </script>
+</body>
+
+</html>

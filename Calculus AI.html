@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMA 103: Calculus I - Interactive Experience</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulse-glow { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+        /* --- Intro Screen --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-out;
+        }
+
+        .intro-text {
+            font-size: 3rem;
+            font-weight: 300;
+            background: linear-gradient(90deg, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        /* --- Glassmorphism Components --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Layout --- */
+        .container {
+            padding: 2rem;
+            padding-bottom: 6rem;
+            opacity: 0; /* Hidden until intro done */
+            transition: opacity 1s ease;
+        }
+
+        h1, h2, h3 { margin-bottom: 1rem; }
+        h1 { text-align: center; font-size: 3rem; margin-bottom: 2rem; text-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+        h2 { border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; color: var(--accent); }
+        p { line-height: 1.6; margin-bottom: 1rem; color: var(--text-muted); }
+
+        /* --- Interactive Elements --- */
+        .interactive-zone {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(0,0,0,0));
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        .analogy-title { font-weight: bold; color: var(--text-main); display: block; margin-bottom: 0.5rem; }
+
+        button {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            animation: pulse-glow 2s infinite;
+        }
+
+        button:active { transform: scale(0.95); }
+        button:hover { background: #fff; }
+
+        canvas {
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            max-width: 100%;
+        }
+
+        /* --- Nav --- */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            width: 0%;
+            z-index: 100;
+            transition: width 0.2s;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* --- Specific Visualizers --- */
+        .venn-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+        }
+        .venn-circle {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            transition: transform 0.5s ease;
+        }
+        .venn-a { background: rgba(255, 0, 100, 0.5); left: 20px; }
+        .venn-b { background: rgba(0, 100, 255, 0.5); right: 20px; }
+        .venn-label { position: absolute; color: white; font-weight: bold; }
+
+        .citation { font-size: 0.7rem; color: #555; display: block; text-align: right; margin-top: 0.5rem; }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <div class="intro-text">from Qassim</div>
+    </div>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="container" id="mainContainer">
+        
+        <header>
+            <h1>Calculus I <span style="font-size: 1rem; opacity: 0.6; display:block; margin-top:10px;">SMA 103</span></h1>
+            <p style="text-align: center;">Interactive Learning Module</p>
+        </header>
+
+        <section class="glass-panel" id="preliminaries">
+            <h2>1. Preliminaries: Sets & Functions</h2>
+            <p>Before diving into calculus, we must understand the language of mathematics: Sets and Functions. [span_0](start_span)A set is a well-defined collection of objects[span_0](end_span).</p>
+            
+            <div class="analogy-box">
+                <span class="analogy-title">💡 Analogy: The Kitchen</span>
+                Think of a <strong>Set</strong> as a bowl of ingredients. <br>
+                <strong>Union (A ∪ B)</strong> is dumping two bowls into one big pot.<br>
+                <strong>Intersection (A ∩ B)</strong> is finding ingredients that appear in <em>both</em> recipes.
+            </div>
+
+            <div class="interactive-zone">
+                <h3>Visualizing Sets</h3>
+                <div class="venn-container">
+                    <div class="venn-circle venn-a" id="circleA"></div>
+                    <div class="venn-circle venn-b" id="circleB"></div>
+                    <div style="position:absolute; top: 160px; width: 100%; text-align: center;" id="vennText">Separate Sets</div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button onclick="animateSets('separate')">Disjoint</button>
+                    <button onclick="animateSets('intersect')">Intersection</button>
+                    <button onclick="animateSets('union')">Union</button>
+                </div>
+            </div>
+            [span_1](start_span)<span class="citation">Source: SMA 103 Lecture Notes, Page 3[span_1](end_span)</span>
+        </section>
+
+        <section class="glass-panel" id="limits">
+            <h2>2. Limits & Continuity</h2>
+            <p>Calculus is the study of change. [span_2](start_span)Limits describe how a function behaves as it gets closer and closer to a specific point, even if it never actually touches that point[span_2](end_span).</p>
+
+            <div class="analogy-box">
+                <span class="analogy-title">💡 Analogy: The Pizza Delivery</span>
+                Imagine you are walking toward a house. You get halfway there, then halfway again, then halfway again. You are approaching the door (the Limit), but mathematically, if you keep halving the distance, you never actually hit it.
+            </div>
+
+            <div class="interactive-zone">
+                <h3>The ε-δ Definition</h3>
+                <canvas id="limitCanvas" width="600" height="300"></canvas>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Drag the slider to squeeze the tolerance (ε). Watch how the range (δ) tightens.</p>
+                <input type="range" min="10" max="100" value="100" id="epsilonSlider" style="width: 80%;">
+            </div>
+            [span_3](start_span)<span class="citation">Source: SMA 103 Lecture Notes, Page 9[span_3](end_span)</span>
+        </section>
+
+        <section class="glass-panel" id="differentiation">
+            <h2>3. Differentiation</h2>
+            <p>The derivative measures the instantaneous rate of change. [span_4](start_span)It is the slope of the tangent line at a specific point on a curve[span_4](end_span).</p>
+
+            <div class="analogy-box">
+                <span class="analogy-title">💡 Analogy: The Speedometer</span>
+                Your average speed is distance divided by time (Algebra). Your speed at the exact moment you passed a police car is the <strong>Derivative</strong> (Calculus).
+            </div>
+
+            <div class="interactive-zone">
+                <h3>Secant vs. Tangent</h3>
+                <canvas id="derivCanvas" width="600" height="300"></canvas>
+                <button onclick="animateTangent()">Compute Slope (h &rarr; 0)</button>
+            </div>
+            [span_5](start_span)<p>We use rules like the <strong>Chain Rule</strong> for composite functions[span_5](end_span) [span_6](start_span)and the <strong>Product Rule</strong> for multiplying functions[span_6](end_span).</p>
+        </section>
+
+        <section class="glass-panel" id="integration">
+            <h2>4. Integration (Anti-Derivatives)</h2>
+            <p>Integration is the reverse of differentiation. [span_7](start_span)It is used to find areas under curves[span_7](end_span). We approximate area by summing up rectangles (Riemann Sums).</p>
+
+            <div class="analogy-box">
+                <span class="analogy-title">💡 Analogy: Slicing Bread</span>
+                To find the volume of a loaf of bread, you can slice it into infinite thin slices and add them all up. That is Integration.
+            </div>
+
+            <div class="interactive-zone">
+                <h3>Riemann Sums</h3>
+                <canvas id="integralCanvas" width="600" height="300"></canvas>
+                <p>Increase the number of rectangles (n) to improve accuracy.</p>
+                <input type="range" min="2" max="50" value="5" id="rectSlider" style="width: 80%;">
+                <p>N = <span id="rectCount">5</span></p>
+            </div>
+            [span_8](start_span)<span class="citation">Source: SMA 103 Lecture Notes, Page 71[span_8](end_span)</span>
+        </section>
+
+    </div>
+
+    <script>
+        // --- Sound Engine (Web Audio API) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'hover') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'click') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
+
+        // --- Haptic Feedback Helper ---
+        function triggerHaptic() {
+            if (navigator.vibrate) {
+                navigator.vibrate(20); // 20ms vibration
+            }
+        }
+
+        // --- Intro Sequence ---
+        window.addEventListener('load', () => {
+            const intro = document.getElementById('intro-overlay');
+            const main = document.getElementById('mainContainer');
+            
+            setTimeout(() => {
+                intro.style.opacity = '0';
+                main.style.opacity = '1';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                }, 1500);
+            }, 2500);
+        });
+
+        // --- Scroll Progress ---
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        // --- Interaction 1: Set Theory Animation ---
+        function animateSets(mode) {
+            playSound('click');
+            triggerHaptic();
+            const cA = document.getElementById('circleA');
+            const cB = document.getElementById('circleB');
+            const txt = document.getElementById('vennText');
+
+            if (mode === 'separate') {
+                cA.style.transform = 'translateX(0)';
+                cB.style.transform = 'translateX(0)';
+                cA.style.opacity = '1'; cB.style.opacity = '1';
+                txt.innerText = "Disjoint Sets (No Interaction)";
+            } else if (mode === 'intersect') {
+                cA.style.transform = 'translateX(50px)';
+                cB.style.transform = 'translateX(-50px)';
+                cA.style.opacity = '0.7'; cB.style.opacity = '0.7';
+                txt.innerText = "Intersection (A ∩ B) - The Overlap";
+            } else if (mode === 'union') {
+                cA.style.transform = 'translateX(50px)';
+                cB.style.transform = 'translateX(-50px)';
+                cA.style.opacity = '0.9'; cB.style.opacity = '0.9';
+                txt.innerText = "Union (A ∪ B) - Everything Combined";
+            }
+        }
+
+        // --- Interaction 2: Limits Canvas ---
+        const limCanvas = document.getElementById('limitCanvas');
+        const limCtx = limCanvas.getContext('2d');
+        const epsSlider = document.getElementById('epsilonSlider');
+
+        function drawLimit() {
+            limCtx.clearRect(0, 0, 600, 300);
+            const w = 600, h = 300;
+            const gap = parseInt(epsSlider.value); // The epsilon gap
+            
+            // Draw Axes
+            limCtx.strokeStyle = '#555';
+            limCtx.beginPath(); limCtx.moveTo(0, h/2); limCtx.lineTo(w, h/2); limCtx.stroke();
+            limCtx.beginPath(); limCtx.moveTo(w/2, 0); limCtx.lineTo(w/2, h); limCtx.stroke();
+
+            // Draw Curve (y = x^3 scaled)
+            limCtx.strokeStyle = '#38bdf8';
+            limCtx.lineWidth = 2;
+            limCtx.beginPath();
+            for(let x = 0; x < w; x+=5) {
+                let normX = (x - w/2) / 50;
+                let y = h/2 - (Math.pow(normX, 3) * 10);
+                if(x===0) limCtx.moveTo(x,y); else limCtx.lineTo(x,y);
+            }
+            limCtx.stroke();
+
+            // Draw Epsilon Tunnel
+            limCtx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+            limCtx.fillRect(0, h/2 - gap, w, gap*2);
+            
+            // Draw Target Point
+            limCtx.fillStyle = '#fff';
+            limCtx.beginPath();
+            limCtx.arc(w/2, h/2, 5, 0, Math.PI*2);
+            limCtx.fill();
+        }
+        
+        epsSlider.oninput = function() {
+            drawLimit();
+            triggerHaptic();
+            playSound('hover');
+        }
+        drawLimit();
+
+        // --- Interaction 3: Derivative Animation ---
+        const derivCanvas = document.getElementById('derivCanvas');
+        const derivCtx = derivCanvas.getContext('2d');
+        let h_val = 100;
+
+        function drawDeriv() {
+            derivCtx.clearRect(0, 0, 600, 300);
+            const w = 600, ht = 300;
+
+            // Draw Curve (Parabola)
+            derivCtx.strokeStyle = '#fff';
+            derivCtx.lineWidth = 2;
+            derivCtx.beginPath();
+            for(let x = 0; x < w; x+=5) {
+                let normX = (x - 100) / 100; 
+                let y = ht - (Math.pow(normX, 2) * 50); 
+                if(x===0) derivCtx.moveTo(x,y); else derivCtx.lineTo(x,y);
+            }
+            derivCtx.stroke();
+
+            // Fixed Point P (x=200)
+            let px = 200;
+            let py = ht - (Math.pow((px-100)/100, 2) * 50);
+            
+            // Moving Point Q (x = 200 + h)
+            let qx = px + h_val;
+            let qy = ht - (Math.pow((qx-100)/100, 2) * 50);
+
+            // Draw Points
+            derivCtx.fillStyle = 'red';
+            derivCtx.beginPath(); derivCtx.arc(px, py, 6, 0, Math.PI*2); derivCtx.fill();
+            derivCtx.fillStyle = 'yellow';
+            derivCtx.beginPath(); derivCtx.arc(qx, qy, 6, 0, Math.PI*2); derivCtx.fill();
+
+            // Draw Secant Line
+            derivCtx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
+            derivCtx.beginPath();
+            // Extend line logic simplified
+            let slope = (qy - py) / (qx - px);
+            let startX = 0;
+            let startY = py - slope * (px - startX);
+            let endX = 600;
+            let endY = py + slope * (endX - px);
+            derivCtx.moveTo(startX, startY);
+            derivCtx.lineTo(endX, endY);
+            derivCtx.stroke();
+            
+            // Text
+            derivCtx.fillStyle = '#ccc';
+            derivCtx.font = "16px Arial";
+            derivCtx.fillText(h_val < 5 ? "Tangent Line (Slope)" : "Secant Line", 350, 50);
+        }
+
+        function animateTangent() {
+            playSound('success');
+            triggerHaptic();
+            let interval = setInterval(() => {
+                if(h_val > 1) {
+                    h_val -= 2;
+                    drawDeriv();
+                } else {
+                    clearInterval(interval);
+                    h_val = 100; // Reset for next click
+                }
+            }, 20);
+        }
+        drawDeriv();
+
+        // --- Interaction 4: Integration (Riemann) ---
+        const intCanvas = document.getElementById('integralCanvas');
+        const intCtx = intCanvas.getContext('2d');
+        const rectSlider = document.getElementById('rectSlider');
+        const rectCountDisplay = document.getElementById('rectCount');
+
+        function drawRiemann() {
+            intCtx.clearRect(0, 0, 600, 300);
+            const count = parseInt(rectSlider.value);
+            rectCountDisplay.innerText = count;
+            
+            const w = 600, h = 300;
+            // Curve: simple hill
+            
+            // Draw Rectangles
+            const rectW = w / count;
+            intCtx.fillStyle = 'rgba(56, 189, 248, 0.5)';
+            intCtx.strokeStyle = '#fff';
+
+            for(let i=0; i<count; i++) {
+                let x = i * rectW;
+                let midX = x + rectW/2;
+                // Function y = sin(x) mapped
+                let normX = (midX / w) * Math.PI;
+                let rectH = Math.sin(normX) * 200;
+                
+                intCtx.fillRect(x, h - rectH, rectW - 2, rectH);
+                intCtx.strokeRect(x, h - rectH, rectW - 2, rectH);
+            }
+
+            // Overlay Curve
+            intCtx.strokeStyle = '#ff0066';
+            intCtx.lineWidth = 3;
+            intCtx.beginPath();
+            for(let x=0; x<=w; x+=5) {
+                let normX = (x / w) * Math.PI;
+                let y = h - (Math.sin(normX) * 200);
+                if(x===0) intCtx.moveTo(x,y); else intCtx.lineTo(x,y);
+            }
+            intCtx.stroke();
+        }
+
+        rectSlider.oninput = function() {
+            drawRiemann();
+            playSound('hover');
+            triggerHaptic();
+        }
+        drawRiemann();
+
+        // Global Event listeners for sound on buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mouseenter', () => playSound('hover'));
+        });
+
+    </script>
+</body>
+</html>

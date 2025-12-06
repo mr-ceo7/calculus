@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMA 103: Calculus I</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.65);
+            --glass-active: rgba(56, 189, 248, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #eab308;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            /* Main scroll handled inside tab-content */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 var(--accent-glow);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px transparent;
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 transparent;
+            }
+        }
+
+        /* --- Intro Screen --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out;
+        }
+
+        .intro-text {
+            font-size: 2.5rem;
+            font-weight: 300;
+            background: linear-gradient(90deg, #fff, #999);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1.5s forwards;
+        }
+
+        /* --- Layout --- */
+        header {
+            padding: 1rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* --- Main Content Area --- */
+        #content-viewport {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 1rem;
+            padding-bottom: 6rem;
+            /* Space for bottom nav */
+        }
+
+        .tab-section {
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.4s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* --- Cards & Text --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p,
+        li {
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .math {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* --- Special Elements --- */
+        .analogy-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(0, 0, 0, 0));
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .analogy-title {
+            font-weight: bold;
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .interactive-zone {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        canvas {
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            margin: 10px 0;
+        }
+
+        /* --- Bottom Navigation (The "App" Feel) --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Range Slider */
+        input[type=range] {
+            width: 100%;
+            margin: 10px 0;
+            accent-color: var(--accent);
+        }
+
+        /* --- Textbook Elements --- */
+        .definition-box {
+            border-left: 4px solid var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .definition-title {
+            color: var(--accent);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .theorem-box {
+            border-left: 4px solid var(--warning);
+            background: rgba(234, 179, 8, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .theorem-title {
+            color: var(--warning);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .example-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Collapsible Sections (Proofs/Solutions) */
+        details {
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        details:hover {
+            border-color: var(--glass-border);
+        }
+
+        details summary {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        details summary:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--accent);
+        }
+
+        .details-content {
+            padding: 15px;
+            font-size: 0.95rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Truth Table */
+        .truth-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .truth-table th,
+        .truth-table td {
+            padding: 8px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .truth-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="intro-overlay">
+        <div class="intro-text">Comrades Power!</div>
+    </div>
+
+
+
+    <header>
+        <h1 id="header-title">CALCULUS I</h1>
+        <div class="subtitle">@it.exper7(mr.ceo) follow for more🥲</div>
+    </header>
+
+    <div id="content-viewport">
+
+        <div id="tab-1" class="tab-section active">
+            <section class="glass-panel">
+                <h2>1. Elementary Set Theory (Chapter 1)</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Set Builder Notation</span>
+                    $S = \{ x \in \mathbb{R} \mid P(x) \}$ means "The set of all real numbers $x$ such that property
+                    $P(x)$ is true."
+                </div>
+
+                <h3>Operations on Sets</h3>
+                <ul>
+                    <li><strong>Union:</strong> $A \cup B = \{ x \mid x \in A \lor x \in B \}$</li>
+                    <li><strong>Intersection:</strong> $A \cap B = \{ x \mid x \in A \land x \in B \}$</li>
+                    <li><strong>Difference:</strong> $A \setminus B = \{ x \mid x \in A \land x \notin B \}$</li>
+                    <li><strong>Cartesian Product:</strong> $A \times B = \{ (a,b) \mid a \in A, b \in B \}$</li>
+                </ul>
+            </section>
+
+            <section class="glass-panel">
+                <h2>2. The Real Number System</h2>
+                <div class="theorem-box">
+                    <span class="theorem-title">Field Axioms</span>
+                    For all $a, b, c \in \mathbb{R}$:
+                    <ul>
+                        <li><strong>Associativity:</strong> $(a+b)+c = a+(b+c)$</li>
+                        <li><strong>Distributivity:</strong> $a(b+c) = ab + ac$</li>
+                        <li><strong>Identity:</strong> $a+0=a$, $a \cdot 1 = a$</li>
+                    </ul>
+                </div>
+
+                <h3>Intervals in $\mathbb{R}$</h3>
+                <ul>
+                    <li>Open: $(a,b) = \{x \mid a < x < b\}$</li>
+                    <li>Closed: $[a,b] = \{x \mid a \le x \le b\}$</li>
+                </ul>
+            </section>
+        </div>
+
+        <div id="tab-2" class="tab-section">
+            <section class="glass-panel">
+                <h2>1. Functions (Chapter 2.1)</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Formal Definition</span>
+                    A function $f: X \to Y$ is a rule assigning each $x \in X$ a unique $y \in Y$.
+                    <br><strong>Domain:</strong> Set $X$. <strong>Range:</strong> Set of all images $f(x)$.
+                </div>
+
+                <h3>Types of Functions</h3>
+                <ul>
+                    <li><strong>Injective (One-to-One):</strong> $f(x_1) = f(x_2) \implies x_1 = x_2$.</li>
+                    <li><strong>Surjective (Onto):</strong> Range = Codomain $Y$.</li>
+                    <li><strong>Bijective:</strong> Injective + Surjective (Invertible).</li>
+                </ul>
+
+                <div class="interactive-zone">
+                    <h3>Composite Function Visualizer</h3>
+                    <p>Visualizing $f(g(x))$</p>
+                    <canvas id="funcCanvas" width="300" height="150"></canvas>
+                    <button onclick="animateFunction()">Run $f(g(x))$</button>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>2. Limits (Chapter 2.2)</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Epsilon-Delta Definition</span>
+                    $\lim_{x \to c} f(x) = L$ means: <br>
+                    For every $\epsilon > 0$, there exists a $\delta > 0$ such that if $0 < |x - c| < \delta$, then
+                        $|f(x) - L| < \epsilon$. </div>
+
+                        <div class="example-box">
+                            <div class="example-badge">Formal Proof</div>
+                            <div class="example-header">Proving $\lim_{x \to 3} (2x - 1) = 5$</div>
+                            <p><strong>Goal:</strong> Find $\delta$ such that $|x-3| < \delta \implies |(2x-1) - 5| <
+                                    \epsilon$.</p>
+                                    <details>
+                                        <summary>Show Step-by-Step Proof</summary>
+                                        <div class="details-content">
+                                            <strong>1. Scratch Work:</strong> <br>
+                                            $|(2x-1) - 5| < \epsilon$ <br>
+                                                $|2x - 6| < \epsilon$ <br>
+                                                    $2|x - 3| < \epsilon$ <br>
+                                                        $|x - 3| < \epsilon/2$. <br>
+                                                            So, choose $\delta = \epsilon/2$.
+                                                            <br><br>
+                                                            <strong>2. Formal Proof:</strong> <br>
+                                                            Let $\epsilon > 0$. Choose $\delta = \epsilon/2$. <br>
+                                                            Assume $0 < |x-3| < \delta$. <br>
+                                                                Then $|(2x-1) - 5| = |2x - 6| = 2|x - 3| <
+                                                                    2\delta=2(\epsilon/2)=\epsilon$. <br>
+                                                                    Therefore, the limit is 5. $\square$
+                                        </div>
+                                    </details>
+                        </div>
+
+                        <div class="interactive-zone">
+                            <h3>Interactive $\epsilon-\delta$ Visualizer</h3>
+                            <p>Drag the slider to see how $\delta$ (blue zone) shrinks as you tighten $\epsilon$ (red
+                                zone).</p>
+                            <canvas id="limitCanvas" width="320" height="200"></canvas>
+                            <input type="range" min="10" max="100" value="100" id="epsilonSlider">
+                        </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>2. Continuity</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Formal Definition</span>
+                    A function $f$ is continuous at $c$ if: $\lim_{x \to c} f(x) = f(c)$.
+                </div>
+
+                <h3>Types of Discontinuities</h3>
+                <ul>
+                    <li><strong>Removable:</strong> Limit exists, but $f(c)$ is different or undefined.</li>
+                    <li><strong>Jump:</strong> Left Limit $\ne$ Right Limit.</li>
+                    <li><strong>Infinite:</strong> Asymptote (Limit is $\pm \infty$).</li>
+                </ul>
+
+                <div class="theorem-box">
+                    <span class="theorem-title">Intermediate Value Theorem (IVT)</span>
+                    If $f$ is continuous on $[a, b]$ and $k$ is between $f(a)$ and $f(b)$, then there exists $c \in (a,
+                    b)$ such that $f(c) = k$.
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>3. Limit Theorems</h2>
+                <div class="theorem-box">
+                    <span class="theorem-title">Squeeze (Sandwich) Theorem</span>
+                    If $g(x) \le f(x) \le h(x)$ near $c$, and $\lim g(x) = \lim h(x) = L$, then $\lim f(x) = L$.
+                </div>
+
+                <div class="example-box">
+                    <div class="example-badge">Example</div>
+                    <div class="example-header">Limit of $x^2 \sin(1/x)$</div>
+                    <p>As $x \to 0$, $1/x$ goes wild, but $-1 \le \sin(1/x) \le 1$.</p>
+                    <details>
+                        <summary>Show Solution</summary>
+                        <div class="details-content">
+                            Multiply inequality by $x^2$ (positive): <br>
+                            $-x^2 \le x^2 \sin(1/x) \le x^2$. <br>
+                            Since $\lim_{x\to 0} (-x^2) = 0$ and $\lim_{x\to 0} (x^2) = 0$, by Squeeze Theorem, the
+                            limit is <strong>0</strong>.
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>6. Types of Discontinuities</h2>
+                <ul>
+                    <li><strong>Removable:</strong> A hole (limit exists, function undefined or different).</li>
+                    <li><strong>Jump:</strong> Left and Right limits distinct.</li>
+                    <li><strong>Infinite:</strong> Vertical Asymptote.</li>
+                </ul>
+            </section>
+        </div>
+
+        <div id="tab-3" class="tab-section">
+            <section class="glass-panel">
+                <h2>1. The Derivative (Formal)</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Definition: Derivative at a Point</span>
+                    $f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}$ provided the limit exists.
+                </div>
+
+                <div class="theorem-box">
+                    <span class="theorem-title">Theorem: Differentiability implies Continuity</span>
+                    If $f$ is differentiable at $a$, then $f$ is continuous at $a$.
+                    <details>
+                        <summary>Show Proof</summary>
+                        <div class="details-content">
+                            $\lim_{x \to a} (f(x) - f(a)) = \lim_{x \to a} \frac{f(x)-f(a)}{x-a} \cdot (x-a)$ <br>
+                            $= f'(a) \cdot 0 = 0$. <br>
+                            So $\lim f(x) = f(a)$. $\square$
+                        </div>
+                    </details>
+                </div>
+
+                <div class="interactive-zone">
+                    <h3>Secant &rarr; Tangent Visualization</h3>
+                    <canvas id="derivCanvas" width="320" height="200"></canvas>
+                    <button onclick="animateTangent()">Compute Slope ($h \to 0$)</button>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>2. Rules & Proofs</h2>
+
+                <div class="theorem-box">
+                    <span class="theorem-title">The Product Rule</span>
+                    $(fg)' = f'g + fg'$.
+                    <details>
+                        <summary>Show Limit Proof</summary>
+                        <div class="details-content">
+                            $\frac{f(x+h)g(x+h) - f(x)g(x)}{h}$ <br>
+                            Add/Sub $f(x+h)g(x)$: <br>
+                            $\frac{f(x+h)g(x+h) - f(x+h)g(x) + f(x+h)g(x) - f(x)g(x)}{h}$ <br>
+                            $= f(x+h) \frac{g(x+h)-g(x)}{h} + g(x) \frac{f(x+h)-f(x)}{h}$ <br>
+                            As $h \to 0$: $f(x)g'(x) + g(x)f'(x)$. $\square$
+                        </div>
+                    </details>
+                </div>
+
+                <h3>Standard Derivatives</h3>
+                <ul>
+                    <li>Power: $nx^{n-1}$</li>
+                    <li>Exp: $e^x$</li>
+                    <li>Trig: $\sin \to \cos$, $\cos \to -\sin$</li>
+                    <li>Chain Rule: $f'(g(x))g'(x)$</li>
+                </ul>
+
+                <div class="example-box">
+                    <div class="example-badge">Hard Example</div>
+                    <div class="example-header">Differentiating $y = x^{\sin x}$</div>
+                    <details>
+                        <summary>Show Solution (Log Differentiation)</summary>
+                        <div class="details-content">
+                            1. Take ln: $\ln y = \sin x \cdot \ln x$ <br>
+                            2. Diff: $y'/y = \cos x \ln x + \sin x / x$ <br>
+                            3. Multiply by y: $y' = x^{\sin x} (\cos x \ln x + \frac{\sin x}{x})$.
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>3. Higher Order Derivatives</h2>
+                <p><strong>Second Derivative ($f''$):</strong> Measures rate of change of slope (Concavity). Physics:
+                    Acceleration.</p>
+                <p><strong>Third Derivative ($f'''$):</strong> Measures change of acceleration (Jerk).</p>
+            </section>
+
+            <section class="glass-panel">
+                <h2>4. Special Derivatives</h2>
+                <h3>Trigonometric & Inverse Trig</h3>
+                <ul>
+                    <li>$d/dx(\sin x) = \cos x$, $d/dx(\cos x) = -\sin x$</li>
+                    <li>$d/dx(\tan x) = \sec^2 x$</li>
+                    <li>$d/dx(\arcsin x) = \frac{1}{\sqrt{1-x^2}}$</li>
+                    <li>$d/dx(\arctan x) = \frac{1}{1+x^2}$</li>
+                </ul>
+                <h3>Exponential & Logarithmic</h3>
+                <ul>
+                    <li>$d/dx(e^x) = e^x$</li>
+                    <li>$d/dx(\ln x) = \frac{1}{x}$</li>
+                    <li>$d/dx(a^x) = a^x \ln a$</li>
+                </ul>
+                <h3>Hyperbolic Functions</h3>
+                <ul>
+                    <li>$d/dx(\sinh x) = \cosh x$</li>
+                    <li>$d/dx(\cosh x) = \sinh x$</li>
+                </ul>
+            </section>
+        </div>
+
+        <div id="tab-4" class="tab-section">
+            <section class="glass-panel">
+                <h2>1. L'Hôpital's Rule (Chapter 3.7)</h2>
+                <div class="theorem-box">
+                    <span class="theorem-title">L'Hôpital's Rule</span>
+                    If $\lim f(x)/g(x)$ results in $\frac{0}{0}$ or $\frac{\infty}{\infty}$, then:
+                    $$ \lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)} $$
+                </div>
+                <div class="example-box">
+                    <div class="example-badge">Example</div>
+                    <div class="example-header">Find $\lim_{x \to 0} \frac{\sin x}{x}$</div>
+                    <p>Form is $0/0$. Apply L'Hôpital:</p>
+                    <p>$\lim \frac{\cos x}{1} = \cos(0) = 1$.</p>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>2. Implicit Differentiation (Chapter 3.8)</h2>
+                <p>Used when $y$ cannot be easily isolated (e.g., $x^2 + y^2 = 25$).</p>
+                <div class="example-box">
+                    <div class="example-badge">Walkthrough</div>
+                    <div class="example-header">Slope of Circle at $(3,4)$</div>
+                    <details>
+                        <summary>Show Step-by-Step</summary>
+                        <div class="details-content">
+                            1. Differentiate both sides w.r.t $x$: <br>
+                            $d/dx(x^2) + d/dx(y^2) = d/dx(25)$ <br>
+                            $2x + 2y \cdot y' = 0$ (Chain Rule on $y$) <br>
+                            2. Solve for $y'$: <br>
+                            $2y y' = -2x \implies y' = -x/y$. <br>
+                            3. Substitute $(3,4)$: <br>
+                            $y' = -3/4$.
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>3. Linear Approx & Differentials (Chapter 3.9)</h2>
+                <div class="definition-box">
+                    <span class="definition-title">Linearization</span>
+                    The tangent line approximation of $f(x)$ at $a$:
+                    $$ L(x) = f(a) + f'(a)(x-a) $$
+                </div>
+
+                <h3>Differentials</h3>
+                <p>If $y=f(x)$, the differential $dy$ is defined as $dy = f'(x)dx$.</p>
+
+                <div class="example-box">
+                    <div class="example-badge">Estimation</div>
+                    <div class="example-header">Estimate $\sqrt{4.1}$</div>
+                    <details>
+                        <summary>Show Calculation</summary>
+                        <div class="details-content">
+                            Let $f(x) = \sqrt{x}, a = 4$. <br>
+                            $f(4) = 2$. $f'(x) = 1/(2\sqrt{x}) \implies f'(4) = 1/4 = 0.25$. <br>
+                            $L(x) = 2 + 0.25(x - 4)$. <br>
+                            At $x=4.1$: <br>
+                            $L(4.1) = 2 + 0.25(0.1) = 2 + 0.025 = 2.025$.
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <section class="glass-panel">
+                <h2>4. Related Rates (Chapter 3.10)</h2>
+                <p>Problems where two or more quantities are changing with respect to time, and we know the rate of
+                    change of one quantity and want to find the rate of change of another.</p>
+                <div class="example-box">
+                    <div class="example-badge">Classic Problem</div>
+                    <div class="example-header">Ladder Sliding Down a Wall</div>
+                    <p>A 10ft ladder leans against a wall. If the bottom slides away at 1ft/s, how fast is the top
+                        sliding down when the bottom is 6ft from the wall?</p>
+                    <details>
+                        <summary>Show Solution</summary>
+                        <div class="details-content">
+                            Let $x$ be distance of bottom from wall, $y$ be height of top on wall. <br>
+                            $x^2 + y^2 = 10^2$. <br>
+                            Differentiate w.r.t. time $t$: $2x \frac{dx}{dt} + 2y \frac{dy}{dt} = 0$. <br>
+                            Given $\frac{dx}{dt} = 1$ ft/s. When $x=6$, $y = \sqrt{100-36} = 8$ ft. <br>
+                            $2(6)(1) + 2(8)\frac{dy}{dt} = 0$ <br>
+                            $12 + 16\frac{dy}{dt} = 0 \implies \frac{dy}{dt} = -12/16 = -3/4$ ft/s.
+
+                        </div>
+
+                        <div id="tab-5" class="tab-section">
+                            <section class="glass-panel">
+                                <h2>1. The Fundamental Theorem of Calculus (FTC)</h2>
+                                <div class="theorem-box">
+                                    <span class="theorem-title">Part 1: Accumulation Function</span>
+                                    If $F(x) = \int_a^x f(t) dt$, then $F'(x) = f(x)$.
+                                </div>
+                                <div class="theorem-box">
+                                    <span class="theorem-title">Part 2: Evaluation</span>
+                                    $\int_a^b f(x) dx = F(b) - F(a)$, where $F$ is an anti-derivative.
+                                    <details>
+                                        <summary>Show Intuition</summary>
+                                        <div class="details-content">
+                                            Total change = sum of all little changes. <br>
+                                            $\sum \Delta y = \sum f'(x) \Delta x \approx \int f'(x) dx$.
+                                        </div>
+                                    </details>
+                                </div>
+                            </section>
+
+                            <section class="glass-panel">
+                                <h2>2. Average Value Theorem</h2>
+                                <div class="definition-box">
+                                    <span class="definition-title">Definition</span>
+                                    Average value of $f$ on $[a,b]$ is $f_{avg} = \frac{1}{b-a} \int_a^b f(x) dx$.
+                                </div>
+                                <div class="interactive-zone">
+                                    <h3>Riemann Sums</h3>
+                                    <canvas id="integralCanvas" width="320" height="200"></canvas>
+                                    <input type="range" min="2" max="50" value="5" id="rectSlider">
+                                    <p>Rectangles: <span id="rectCount">5</span></p>
+                                </div>
+                            </section>
+
+                            <section class="glass-panel">
+                                <h2>3. Integration Techniques Guide</h2>
+                                <div class="definition-box">
+                                    <span class="definition-title">Strategic Toolbox</span>
+                                    <ul>
+                                        <li><strong>U-Sub (Reverse Chain):</strong> Look for Function & Derivative.</li>
+                                        <li><strong>By Parts (Reverse Product):</strong> $\int u dv = uv - \int v du$
+                                            (LIATE Rule).</li>
+                                        <li><strong>Partial Fractions:</strong> For Rational Functions $P(x)/Q(x)$.</li>
+                                        <li><strong>Trig Sub:</strong> For $\sqrt{a^2-x^2}$ use $a\sin\theta$.</li>
+                                    </ul>
+                                </div>
+
+                                <div class="example-box">
+                                    <div class="example-badge">Strategy Example</div>
+                                    <div class="example-header">Integral $\int x \ln x dx$</div>
+                                    <details>
+                                        <summary>Show Solution</summary>
+                                        <div class="details-content">
+                                            Product? Try <strong>By Parts</strong>. <br>
+                                            LIATE: <strong>L</strong>og comes before <strong>A</strong>lgebraic. <br>
+                                            $u = \ln x \implies du = dx/x$. <br>
+                                            $dv = x dx \implies v = x^2/2$. <br>
+                                            $\int = (x^2/2)\ln x - \int (x^2/2)(1/x) dx = \frac{x^2}{2}\ln x -
+                                            \frac{x^2}{4} + C$.
+                                        </div>
+                                    </details>
+                                </div>
+                            </section>
+
+                            <section class="glass-panel">
+                                <h2>4. Applications of Integration</h2>
+                                <h3>Area Between Curves</h3>
+                                <p>Area = $\int_a^b [\text{Top}(x) - \text{Bottom}(x)] dx$.</p>
+                                <div class="example-box">
+                                    <div class="example-badge">Example</div>
+                                    <div class="example-header">Area betweeen $y=x$ and $y=x^2$</div>
+                                    <p>Interact at $0,1$. Top is $x$. Area = $\int_0^1 (x - x^2) dx = [x^2/2 -
+                                        x^3/3]_0^1 = 1/6$.</p>
+                                </div>
+                            </section>
+                        </div>
+
+                </div>
+
+                <nav class="bottom-nav">
+                    <div class="nav-item active" onclick="switchTab(1, 'Foundations')">
+                        <span class="nav-icon">Σ</span>
+                        <span>Sets</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab(2, 'Limits & Continuity')">
+                        <span class="nav-icon">lim</span>
+                        <span>Limit</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab(3, 'Differentiation')">
+                        <span class="nav-icon">dy/dx</span>
+                        <span>Diff</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab(4, 'Diff II: Advanced')">
+                        <span class="nav-icon">dy/dx+</span>
+                        <span>Diff II</span>
+                    </div>
+                    <div class="nav-item" onclick="switchTab(5, 'Integration')">
+                        <span class="nav-icon">∫</span>
+                        <span>Integ</span>
+                    </div>
+                </nav>
+
+                <script>
+                    // --- Sound Engine ---
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    function playSound(type) {
+                        if (audioCtx.state === 'suspended') audioCtx.resume();
+                        const osc = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        osc.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        const now = audioCtx.currentTime;
+
+                        if (type === 'tap') {
+                            osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+                            gainNode.gain.setValueAtTime(0.05, now);
+                            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                            osc.start(now); osc.stop(now + 0.1);
+                        } else if (type === 'success') {
+                            osc.type = 'sine'; osc.frequency.setValueAtTime(400, now);
+                            osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+                            gainNode.gain.setValueAtTime(0.05, now);
+                            gainNode.gain.linearRampToValueAtTime(0, now + 0.5);
+                            osc.start(now); osc.stop(now + 0.5);
+                        }
+                    }
+
+                    // --- Tab Logic ---
+                    function switchTab(id, title) {
+                        playSound('tap');
+                        document.getElementById('header-title').innerText = title;
+                        document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+                        document.getElementById('tab-' + id).classList.add('active');
+                        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                        document.querySelectorAll('.nav-item')[id - 1].classList.add('active');
+                        document.getElementById('content-viewport').scrollTop = 0;
+
+                        if (id === 1) playSound('tap'); // Just sound, no anim for Tab 1
+                        if (id === 2) { renderFunc(); drawLimit(); } // Tab 2 has Func + Limits
+                        if (id === 3) drawDeriv();
+                        // id 4 has no specialized canvas animation yet (Implicit/LHopital are static or standard text)
+                        if (id === 5) drawRiemann();
+                    }
+
+                    // --- Intro Logic ---
+                    window.addEventListener('load', () => {
+                        const intro = document.getElementById('intro-overlay');
+                        setTimeout(() => {
+                            intro.style.opacity = '0';
+                            setTimeout(() => intro.style.display = 'none', 1000);
+                        }, 2000);
+                        renderFunc(); // Init
+                    });
+
+                    // --- 1. Composite Functions (Tab 1) ---
+                    const funcCanvas = document.getElementById('funcCanvas');
+                    const funcCtx = funcCanvas.getContext('2d');
+                    function renderFunc() {
+                        funcCtx.clearRect(0, 0, 300, 150);
+                        // Draw Machines
+                        funcCtx.fillStyle = '#334155';
+                        funcCtx.fillRect(80, 50, 50, 50); // Machine g
+                        funcCtx.fillRect(180, 50, 50, 50); // Machine f
+                        funcCtx.fillStyle = '#fff'; funcCtx.font = '14px sans-serif';
+                        funcCtx.fillText("g(x)", 90, 80); funcCtx.fillText("f(x)", 190, 80);
+                        // Paths
+                        funcCtx.strokeStyle = '#475569'; funcCtx.beginPath();
+                        funcCtx.moveTo(0, 75); funcCtx.lineTo(80, 75); // In to g
+                        funcCtx.moveTo(130, 75); funcCtx.lineTo(180, 75); // g to f
+                        funcCtx.moveTo(230, 75); funcCtx.lineTo(300, 75); // out
+                        funcCtx.stroke();
+                    }
+
+                    function animateFunction() {
+                        playSound('success');
+                        let x = 0;
+                        function loop() {
+                            renderFunc();
+                            funcCtx.fillStyle = '#38bdf8';
+                            funcCtx.beginPath(); funcCtx.arc(x, 75, 6, 0, Math.PI * 2); funcCtx.fill();
+
+                            // Color change logic
+                            if (x > 130 && x < 180) funcCtx.fillStyle = '#eab308'; // Processed by g
+                            if (x > 230) funcCtx.fillStyle = '#22c55e'; // Processed by f
+
+                            x += 4;
+                            if (x < 300) requestAnimationFrame(loop);
+                        }
+                        loop();
+                    }
+
+                    // --- 2. Limits & Epsilon-Delta (Tab 2) ---
+                    const limCanvas = document.getElementById('limitCanvas');
+                    const limCtx = limCanvas.getContext('2d');
+                    const epsSlider = document.getElementById('epsilonSlider');
+
+                    function drawLimit() {
+                        if (!limCanvas.offsetParent) return;
+                        const w = 320, h = 200;
+                        const eps = parseInt(epsSlider.value); // 10 to 100
+                        limCtx.clearRect(0, 0, w, h);
+
+                        // Function y = x^3ish (shifted)
+                        // Center (160, 100). Target Limit L=100.
+
+                        // Draw Epsilon Band (Target)
+                        limCtx.fillStyle = 'rgba(239, 68, 68, 0.15)'; // Red band
+                        limCtx.fillRect(0, 100 - eps / 2, w, eps);
+                        limCtx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+                        limCtx.beginPath(); limCtx.moveTo(0, 100 - eps / 2); limCtx.lineTo(w, 100 - eps / 2);
+                        limCtx.moveTo(0, 100 + eps / 2); limCtx.lineTo(w, 100 + eps / 2); limCtx.stroke();
+
+                        // Draw Delta Band (Input) - Derived dependent on Epsilon
+                        const delta = eps * 0.8; // Assume slope approx 1ish
+                        limCtx.fillStyle = 'rgba(56, 189, 248, 0.15)'; // Blue band
+                        limCtx.fillRect(160 - delta / 2, 0, delta, h);
+                        limCtx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+                        limCtx.beginPath(); limCtx.moveTo(160 - delta / 2, 0); limCtx.lineTo(160 - delta / 2, h);
+                        limCtx.moveTo(160 + delta / 2, 0); limCtx.lineTo(160 + delta / 2, h); limCtx.stroke();
+
+                        // Draw Curve
+                        limCtx.strokeStyle = '#fff'; limCtx.lineWidth = 2;
+                        limCtx.beginPath();
+                        for (let x = 0; x <= w; x += 2) {
+                            let nx = (x - 160) / 60; // scale
+                            let y = 100 - (nx * nx * nx * 20 + nx * 30); // cubic
+                            if (x === 0) limCtx.moveTo(x, y); else limCtx.lineTo(x, y);
+                        }
+                        limCtx.stroke();
+
+                        // Target Point
+                        limCtx.fillStyle = '#fff';
+                        limCtx.beginPath(); limCtx.arc(160, 100, 4, 0, Math.PI * 2); limCtx.fill();
+                    }
+                    epsSlider.oninput = drawLimit;
+
+                    // --- 3. Derivative Secant (Tab 3) ---
+                    const derivCanvas = document.getElementById('derivCanvas');
+                    const derivCtx = derivCanvas.getContext('2d');
+                    let secantH = 80;
+
+                    function drawDeriv() {
+                        if (!derivCanvas.offsetParent) return;
+                        const w = 320, h = 200;
+                        derivCtx.clearRect(0, 0, w, h);
+
+                        // Parabola y = x^2
+                        derivCtx.strokeStyle = '#94a3b8'; derivCtx.lineWidth = 2;
+                        derivCtx.beginPath();
+                        for (let x = 0; x <= w; x += 2) {
+                            let nx = (x - 60) / 40; // Shifted left
+                            let y = 180 - nx * nx * 20;
+                            if (x === 0) derivCtx.moveTo(x, y); else derivCtx.lineTo(x, y);
+                        }
+                        derivCtx.stroke();
+
+                        // Points
+                        let x1 = 60 + 40; // at x=1 (visual)
+                        let y1 = 180 - 1 * 1 * 20;
+
+                        let x2 = x1 + secantH;
+                        let nx2 = (x2 - 60) / 40;
+                        let y2 = 180 - nx2 * nx2 * 20;
+
+                        // Secant Line
+                        derivCtx.strokeStyle = '#eab308'; // Warning color
+                        derivCtx.beginPath();
+                        // Extend line
+                        let m = (y2 - y1) / (x2 - x1);
+                        derivCtx.moveTo(0, y1 - m * x1);
+                        derivCtx.lineTo(320, y1 + m * (320 - x1));
+                        derivCtx.stroke();
+
+                        // Dots
+                        derivCtx.fillStyle = '#eab308';
+                        derivCtx.beginPath(); derivCtx.arc(x1, y1, 5, 0, Math.PI * 2); derivCtx.fill();
+                        derivCtx.beginPath(); derivCtx.arc(x2, y2, 5, 0, Math.PI * 2); derivCtx.fill();
+                    }
+
+                    function animateTangent() {
+                        playSound('success');
+                        let interval = setInterval(() => {
+                            secantH *= 0.9; // Decay
+                            if (secantH < 0.5) {
+                                secantH = 0.1;
+                                clearInterval(interval);
+                                // Reset after delay
+                                setTimeout(() => { secantH = 80; drawDeriv(); }, 2000);
+                            }
+                            drawDeriv();
+                        }, 50);
+                    }
+
+
+
+                    // --- 5. Riemann Sums (Tab 5) ---
+                    const intCanvas = document.getElementById('integralCanvas');
+                    const intCtx = intCanvas.getContext('2d');
+                    const rectSlider = document.getElementById('rectSlider');
+
+                    function drawRiemann() {
+                        if (!intCanvas.offsetParent) return;
+                        const w = 320, h = 200;
+                        const n = parseInt(rectSlider.value);
+                        document.getElementById('rectCount').innerText = n;
+                        intCtx.clearRect(0, 0, w, h);
+
+                        const dx = w / n;
+                        intCtx.fillStyle = 'rgba(56, 189, 248, 0.3)';
+                        intCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+
+                        for (let i = 0; i < n; i++) {
+                            let x = i * dx;
+                            // Func: y = sin(x) * x/2 roughly?
+                            // Let's use simple sine arch
+                            let mid = x + dx / 2;
+                            let val = Math.sin(mid / w * Math.PI) * 150;
+                            intCtx.fillRect(x, h - val, dx, val);
+                            intCtx.strokeRect(x, h - val, dx, val);
+                        }
+
+                        // Draw Curve
+                        intCtx.strokeStyle = '#fff'; intCtx.lineWidth = 2;
+                        intCtx.beginPath();
+                        for (let x = 0; x <= w; x += 2) {
+                            let y = h - Math.sin(x / w * Math.PI) * 150;
+                            if (x === 0) intCtx.moveTo(x, y); else intCtx.lineTo(x, y);
+                        }
+                        intCtx.stroke();
+                    }
+                    rectSlider.oninput = () => { drawRiemann(); playSound('tap'); };
+
+
+
+                </script>
+</body>
+
+</html>
