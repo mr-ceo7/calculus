@@ -13,6 +13,17 @@ Transform PDF lecture notes into beautiful, interactive HTML learning materials 
 
 ## 🚀 Quick Start
 
+### Environment
+
+Set a secret key before running the server (or copy `.env.example` to `.env` and edit):
+
+```bash
+export SECRET_KEY=$(python - <<'PY'
+import secrets
+print(secrets.token_hex(32))
+PY)
+```
+
 ### Web Interface (Recommended)
 
 1. **Install Dependencies:**
@@ -22,7 +33,7 @@ Transform PDF lecture notes into beautiful, interactive HTML learning materials 
 
 2. **Start the Server:**
    ```bash
-   python app.py
+   python run.py
    ```
 
 3. **Open in Browser:**
@@ -36,7 +47,7 @@ Transform PDF lecture notes into beautiful, interactive HTML learning materials 
 ### Command Line
 
 ```bash
-python pdf_to_html.py your_notes.pdf
+python converter/pdf_to_html.py your_notes.pdf
 ```
 
 Output will be saved as `Generated_Smart_Notes.html`
@@ -45,13 +56,29 @@ Output will be saved as `Generated_Smart_Notes.html`
 
 ```
 calculus/
-├── app.py                          # Flask web application
-├── pdf_to_html.py                  # Conversion script
-├── smart_template.html             # HTML template with styles
-├── templates/
-│   └── index.html                  # Web UI
-├── Calculus1 smart notes.html      # Example: Syllabus-aligned notes
-└── Generated_Smart_Notes.html      # Example: Auto-generated output
+├── app/                        # Flask web application
+│   ├── app.py                  # Main Flask app
+│   ├── templates/              # HTML templates
+│   │   └── index.html         # Upload interface
+│   └── static/                # Static assets (empty)
+├── converter/                  # Conversion logic
+│   ├── pdf_to_html.py         # Main conversion script
+│   ├── smart_template.html    # HTML template with styles
+│   └── __init__.py
+├── examples/                   # Example outputs
+│   ├── Calculus1 smart notes.html  # Syllabus-aligned notes
+│   ├── Calculus AI.html
+│   └── Generated_Smart_Notes.html
+├── data/                       # Source files
+│   ├── sma103_text.txt
+│   └── 0programming paradigms.pdf
+├── tests/                      # Test files
+│   └── test_app.py
+├── uploads/                    # Temporary uploads
+├── outputs/                    # Generated outputs
+├── run.py                      # Main entry point
+├── .gitignore
+└── README.md
 ```
 
 ## 🎯 How It Works

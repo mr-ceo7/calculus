@@ -1,14 +1,20 @@
 from flask import Flask, render_template, request, send_file, flash, redirect, url_for
 import os
+import sys
 from werkzeug.utils import secure_filename
-from pdf_to_html import generate_smart_notes, parse_pdf
-import tempfile
+
+# Add converter directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'converter'))
+from pdf_to_html import generate_smart_notes
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here-change-in-production'
+app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-here-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['OUTPUT_FOLDER'] = 'outputs'
+
+# Use parent directory for uploads/outputs
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'uploads')
+app.config['OUTPUT_FOLDER'] = os.path.join(BASE_DIR, 'outputs')
 
 # Create folders if they don't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
