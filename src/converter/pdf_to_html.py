@@ -1,18 +1,71 @@
 import sys
 import re
 import os
+import logging
+from pathlib import Path
+from typing import Optional, List, Dict
 from pypdf import PdfReader
 
-def parse_pdf(pdf_path):
-    reader = PdfReader(pdf_path)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
-    return text
+# Support both standalone and package usage
+try:
+    from .exceptions import PDFParsingError, TemplateNotFoundError, EmptyContentError
+    from .utils import validate_file_exists, validate_file_extension, get_safe_output_path
+except ImportError:
+    from exceptions import PDFParsingError, TemplateNotFoundError, EmptyContentError
+    from utils import validate_file_exists, validate_file_extension, get_safe_output_path
 
-def smart_format(text):
+# Configure logging
+logger = logging.getLogger(__name__)
+
+def parse_pdf(pdf_path: Path) -> str:
+    """
+    Extract text from a PDF file
+    
+    Args:
+        pdf_path: Path to the PDF file
+        
+    Returns:
+        Extracted text content
+        
+    Raises:
+        PDFParsingError: If PDF cannot be parsed
+        EmptyContentError: If no text could be extracted
+    """
+    try:
+        logger.info(f"Parsing PDF: {pdf_path}")
+        reader = PdfReader(str(pdf_path))
+        text = ""
+        
+        for page_num, page in enumerate(reader.pages, start=1):
+            try:
+                text += page.extract_text() + "\n"
+            except Exception as e:
+                logger.warning(f"Failed to extract text from page {page_num}: {e}")
+                raise PDFParsingError(str(pdf_path), page=page_num, original_error=e)
+        
+        if not text.strip():
+            raise EmptyContentError(str(pdf_path))
+        
+        logger.info(f"Successfully extracted {len(text)} characters from PDF")
+        return text
+        
+    except EmptyContentError:
+        raise
+    except PDFParsingError:
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error parsing PDF: {e}")
+        raise PDFParsingError(str(pdf_path), original_error=e)
+
+def smart_format(text: str) -> str:
     """
     Applies regex heuristics to wrap content in Glassmorphism boxes.
+    
+    Args:
+        text: Raw text content to format
+        
+    Returns:
+        HTML-formatted content with styled boxes
     """
     lines = text.split('\n')
     html_output = ""
@@ -77,11 +130,47 @@ def smart_format(text):
     if in_box: html_output += "</div>\n"
     return html_output
 
-def generate_smart_notes(input_path, output_path, template_path="smart_template.html", text_content=None):
+def generate_smart_notes(
+    input_path: str | Path,
+    output_path: str | Path,
+    template_path: Optional[str | Path] = None,
+    text_content: Optional[str] = None
+) -> None:
+    """
+    Generate smart notes HTML from PDF or text content
+    
+    Args:
+        input_path: Path to input file (PDF or TXT)
+        output_path: Path where HTML output will be saved
+        template_path: Path to HTML template (optional, uses default if None)
+        text_content: Pre-extracted text content (optional, extracts from file if None)
+        
+    Raises:
+        TemplateNotFoundError: If template file doesn't exist
+        PDFParsingError: If PDF parsing fails
+        EmptyContentError: If no content extracted
+    """
+    # Convert to Path objects
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    
+    # Determine template path
+    if template_path is None:
+        # Use template in same directory as this script
+        template_path = Path(__file__).parent / "smart_template.html"
+    else:
+        template_path = Path(template_path)
+    
+    # Validate template exists
+    if not template_path.exists():
+        raise TemplateNotFoundError(str(template_path))
+    
+    # Get content
     if text_content:
         full_text = text_content
+        logger.info(f"Using provided text content ({len(text_content)} chars)")
     else:
-        print(f"Reading {input_path}...")
+        logger.info(f"Reading {input_path}...")
         full_text = parse_pdf(input_path)
     
     # Split into Chapters for Tabs
@@ -91,12 +180,14 @@ def generate_smart_notes(input_path, output_path, template_path="smart_template.
     chapter_pattern = re.compile(r'^\s*(Chapter|Unit|Module)\s+\d+', re.IGNORECASE | re.MULTILINE)
     matches = list(chapter_pattern.finditer(full_text))
     
-    tabs = []
+    tabs: List[Dict[str, str]] = []
     
     if not matches:
         # Fallback: Treat as single chapter
+        logger.info("No chapters detected, treating as single document")
         tabs.append({"title": "Full Notes", "content": smart_format(full_text)})
     else:
+        logger.info(f"Detected {len(matches)} chapters/units")
         for i in range(len(matches)):
             start = matches[i].start()
             end = matches[i+1].start() if i + 1 < len(matches) else len(full_text)
@@ -125,8 +216,9 @@ def generate_smart_notes(input_path, output_path, template_path="smart_template.
         content_html += '</section></div>\n'
         
         # Nav
-        short_title = tab['title'].split(':')[0] # simple short title
-        if len(short_title) > 10: short_title = f"Part {tab_id}"
+        short_title = tab['title'].split(':')[0]  # simple short title
+        if len(short_title) > 10:
+            short_title = f"Part {tab_id}"
         
         nav_html += f'''
         <div class="nav-item{active_class}" onclick="switchTab({tab_id}, '{tab["title"]}')">
@@ -136,34 +228,55 @@ def generate_smart_notes(input_path, output_path, template_path="smart_template.
         '''
         
     # Read Template
-    with open(template_path, 'r') as f:
+    logger.info(f"Loading template from {template_path}")
+    with open(template_path, 'r', encoding='utf-8') as f:
         template = f.read()
         
     final_html = template.replace('{{CONTENT}}', content_html).replace('{{NAV}}', nav_html)
     
-    with open(output_path, 'w') as f:
+    # Ensure output directory exists
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Write output
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_html)
         
+    logger.info(f"Success! Generated {output_path}")
     print(f"Success! Generated {output_path}")
 
 if __name__ == "__main__":
+    # Configure logging for CLI usage
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(levelname)s: %(message)s'
+    )
+    
     if len(sys.argv) < 2:
         print("Usage: python pdf_to_html.py <input_file>")
-    else:
-        input_file = sys.argv[1]
-        output_file = "Generated_Smart_Notes.html"
+        print("Supported formats: .pdf, .txt")
+        sys.exit(1)
+    
+    try:
+        input_file = Path(sys.argv[1])
+        output_file = Path("Generated_Smart_Notes.html")
         
-        if input_file.lower().endswith('.pdf'):
+        # Validate input file
+        validate_file_exists(input_file)
+        validate_file_extension(input_file, {'pdf', 'txt'})
+        
+        if input_file.suffix.lower() == '.pdf':
             generate_smart_notes(input_file, output_file)
-        elif input_file.lower().endswith('.txt'):
+        elif input_file.suffix.lower() == '.txt':
             # Text file support for testing
-            print(f"Reading text file {input_file}...")
+            logger.info(f"Reading text file {input_file}...")
             with open(input_file, 'r', encoding='utf-8', errors='ignore') as f:
                 text = f.read()
             
-            # Use same logic but skip parse_pdf
-            # Copy-paste generate_smart_notes logic or refactor? 
-            # Refactoring slightly to reuse generate logic
             generate_smart_notes(input_file, output_file, text_content=text)
         else:
             print("Unsupported file type. Use .pdf or .txt")
+            sys.exit(1)
+            
+    except Exception as e:
+        logger.error(f"Conversion failed: {e}")
+        sys.exit(1)

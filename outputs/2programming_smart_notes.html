@@ -257,20 +257,20 @@
 <section class="glass-panel"><h2>Full Notes</h2>
 <p>Programming</p>
 <h3>Programming encompasses three things:</h3>
-<p> a computation model, which is a formal system that defines a language and</p>
+<p>a computation model, which is a formal system that defines a language and</p>
 <p>how sentences of the language (e.g., expressions and statements) are</p>
 <p>executed by an abstract machine.</p>
-<p> a set of programming techniques and design principles used to write</p>
+<p>a set of programming techniques and design principles used to write</p>
 <p>programs in the language of the computation model. We will sometimes call</p>
 <p>this a programming model. A programming model is always built on top of a</p>
 <p>computation model.</p>
-<p> a set of reasoning techniques to let you reason about programs, to increase</p>
+<p>a set of reasoning techniques to let you reason about programs, to increase</p>
 <p>confidence that they behave correctly and to calculate their efficiency.</p>
 <p>Defining practical programming languages</p>
 <p>Programming languages have three main components</p>
-<p> Syntax</p>
-<p> Semantics</p>
-<p> Pragmatics</p>
+<p>Syntax</p>
+<p>Semantics</p>
+<p>Pragmatics</p>
 <p>Syntax</p>
 <p>The syntax of a language defines what are the legal programs, i.e., programs that</p>
 <p>can be successfully executed. Legal programs are programs that conform to the</p>
@@ -282,8 +282,8 @@
 <p>‘sentences’ are usually called ‘statements’ and ‘words’ are usually called ‘tokens’.</p>
 <p>Just as words are made of letters, tokens are made of characters. This gives us two</p>
 <h3>levels of structure:</h3>
-<p> statement (‘sentence’) = sequence of tokens (‘words’)</p>
-<p> token (‘word’) = sequence of characters (‘letters’)</p>
+<p>statement (‘sentence’) = sequence of tokens (‘words’)</p>
+<p>token (‘word’) = sequence of characters (‘letters’)</p>
 <p>Grammars are useful both for defining statements and tokens. For example the</p>
 <p>sequence of statements may be typed (on a keyboard) to define factorial function:</p>
 <p>fun { Fact N }</p>
@@ -326,13 +326,8 @@
 <p>classified according to how expressive they are, i.e., what kinds of languages they</p>
 <p>can generate. For example, the EBNF notation given above defines a class of</p>
 <p>grammars called context-free grammars. They are so-called because the expansion</p>
-<p>of a nonterminal, e.g.,<digit>, is always the same no matter where it is used.</p>
-<p>-</p>
-<p>1N</p>
-<p>0N FactN</p>
-<p>*1==</p>
-<p>ifNFact</p>
-<p>fu</p>
+<p>of a nonterminal, e.g.,<digit>, is always the same no matter where it is used.-</p>
+<p>1N0N FactN*1==ifNFactfu</p>
 <p>n</p>
 <p>For most practical programming languages, there is usually no context-free</p>
 <p>grammar that generates all legal programs and no others. For example, in many</p>
@@ -358,13 +353,13 @@
 <p>that only one parse tree is possible. We say that they disambiguate the grammar.</p>
 <p>For expressions with binary operators such as the arithmetic expressions, the usual</p>
 <p>approach is to add two conditions, precedence and associativity:</p>
-<p> Precedence is a condition on an expression with different operators, like</p>
+<p>Precedence is a condition on an expression with different operators, like</p>
 <p>2*3+4. Each operator is given a precedence level. Operators with high</p>
 <p>precedences are put as deep in the parse tree as possible, i.e., as far away</p>
 <p>from the root as possible. If * has higher precedence than +, then the parse</p>
 <p>tree (2*3)+4 is chosen over the alternative 2*(3+4).If * is deeper in the tree</p>
 <p>than +,then we say that * binds tighter than +.</p>
-<p> Associativity is a condition on an expression with the same operator, like 2-3-</p>
+<p>Associativity is a condition on an expression with the same operator, like 2-3-</p>
 <p>4. In this case, precedence is not enough to disambiguate because all</p>
 <p>operators have the same precedence. We have to choose between the trees</p>
 <p>(2-3)-4 and 2-(3-4). Associativity determines whether the leftmost or the</p>
@@ -394,11 +389,11 @@
 <p>In this approach, all language constructs are defined in terms of translations into a</p>
 <p>core language known as the kernel language. The kernel language approach</p>
 <h3>consists of two parts:</h3>
-<p>1. Define a very simple language, called the kernel language. This language</p>
+<p>1.Define a very simple language, called the kernel language. This language</p>
 <p>should be easy to reason in and be faithful to the space and time efficiency of</p>
 <p>the implementation. The kernel language and the data structures it</p>
 <p>manipulates together form the kernel computation model.</p>
-<p>2. Define a translation scheme from the full programming language to the kernel</p>
+<p>2.Define a translation scheme from the full programming language to the kernel</p>
 <p>language. Each grammatical construct in the full language is translated into</p>
 <p>the kernel language. The translation should be as simple as possible.</p>
 <p>There are two kinds of translation, namely linguistic abstraction and syntactic sugar.</p>
@@ -443,33 +438,33 @@
 <p>Formal semantics</p>
 <p>The kernel language approach lets us define the semantics of the kernel language in</p>
 <p>any way we want. There are four widely-used approaches to language semantics:</p>
-<p> An operational semantics shows how a statement executes in terms of an</p>
+<p>An operational semantics shows how a statement executes in terms of an</p>
 <p>abstract machine. This approach always works well, since at the end of the</p>
 <p>day all languages execute on a computer.</p>
-<p> An axiomatic semantics defines a statement’s semantics as the relation</p>
+<p>An axiomatic semantics defines a statement’s semantics as the relation</p>
 <p>between the input state (the situation before executing the statement) and</p>
 <p>the output state (the situation after executing the statement). This relation is</p>
 <p>given as a logical assertion. This is a good way to reason about statement</p>
 <p>sequences, since the output assertion of each statement is the input assertion</p>
 <p>of the next. It therefore works well with stateful models, since a state is a</p>
 <p>sequence of values.</p>
-<p> A denotational semantics defines a statement as a function over an abstract</p>
+<p>A denotational semantics defines a statement as a function over an abstract</p>
 <p>domain. This works well for declarative models, but can be applied to other</p>
 <p>models as well. It gets complicated when applied to concurrent languages.</p>
-<p> A logical semantics defines a statement as a model of a logical theory. This</p>
+<p>A logical semantics defines a statement as a model of a logical theory. This</p>
 <p>works well for declarative and relational computation models, but is hard to</p>
 <p>apply to other models.</p>
 <p>Translation approaches to semantics of programming languages</p>
 <p>There are three ways that the translation approach has been used for defining</p>
 <h3>programming languages:</h3>
-<p> The kernel language approach, which is intended for the programmer. Its</p>
+<p>The kernel language approach, which is intended for the programmer. Its</p>
 <p>concepts correspond directly to programming concepts.</p>
-<p> The foundational approach which is intended for the mathematician.</p>
+<p>The foundational approach which is intended for the mathematician.</p>
 <p>Examples are the Turing machine, the λ calculus (underlying functional</p>
 <p>programming), first-order logic (underlying logic programming), and the π</p>
 <p>calculus (to model concurrency). Because these calculi are intended for</p>
 <p>formal mathematical study, they have as few elements as possible.</p>
-<p> The machine approach which is intended for the implementor. Programs are</p>
+<p>The machine approach which is intended for the implementor. Programs are</p>
 <p>translated into an idealized machine, which is traditionally called an abstract</p>
 <p>machine or a virtual machine. It is relatively easy to translate idealized</p>
 <p>machine code into real machine code.</p>

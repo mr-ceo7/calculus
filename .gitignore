@@ -82,3 +82,13 @@ desktop.ini
 *.bak
 *.backup
 *~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Test outputs
+test_output.html
+/tmp/smart_notes_test/
