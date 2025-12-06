@@ -1,1 +1,19 @@
-<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="appGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38bdf8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Document background -->
+  <rect x="20" y="15" width="60" height="70" rx="4" fill="url(#appGradient)"/>
+  <!-- Pages representation -->
+  <rect x="28" y="25" width="44" height="3" fill="white" opacity="0.9"/>
+  <rect x="28" y="33" width="44" height="2" fill="white" opacity="0.7"/>
+  <rect x="28" y="38" width="44" height="2" fill="white" opacity="0.7"/>
+  <rect x="28" y="43" width="44" height="2" fill="white" opacity="0.7"/>
+  <rect x="28" y="48" width="30" height="2" fill="white" opacity="0.7"/>
+  <!-- Highlight accent -->
+  <circle cx="70" cy="65" r="8" fill="#22c55e" opacity="0.9"/>
+</svg>

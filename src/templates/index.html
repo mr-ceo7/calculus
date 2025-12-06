@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Notes Generator - Convert PDFs and text files to interactive HTML learning materials">
+    <meta name="author" content="@it.exper7">
     <title>Smart Notes Generator</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico">
     <style>
@@ -246,7 +248,62 @@
             position: relative;
         }
 
-        h1 {
+        /* === FOOTER === */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid var(--glass-border);
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: center;
+            z-index: 50;
+            font-size: var(--font-size-sm);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            opacity: 0.8;
+        }
+
+        .footer-text {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .footer-credit {
+            color: var(--text-muted);
+        }
+
+        .footer-credit strong {
+            color: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            .app-footer {
+                padding: var(--spacing-sm);
+                font-size: var(--font-size-xs);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: var(--spacing-sm);
+            }
+        }        h1 {
             font-size: var(--font-size-3xl);
             background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
             -webkit-background-clip: text;
@@ -1124,25 +1181,6 @@
 </head>
 
 <body>
-    <div class="header-toolbar">
-        <button class="control-btn tooltip-wrapper" id="muteToggle" title="Toggle sound effects">
-            🔊
-            <span class="tooltip-text">Mute sounds</span>
-        </button>
-        <button class="control-btn tooltip-wrapper" id="blurToggle" title="Reduce motion/blur">
-            ⚙️
-            <span class="tooltip-text">Accessibility</span>
-        </button>
-        <button class="control-btn tooltip-wrapper" id="themeToggle" title="Toggle dark/light mode">
-            🌙
-            <span class="tooltip-text">Change theme</span>
-        </button>
-        <button class="control-btn tooltip-wrapper" id="historyToggle" title="View conversion history">
-            📋
-            <span class="tooltip-text">History</span>
-        </button>
-    </div>
-
     <div class="container">
         <header>
             <h1>📚 Smart Notes Generator</h1>
@@ -1226,6 +1264,17 @@
     <div class="success-animation" id="successAnimation">✅</div>
     <div class="keyboard-hint" id="keyboardHint">Esc: Clear | Enter: Submit | H: History</div>
 
+    <footer class="app-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-text">Galvaniy Technologies</span>
+            </div>
+            <div class="footer-credit">
+                 <strong></strong> 
+            </div>
+        </div>
+    </footer>
+
     <script>
         // ============================================
         // DOM ELEMENTS & STATE
@@ -1239,10 +1288,6 @@
             submitBtn: document.getElementById('submitBtn'),
             removeFile: document.getElementById('removeFile'),
             uploadForm: document.getElementById('uploadForm'),
-            themeToggle: document.getElementById('themeToggle'),
-            muteToggle: document.getElementById('muteToggle'),
-            blurToggle: document.getElementById('blurToggle'),
-            historyToggle: document.getElementById('historyToggle'),
             historyPanel: document.getElementById('historyPanel'),
             historyList: document.getElementById('historyList'),
             filePreview: document.getElementById('filePreview'),
@@ -1260,12 +1305,12 @@
 
         let appState = {
             isMuted: localStorage.getItem('muted') === 'true',
-            isDarkMode: localStorage.getItem('darkMode') !== 'false',
-            isLowBlur: localStorage.getItem('lowBlur') === 'true'
+            isDarkMode: true,
+            isLowBlur: false
         };
 
         // ============================================
-        // THEME MANAGEMENT
+        // THEME MANAGEMENT (Disabled)
         // ============================================
         function initTheme() {
             if (!appState.isDarkMode) {
@@ -1281,36 +1326,11 @@
             }
         }
 
-        elements.themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            elements.themeToggle.textContent = isLight ? '☀️' : '🌙';
-            localStorage.setItem('darkMode', !isLight);
-            playSound('toggle');
-        });
-
-        elements.muteToggle.addEventListener('click', () => {
-            appState.isMuted = !appState.isMuted;
-            elements.muteToggle.style.opacity = appState.isMuted ? '0.5' : '1';
-            localStorage.setItem('muted', appState.isMuted);
-            playSound('toggle');
-        });
-
-        elements.blurToggle.addEventListener('click', () => {
-            document.body.classList.toggle('low-blur');
-            appState.isLowBlur = document.body.classList.contains('low-blur');
-            elements.blurToggle.style.opacity = appState.isLowBlur ? '0.5' : '1';
-            localStorage.setItem('lowBlur', appState.isLowBlur);
-            playSound('toggle');
-        });
+        // Theme toggle listeners removed - buttons hidden
 
         // ============================================
         // HISTORY MANAGEMENT
         // ============================================
-        elements.historyToggle.addEventListener('click', () => {
-            elements.historyPanel.classList.toggle('active');
-        });
-
         function addToHistory(filename) {
             let history = JSON.parse(localStorage.getItem('conversionHistory') || '[]');
             const timestamp = new Date().toLocaleTimeString();
