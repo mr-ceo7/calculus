@@ -13,21 +13,33 @@
            ============================================ */
         :root {
             /* Colors */
-            --bg-dark: #0f172a;
-            --bg-darker: #050a15;
-            --glass-bg: rgba(30, 41, 59, 0.65);
-            --glass-hover: rgba(30, 41, 59, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --accent-glow: rgba(56, 189, 248, 0.4);
-            --accent-secondary: #8b5cf6;
+            --bg-dark: #0a0f1f;
+            --bg-darker: #060914;
+            --glass-bg: rgba(18, 26, 46, 0.75);
+            --glass-hover: rgba(18, 26, 46, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #2dd4bf;
+            --accent-hover: #10bfa5;
+            --accent-glow: rgba(45, 212, 191, 0.45);
+            --accent-secondary: #f5b759;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
             --success: #22c55e;
             --error: #ef4444;
             --warning: #eab308;
             --info: #06b6d4;
+
+            /* Background spotlight colors (overridable per theme) */
+            --bg-spot-1: rgba(45, 212, 191, 0.18);
+            --bg-spot-2: rgba(245, 183, 89, 0.16);
+            --bg-spot-3: rgba(59, 130, 246, 0.18);
+            --bg-spot-4: rgba(45, 212, 191, 0.35);
+            --bg-spot-5: rgba(245, 183, 89, 0.3);
+            --bg-spot-6: rgba(59, 130, 246, 0.28);
+            --bg-spot-7: rgba(16, 191, 165, 0.28);
+            --bg-spot-8: rgba(245, 183, 89, 0.24);
+            --bg-sheen-start: rgba(45, 212, 191, 0.12);
+            --bg-sheen-end: rgba(245, 183, 89, 0.08);
             
             /* Spacing */
             --spacing-xs: 0.25rem;
@@ -78,9 +90,9 @@
         body {
             background-color: var(--bg-dark);
             background-image:
-                radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
+                radial-gradient(at 0% 0%, var(--bg-spot-1) 0, transparent 45%),
+                radial-gradient(at 70% 20%, var(--bg-spot-2) 0, transparent 40%),
+                radial-gradient(at 40% 80%, var(--bg-spot-3) 0, transparent 45%);
             color: var(--text-main);
             font-family: var(--font-family);
             font-size: var(--font-size-base);
@@ -92,6 +104,40 @@
             transition: background-color var(--transition-base);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -12%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+            opacity: 0.55;
+            mix-blend-mode: screen;
+        }
+
+        body::before {
+            background:
+                radial-gradient(circle at 20% 30%, var(--bg-spot-4), transparent 35%),
+                radial-gradient(circle at 80% 20%, var(--bg-spot-5), transparent 32%),
+                radial-gradient(circle at 60% 75%, var(--bg-spot-6), transparent 40%);
+            animation: gradientShift 14s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            background:
+                radial-gradient(circle at 10% 80%, var(--bg-spot-7), transparent 32%),
+                radial-gradient(circle at 90% 60%, var(--bg-spot-8), transparent 35%),
+                linear-gradient(135deg, var(--bg-sheen-start), var(--bg-sheen-end));
+            animation: gradientShift 18s ease-in-out infinite alternate-reverse;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
         }
 
         body.light-mode {
@@ -165,6 +211,12 @@
         @keyframes shimmer {
             0% { background-position: -1000px 0; }
             100% { background-position: 1000px 0; }
+        }
+
+        @keyframes gradientShift {
+            0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
+            50% { transform: translate3d(-20px, 10px, 0) scale(1.05); opacity: 0.9; }
+            100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
         }
 
         @keyframes progressSlide {
@@ -1310,23 +1362,117 @@
         };
 
         // ============================================
-        // THEME MANAGEMENT (Disabled)
+        // THEME MANAGEMENT (random per load)
         // ============================================
-        function initTheme() {
-            if (!appState.isDarkMode) {
-                document.body.classList.add('light-mode');
-                elements.themeToggle.textContent = '☀️';
+        const themes = [
+            {
+                name: 'Emerald & Sand',
+                vars: {
+                    '--bg-dark': '#0c0f14',
+                    '--bg-darker': '#0f2a2f',
+                    '--glass-bg': 'rgba(20, 32, 42, 0.8)',
+                    '--glass-hover': 'rgba(20, 32, 42, 0.92)',
+                    '--glass-border': 'rgba(255, 255, 255, 0.08)',
+                    '--accent': '#20c997',
+                    '--accent-hover': '#16b187',
+                    '--accent-glow': 'rgba(32, 201, 151, 0.42)',
+                    '--accent-secondary': '#f2d6a2',
+                    '--bg-spot-1': 'rgba(32, 201, 151, 0.2)',
+                    '--bg-spot-2': 'rgba(242, 214, 162, 0.18)',
+                    '--bg-spot-3': 'rgba(83, 191, 168, 0.18)',
+                    '--bg-spot-4': 'rgba(32, 201, 151, 0.38)',
+                    '--bg-spot-5': 'rgba(242, 214, 162, 0.32)',
+                    '--bg-spot-6': 'rgba(86, 176, 196, 0.26)',
+                    '--bg-spot-7': 'rgba(32, 201, 151, 0.28)',
+                    '--bg-spot-8': 'rgba(242, 214, 162, 0.24)',
+                    '--bg-sheen-start': 'rgba(32, 201, 151, 0.12)',
+                    '--bg-sheen-end': 'rgba(242, 214, 162, 0.08)'
+                }
+            },
+            {
+                name: 'Indigo & Amber',
+                vars: {
+                    '--bg-dark': '#0b1026',
+                    '--bg-darker': '#131b33',
+                    '--glass-bg': 'rgba(19, 27, 51, 0.82)',
+                    '--glass-hover': 'rgba(19, 27, 51, 0.95)',
+                    '--glass-border': 'rgba(255, 255, 255, 0.09)',
+                    '--accent': '#5865f2',
+                    '--accent-hover': '#4c57d8',
+                    '--accent-glow': 'rgba(88, 101, 242, 0.45)',
+                    '--accent-secondary': '#f5a524',
+                    '--bg-spot-1': 'rgba(88, 101, 242, 0.2)',
+                    '--bg-spot-2': 'rgba(245, 165, 36, 0.18)',
+                    '--bg-spot-3': 'rgba(157, 191, 249, 0.18)',
+                    '--bg-spot-4': 'rgba(88, 101, 242, 0.36)',
+                    '--bg-spot-5': 'rgba(245, 165, 36, 0.32)',
+                    '--bg-spot-6': 'rgba(93, 146, 255, 0.26)',
+                    '--bg-spot-7': 'rgba(88, 101, 242, 0.28)',
+                    '--bg-spot-8': 'rgba(245, 165, 36, 0.24)',
+                    '--bg-sheen-start': 'rgba(88, 101, 242, 0.12)',
+                    '--bg-sheen-end': 'rgba(245, 165, 36, 0.1)'
+                }
+            },
+            {
+                name: 'Ruby & Champagne',
+                vars: {
+                    '--bg-dark': '#0e0b16',
+                    '--bg-darker': '#1b1326',
+                    '--glass-bg': 'rgba(27, 19, 38, 0.82)',
+                    '--glass-hover': 'rgba(27, 19, 38, 0.95)',
+                    '--glass-border': 'rgba(255, 255, 255, 0.08)',
+                    '--accent': '#e11d48',
+                    '--accent-hover': '#c5163e',
+                    '--accent-glow': 'rgba(225, 29, 72, 0.42)',
+                    '--accent-secondary': '#f6e3c5',
+                    '--bg-spot-1': 'rgba(225, 29, 72, 0.22)',
+                    '--bg-spot-2': 'rgba(246, 227, 197, 0.16)',
+                    '--bg-spot-3': 'rgba(133, 76, 117, 0.18)',
+                    '--bg-spot-4': 'rgba(225, 29, 72, 0.38)',
+                    '--bg-spot-5': 'rgba(246, 227, 197, 0.32)',
+                    '--bg-spot-6': 'rgba(142, 92, 143, 0.24)',
+                    '--bg-spot-7': 'rgba(225, 29, 72, 0.26)',
+                    '--bg-spot-8': 'rgba(246, 227, 197, 0.22)',
+                    '--bg-sheen-start': 'rgba(225, 29, 72, 0.12)',
+                    '--bg-sheen-end': 'rgba(246, 227, 197, 0.08)'
+                }
+            },
+            {
+                name: 'Forest & Copper',
+                vars: {
+                    '--bg-dark': '#0c1c17',
+                    '--bg-darker': '#102820',
+                    '--glass-bg': 'rgba(16, 40, 32, 0.82)',
+                    '--glass-hover': 'rgba(16, 40, 32, 0.95)',
+                    '--glass-border': 'rgba(255, 255, 255, 0.08)',
+                    '--accent': '#3cb6a5',
+                    '--accent-hover': '#35a390',
+                    '--accent-glow': 'rgba(60, 182, 165, 0.42)',
+                    '--accent-secondary': '#d97757',
+                    '--bg-spot-1': 'rgba(60, 182, 165, 0.2)',
+                    '--bg-spot-2': 'rgba(217, 119, 87, 0.18)',
+                    '--bg-spot-3': 'rgba(86, 174, 120, 0.18)',
+                    '--bg-spot-4': 'rgba(60, 182, 165, 0.36)',
+                    '--bg-spot-5': 'rgba(217, 119, 87, 0.32)',
+                    '--bg-spot-6': 'rgba(106, 175, 140, 0.26)',
+                    '--bg-spot-7': 'rgba(60, 182, 165, 0.28)',
+                    '--bg-spot-8': 'rgba(217, 119, 87, 0.22)',
+                    '--bg-sheen-start': 'rgba(60, 182, 165, 0.12)',
+                    '--bg-sheen-end': 'rgba(217, 119, 87, 0.08)'
+                }
             }
-            if (appState.isLowBlur) {
-                document.body.classList.add('low-blur');
-                elements.blurToggle.style.opacity = '0.5';
-            }
-            if (appState.isMuted) {
-                elements.muteToggle.style.opacity = '0.5';
-            }
+        ];
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            Object.entries(theme.vars).forEach(([key, value]) => root.style.setProperty(key, value));
+            document.body.dataset.theme = theme.name;
         }
 
-        // Theme toggle listeners removed - buttons hidden
+        function initTheme() {
+            const theme = themes[Math.floor(Math.random() * themes.length)];
+            applyTheme(theme);
+        }
 
         // ============================================
         // HISTORY MANAGEMENT
@@ -1388,7 +1534,12 @@
                 conf.className = 'confetti';
                 conf.style.left = Math.random() * window.innerWidth + 'px';
                 conf.style.top = Math.random() * 200 + 'px';
-                const colors = ['#38bdf8', '#8b5cf6', '#22c55e', '#eab308'];
+                const colors = [
+                    getComputedStyle(document.documentElement).getPropertyValue('--accent'),
+                    getComputedStyle(document.documentElement).getPropertyValue('--accent-secondary'),
+                    getComputedStyle(document.documentElement).getPropertyValue('--success'),
+                    getComputedStyle(document.documentElement).getPropertyValue('--warning')
+                ];
                 conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 conf.style.animationDelay = Math.random() * 0.3 + 's';
                 document.body.appendChild(conf);
