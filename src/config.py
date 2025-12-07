@@ -28,6 +28,20 @@ class Config:
     
     # Converter configuration
     TEMPLATE_PATH: Path = BASE_DIR / 'converter' / 'smart_template.html'
+
+    # Gemini configuration
+    # Temporary hardcoded key for local testing (replace/remove in production)
+    GEMINI_API_KEY: str = os.environ.get('GEMINI_API_KEY', 'AIzaSyCMYFeUlYpSmstNTowFOGPtNoQadBqqbm4')
+    GEMINI_PREFERRED_MODEL: str = os.environ.get('GEMINI_PREFERRED_MODEL', 'gemini-2.0-flash')
+    GEMINI_FALLBACK_MODEL: str = os.environ.get('GEMINI_FALLBACK_MODEL', 'gemini-2.5-flash')
+    GEMINI_TIMEOUT_SECONDS: float = float(os.environ.get('GEMINI_TIMEOUT_SECONDS', '15'))
+    GEMINI_MAX_CHARS: int = int(os.environ.get('GEMINI_MAX_CHARS', '8000'))
+    GEMINI_MAX_CHUNK_WORDS: int = int(os.environ.get('GEMINI_MAX_CHUNK_WORDS', '1200'))
+    
+    def __post_init__(self):
+        """Validate and create necessary directories"""
+        # Compute GEMINI_ENABLED after GEMINI_API_KEY is set
+        object.__setattr__(self, 'GEMINI_ENABLED', bool(self.GEMINI_API_KEY))
     
     # Logging
     LOG_LEVEL: str = os.environ.get('LOG_LEVEL', 'INFO')
@@ -35,6 +49,9 @@ class Config:
     
     def __post_init__(self):
         """Validate and create necessary directories"""
+        # Compute GEMINI_ENABLED after GEMINI_API_KEY is set
+        object.__setattr__(self, 'GEMINI_ENABLED', bool(self.GEMINI_API_KEY))
+        
         # Ensure directories exist
         self.UPLOAD_FOLDER.mkdir(exist_ok=True, parents=True)
         self.OUTPUT_FOLDER.mkdir(exist_ok=True, parents=True)

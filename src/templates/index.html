@@ -457,6 +457,34 @@
             opacity: 0.8;
         }
 
+        .ai-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-size: var(--font-size-sm);
+        }
+
+        .ai-toggle input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .ai-toggle strong {
+            color: var(--accent);
+        }
+
+        .ai-toggle.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         input[type="file"] {
             display: none;
         }
@@ -1263,6 +1291,20 @@
                     <input type="file" name="file" id="fileInput" accept=".pdf,.txt">
                 </div>
 
+                {% if ai_enabled %}
+                <label class="ai-toggle" for="aiToggle">
+                    <input type="checkbox" id="aiToggle" name="aiToggle" value="gemini">
+                    <div>
+                        <strong>AI Enhanced (Gemini)</strong><br>
+                        Generates summaries, analogies, and examples. Falls back to standard if unavailable.
+                    </div>
+                </label>
+                {% else %}
+                <div class="ai-toggle disabled">
+                    <strong>AI Enhanced (Gemini)</strong> unavailable (set GEMINI_API_KEY to enable).
+                </div>
+                {% endif %}
+
                 <div class="file-info" id="fileInfo">
                     <span class="file-icon">📎</span>
                     <div class="file-details">
@@ -1296,6 +1338,7 @@
                 <div class="download-options" id="downloadOptions">
                     <button type="button" class="download-option" id="openNewTab">👁️ Open in Tab</button>
                     <button type="button" class="download-option" id="downloadFile">⬇️ Download</button>
+                    <button type="button" class="download-option" id="regenerateBtn">🔄 Regenerate</button>
                 </div>
             </form>
         </div>
@@ -1340,6 +1383,7 @@
             submitBtn: document.getElementById('submitBtn'),
             removeFile: document.getElementById('removeFile'),
             uploadForm: document.getElementById('uploadForm'),
+            aiToggle: document.getElementById('aiToggle'),
             historyPanel: document.getElementById('historyPanel'),
             historyList: document.getElementById('historyList'),
             filePreview: document.getElementById('filePreview'),
@@ -1668,6 +1712,11 @@
             playSound('toggle');
             
             const formData = new FormData(elements.uploadForm);
+            if (elements.aiToggle) {
+                formData.set('mode', elements.aiToggle.checked ? 'gemini' : 'standard');
+            } else {
+                formData.set('mode', 'standard');
+            }
             
             try {
                 const response = await fetch('/upload', {
@@ -1678,6 +1727,9 @@
                 const data = await response.json();
                 
                 if (data.success) {
+                    if (data.ai_fallback) {
+                        alert('AI mode failed or timed out. Generated standard notes instead.');
+                    }
                     // Success - show confetti and download options
                     setTimeout(() => {
                         elements.progressContainer.classList.remove('active');
@@ -1699,6 +1751,16 @@
                         };
                         document.getElementById('downloadFile').onclick = () => {
                             window.location.href = data.download_url;
+                        };
+                        document.getElementById('regenerateBtn').onclick = () => {
+                            // Reset UI and trigger regeneration
+                            elements.downloadOptions.classList.remove('show');
+                            elements.submitBtn.textContent = 'Generate Smart Notes';
+                            elements.submitBtn.disabled = false;
+                            elements.progressContainer.classList.remove('active');
+                            
+                            // Trigger form submit to regenerate
+                            elements.uploadForm.dispatchEvent(new Event('submit'));
                         };
                         
                         elements.downloadOptions.classList.add('show');

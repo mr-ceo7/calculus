@@ -2,6 +2,7 @@ import sys
 import re
 import os
 import logging
+import html
 from pathlib import Path
 from typing import Optional, List, Dict
 from pypdf import PdfReader
@@ -215,13 +216,16 @@ def generate_smart_notes(
         content_html += tab['content']
         content_html += '</section></div>\n'
         
-        # Nav
-        short_title = tab['title'].split(':')[0]  # simple short title
-        if len(short_title) > 10:
+        # Nav (fallback to Part N when title missing/long; escape quotes for inline JS)
+        raw_title = (tab['title'] or '').strip() or f"Part {tab_id}"
+        safe_title_js = raw_title.replace("'", "\\'")
+        safe_title_attr = html.escape(raw_title, quote=True)
+        short_title = (raw_title.split(':')[0] or raw_title).strip()
+        if len(short_title) > 12:
             short_title = f"Part {tab_id}"
-        
+
         nav_html += f'''
-        <div class="nav-item{active_class}" onclick="switchTab({tab_id}, '{tab["title"]}')">
+        <div class="nav-item{active_class}" data-title="{safe_title_attr}" aria-label="{safe_title_attr}" role="button" tabindex="0" onclick="switchTab({tab_id}, '{safe_title_js}')">
             <span class="nav-icon">●</span>
             <span>{short_title}</span>
         </div>
@@ -231,8 +235,21 @@ def generate_smart_notes(
     logger.info(f"Loading template from {template_path}")
     with open(template_path, 'r', encoding='utf-8') as f:
         template = f.read()
+
+    if '<!-- AI GENERATED CONTENT GOES HERE -->' not in template:
+        logger.warning("Template missing content placeholder; output may be empty")
+    if '<!-- NAV ITEMS GENERATED HERE -->' not in template:
+        logger.warning("Template missing nav placeholder; navigation may be empty")
+
+    if not content_html.strip():
+        logger.warning("Generated content is empty before template substitution")
+    if not nav_html.strip():
+        logger.warning("Generated navigation is empty before template substitution")
         
-    final_html = template.replace('{{CONTENT}}', content_html).replace('{{NAV}}', nav_html)
+    final_html = template.replace('<!-- AI GENERATED CONTENT GOES HERE -->', content_html).replace('<!-- NAV ITEMS GENERATED HERE -->', nav_html)
+
+    if '<!-- AI GENERATED CONTENT GOES HERE -->' in final_html or '<!-- NAV ITEMS GENERATED HERE -->' in final_html:
+        logger.warning("Placeholders still present after substitution; check template markers")
     
     # Ensure output directory exists
     output_path.parent.mkdir(parents=True, exist_ok=True)

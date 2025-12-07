@@ -9,8 +9,9 @@ from flask import Blueprint, render_template, request, send_file, flash, redirec
 from werkzeug.utils import secure_filename
 
 # Import converter modules
-from converter.pdf_to_html import generate_smart_notes
+from converter.pdf_to_html import generate_smart_notes, parse_pdf
 from converter.exceptions import ConversionError
+from converter.ai_converter import generate_ai_notes, GeminiUnavailable
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,8 @@ def allowed_file(filename: str, allowed_extensions: set) -> bool:
 @bp.route('/')
 def index():
     """Render the upload page"""
-    return render_template('index.html')
+    from flask import current_app
+    return render_template('index.html', ai_enabled=current_app.config.get('GEMINI_ENABLED', False))
 
 
 @bp.route('/upload', methods=['POST'])
@@ -58,19 +60,54 @@ def upload_file():
     filepath = upload_folder / filename
     output_filename = f"{filepath.stem}_smart_notes.html"
     output_path = output_folder / output_filename
+
+    mode = request.form.get('mode', 'standard').lower()
+    use_ai_requested = mode == 'gemini'
+    ai_attempted = False
+    ai_failed = False
     
     try:
         # Save uploaded file
         file.save(str(filepath))
         logger.info(f"Processing uploaded file: {filename}")
         
-        # Convert based on file type
+        text_content = None
         if filename.lower().endswith('.pdf'):
-            generate_smart_notes(filepath, output_path)
+            text_content = parse_pdf(filepath)
         elif filename.lower().endswith('.txt'):
             with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                text = f.read()
-            generate_smart_notes(filepath, output_path, text_content=text)
+                text_content = f.read()
+
+        if use_ai_requested and current_app.config.get('GEMINI_ENABLED'):
+            try:
+                ai_attempted = True
+                generate_ai_notes(
+                    text_content=text_content,
+                    output_path=output_path,
+                    template_path=current_app.config['TEMPLATE_PATH'],
+                    api_key=current_app.config['GEMINI_API_KEY'],
+                    preferred_model=current_app.config['GEMINI_PREFERRED_MODEL'],
+                    fallback_model=current_app.config['GEMINI_FALLBACK_MODEL'],
+                    timeout_seconds=current_app.config['GEMINI_TIMEOUT_SECONDS'],
+                    max_chars=current_app.config['GEMINI_MAX_CHARS'],
+                    max_chunk_words=current_app.config['GEMINI_MAX_CHUNK_WORDS'],
+                )
+            except (GeminiUnavailable, Exception) as e:  # noqa: BLE001
+                ai_failed = True
+                logger.warning(f"Gemini generation failed, falling back: {e}")
+                generate_smart_notes(
+                    filepath,
+                    output_path,
+                    template_path=current_app.config['TEMPLATE_PATH'],
+                    text_content=text_content,
+                )
+        else:
+                generate_smart_notes(
+                    filepath,
+                    output_path,
+                    template_path=current_app.config['TEMPLATE_PATH'],
+                    text_content=text_content,
+                )
         
         logger.info(f"Successfully converted {filename} to {output_filename}")
         
@@ -81,7 +118,10 @@ def upload_file():
             'filename': output_filename,
             'original_name': filename,
             'preview_url': url_for('main.preview_file', filename=output_filename),
-            'download_url': url_for('main.download_file', filename=output_filename)
+            'download_url': url_for('main.download_file', filename=output_filename),
+            'ai_used': ai_attempted and not ai_failed,
+            'ai_fallback': ai_failed,
+            'ai_enabled': current_app.config.get('GEMINI_ENABLED', False)
         })
     
     except ConversionError as e:

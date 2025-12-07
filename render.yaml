@@ -12,3 +12,5 @@ services:
         value: 3.11.6
       - key: SECRET_KEY
         value: please-set-a-secure-secret-key
+      - key: GEMINI_API_KEY
+        value: set-me
