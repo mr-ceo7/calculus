@@ -167,7 +167,7 @@ def generate_smart_notes(
         raise TemplateNotFoundError(str(template_path))
     
     # Get content
-    if text_content:
+    if text_content is not None:
         full_text = text_content
         logger.info(f"Using provided text content ({len(text_content)} chars)")
     else:

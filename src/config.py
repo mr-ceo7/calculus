@@ -32,11 +32,11 @@ class Config:
     # Gemini configuration
     # Temporary hardcoded key for local testing (replace/remove in production)
     GEMINI_API_KEY: str = os.environ.get('GEMINI_API_KEY', '')
-    GEMINI_PREFERRED_MODEL: str = os.environ.get('GEMINI_PREFERRED_MODEL', 'gemini-2.0-flash')
-    GEMINI_FALLBACK_MODEL: str = os.environ.get('GEMINI_FALLBACK_MODEL', 'gemini-2.5-flash')
-    GEMINI_TIMEOUT_SECONDS: float = float(os.environ.get('GEMINI_TIMEOUT_SECONDS', '15'))
-    GEMINI_MAX_CHARS: int = int(os.environ.get('GEMINI_MAX_CHARS', '8000'))
-    GEMINI_MAX_CHUNK_WORDS: int = int(os.environ.get('GEMINI_MAX_CHUNK_WORDS', '1200'))
+    GEMINI_PREFERRED_MODEL: str = os.environ.get('GEMINI_PREFERRED_MODEL', 'gemini-2.5-flash')
+    GEMINI_FALLBACK_MODEL: str = os.environ.get('GEMINI_FALLBACK_MODEL', 'gemini-2.0-flash')
+    GEMINI_TIMEOUT_SECONDS: float = float(os.environ.get('GEMINI_TIMEOUT_SECONDS', '240'))
+    # Increased to 32K - maximum for gemini-2.5-flash
+    GEMINI_MAX_OUTPUT_TOKENS: int = int(os.environ.get('GEMINI_MAX_OUTPUT_TOKENS', '32768'))
     
     def __post_init__(self):
         """Validate and create necessary directories"""

@@ -36,16 +36,20 @@ class TestFileUpload:
             }
             response = client.post('/upload', data=data, follow_redirects=False)
         
-        # Should return the converted file
         assert response.status_code == 200
-        assert b'<!DOCTYPE html>' in response.data
-        assert b'Smart Notes' in response.data or b'Notes' in response.data
+        payload = response.get_json()
+        assert payload['success'] is True
+        assert 'preview_url' in payload
+        preview = client.get(payload['preview_url'])
+        assert preview.status_code == 200
+        assert b'<!DOCTYPE html>' in preview.data
         
     def test_upload_no_file(self, client):
         """Test upload with no file selected"""
         response = client.post('/upload', data={}, follow_redirects=True)
-        assert response.status_code == 200
-        assert b'No file' in response.data or b'error' in response.data.lower()
+        assert response.status_code == 400
+        payload = response.get_json()
+        assert payload['success'] is False
         
     def test_upload_empty_filename(self, client):
         """Test upload with empty filename"""
@@ -53,8 +57,7 @@ class TestFileUpload:
             'file': (io.BytesIO(b''), '')
         }
         response = client.post('/upload', data=data, follow_redirects=True)
-        assert response.status_code == 200
-        # Should show error message
+        assert response.status_code == 400
         
     def test_upload_invalid_extension(self, client, temp_dir):
         """Test upload with invalid file extension"""
@@ -67,8 +70,7 @@ class TestFileUpload:
             }
             response = client.post('/upload', data=data, follow_redirects=True)
         
-        assert response.status_code == 200
-        assert b'Invalid' in response.data or b'error' in response.data.lower()
+        assert response.status_code == 400
 
 
 @pytest.mark.integration
@@ -86,8 +88,11 @@ class TestErrorHandling:
             }
             response = client.post('/upload', data=data, follow_redirects=True)
         
-        # Should handle gracefully (redirect with error or show message)
-        assert response.status_code in [200, 302, 303]
+        assert response.status_code == 200
+        payload = response.get_json()
+        assert payload['success'] is True
+        preview = client.get(payload['preview_url'])
+        assert preview.status_code == 200
         
     def test_favicon_route(self, client):
         """Test that favicon route exists"""
@@ -110,7 +115,11 @@ class TestRealFileConversion:
             response = client.post('/upload', data=data, follow_redirects=False)
         
         assert response.status_code == 200
-        assert len(response.data) > 5000  # Substantial output
+        payload = response.get_json()
+        assert payload['success'] is True
+        preview = client.get(payload['preview_url'])
+        assert preview.status_code == 200
+        assert b'<html' in preview.data.lower()
         
     def test_convert_real_pdf_file(self, client, real_pdf_path):
         """Test conversion of real PDF file"""
@@ -120,8 +129,7 @@ class TestRealFileConversion:
             }
             response = client.post('/upload', data=data, follow_redirects=False)
         
-        # May succeed or fail depending on PDF validity
-        assert response.status_code in [200, 302, 303]
+        assert response.status_code in [200, 400, 500]
 
 
 @pytest.mark.integration

@@ -72,29 +72,28 @@ def upload_file():
         logger.info(f"Processing uploaded file: {filename}")
         
         text_content = None
-        if filename.lower().endswith('.pdf'):
-            text_content = parse_pdf(filepath)
-        elif filename.lower().endswith('.txt'):
-            with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                text_content = f.read()
 
         if use_ai_requested and current_app.config.get('GEMINI_ENABLED'):
             try:
                 ai_attempted = True
                 generate_ai_notes(
-                    text_content=text_content,
+                    pdf_path=filepath,
                     output_path=output_path,
                     template_path=current_app.config['TEMPLATE_PATH'],
                     api_key=current_app.config['GEMINI_API_KEY'],
                     preferred_model=current_app.config['GEMINI_PREFERRED_MODEL'],
                     fallback_model=current_app.config['GEMINI_FALLBACK_MODEL'],
                     timeout_seconds=current_app.config['GEMINI_TIMEOUT_SECONDS'],
-                    max_chars=current_app.config['GEMINI_MAX_CHARS'],
-                    max_chunk_words=current_app.config['GEMINI_MAX_CHUNK_WORDS'],
+                    max_output_tokens=current_app.config['GEMINI_MAX_OUTPUT_TOKENS'],
                 )
             except (GeminiUnavailable, Exception) as e:  # noqa: BLE001
                 ai_failed = True
                 logger.warning(f"Gemini generation failed, falling back: {e}")
+                if filename.lower().endswith('.pdf'):
+                    text_content = parse_pdf(filepath)
+                elif filename.lower().endswith('.txt'):
+                    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        text_content = f.read()
                 generate_smart_notes(
                     filepath,
                     output_path,
@@ -102,12 +101,17 @@ def upload_file():
                     text_content=text_content,
                 )
         else:
-                generate_smart_notes(
-                    filepath,
-                    output_path,
-                    template_path=current_app.config['TEMPLATE_PATH'],
-                    text_content=text_content,
-                )
+            if filename.lower().endswith('.pdf'):
+                text_content = parse_pdf(filepath)
+            elif filename.lower().endswith('.txt'):
+                with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                    text_content = f.read()
+            generate_smart_notes(
+                filepath,
+                output_path,
+                template_path=current_app.config['TEMPLATE_PATH'],
+                text_content=text_content,
+            )
         
         logger.info(f"Successfully converted {filename} to {output_filename}")
         

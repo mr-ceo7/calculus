@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Smart Notes Generator - Convert PDFs and text files to interactive HTML learning materials">
+    <meta name="description"
+        content="Smart Notes Generator - Convert PDFs and text files to interactive HTML learning materials">
     <meta name="author" content="@it.exper7">
     <title>Smart Notes Generator</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico">
@@ -40,7 +42,7 @@
             --bg-spot-8: rgba(245, 183, 89, 0.24);
             --bg-sheen-start: rgba(45, 212, 191, 0.12);
             --bg-sheen-end: rgba(245, 183, 89, 0.08);
-            
+
             /* Spacing */
             --spacing-xs: 0.25rem;
             --spacing-sm: 0.5rem;
@@ -48,7 +50,7 @@
             --spacing-lg: 1.5rem;
             --spacing-xl: 2rem;
             --spacing-2xl: 3rem;
-            
+
             /* Typography */
             --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             --font-size-xs: 0.75rem;
@@ -58,19 +60,19 @@
             --font-size-xl: 1.25rem;
             --font-size-2xl: 1.5rem;
             --font-size-3xl: 2.5rem;
-            
+
             /* Shadows */
             --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
             --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
             --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
             --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
-            
+
             /* Border Radius */
             --radius-sm: 6px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --radius-full: 9999px;
-            
+
             /* Transitions */
             --transition-fast: 0.15s ease;
             --transition-base: 0.3s ease;
@@ -85,6 +87,8 @@
 
         html {
             scroll-behavior: smooth;
+            /* Enable smooth scrolling on mobile */
+            -webkit-overflow-scrolling: touch;
         }
 
         body {
@@ -105,6 +109,9 @@
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
+            /* Mobile touch optimization */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: pan-y;
         }
 
         body::before,
@@ -117,6 +124,9 @@
             filter: blur(50px);
             opacity: 0.55;
             mix-blend-mode: screen;
+            /* Hardware acceleration */
+            will-change: transform, opacity;
+            transform: translateZ(0);
         }
 
         body::before {
@@ -135,7 +145,7 @@
             animation: gradientShift 18s ease-in-out infinite alternate-reverse;
         }
 
-        body > * {
+        body>* {
             position: relative;
             z-index: 1;
         }
@@ -159,89 +169,203 @@
            KEYFRAME ANIMATIONS
            ============================================ */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         @keyframes pulseBorder {
-            0%, 100% { border-color: var(--accent); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
-            50% { border-color: var(--accent-hover); box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+
+            0%,
+            100% {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7);
+            }
+
+            50% {
+                border-color: var(--accent-hover);
+                box-shadow: 0 0 0 8px rgba(56, 189, 248, 0);
+            }
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            0% {
+                background-position: -1000px 0;
+            }
+
+            100% {
+                background-position: 1000px 0;
+            }
         }
 
         @keyframes gradientShift {
-            0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
-            50% { transform: translate3d(-20px, 10px, 0) scale(1.05); opacity: 0.9; }
-            100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+                opacity: 0.75;
+            }
+
+            50% {
+                transform: translate3d(-20px, 10px, 0) scale(1.05);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: translate3d(0, 0, 0) scale(1);
+                opacity: 0.75;
+            }
         }
 
         @keyframes progressSlide {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
 
         @keyframes checkmark {
-            0% { transform: scale(0) rotate(-45deg); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1) rotate(0deg); }
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
         }
 
         @keyframes confetti-fall {
-            to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
-            50% { box-shadow: 0 0 40px var(--accent-glow); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--accent-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 40px var(--accent-glow);
+            }
         }
 
         /* ============================================
@@ -253,6 +377,8 @@
             animation: fadeIn var(--transition-slow) ease-out;
             position: relative;
             z-index: 1;
+            /* Performance optimization */
+            contain: layout style paint;
         }
 
         .header-toolbar {
@@ -281,6 +407,9 @@
             transition: all var(--transition-base);
             backdrop-filter: blur(10px);
             box-shadow: var(--shadow-md);
+            /* Hardware acceleration for transforms */
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         .control-btn:hover {
@@ -355,7 +484,9 @@
                 flex-direction: column;
                 gap: var(--spacing-sm);
             }
-        }        h1 {
+        }
+
+        h1 {
             font-size: var(--font-size-3xl);
             background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
             -webkit-background-clip: text;
@@ -402,8 +533,15 @@
         }
 
         @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .upload-card::after {
@@ -427,6 +565,9 @@
             transition: all var(--transition-base);
             position: relative;
             z-index: 1;
+            /* Hardware acceleration */
+            will-change: transform, border-color;
+            transform: translateZ(0);
         }
 
         .drop-zone:hover,
@@ -680,6 +821,9 @@
             letter-spacing: 2px;
             position: relative;
             overflow: hidden;
+            /* Hardware acceleration */
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         .submit-btn::before {
@@ -1123,6 +1267,36 @@
                 --spacing-2xl: 1.5rem;
             }
 
+            /* MOBILE PERFORMANCE OPTIMIZATIONS */
+            /* Reduce backdrop blur for better performance */
+            .control-btn,
+            .upload-card,
+            .live-preview-content,
+            .history-panel,
+            .flash-message {
+                backdrop-filter: blur(5px);
+            }
+
+            /* Disable heavy animations on mobile */
+            body::before,
+            body::after {
+                animation: none !important;
+                opacity: 0.3;
+            }
+
+            /* Simplify complex hover effects */
+            .feature::before,
+            .upload-card::after {
+                display: none;
+            }
+
+            /* Optimize transforms for GPU */
+            .control-btn:active,
+            .drop-zone:active,
+            .submit-btn:active {
+                transform: scale(0.95) translateZ(0);
+            }
+
             body {
                 padding: var(--spacing-lg) var(--spacing-sm);
             }
@@ -1173,6 +1347,34 @@
             :root {
                 --spacing-xl: 1rem;
                 --font-size-lg: 1rem;
+            }
+
+            /* AGGRESSIVE MOBILE OPTIMIZATIONS FOR SMALL SCREENS */
+            /* Remove all backdrop blur for maximum performance */
+            .control-btn,
+            .upload-card,
+            .live-preview-content,
+            .history-panel,
+            .flash-message,
+            .app-footer {
+                backdrop-filter: none;
+                background: var(--glass-bg);
+            }
+
+            /* Disable all decorative animations */
+            .drop-zone-icon {
+                animation: none;
+            }
+
+            .file-info::before,
+            .upload-card::before,
+            .submit-btn::before {
+                display: none;
+            }
+
+            /* Simplify progress animation */
+            .progress-fill {
+                animation: none;
             }
 
             .header-toolbar {
@@ -1365,7 +1567,7 @@
                 <span class="footer-text">Galvaniy Technologies</span>
             </div>
             <div class="footer-credit">
-                 <strong></strong> 
+                <strong></strong>
             </div>
         </div>
     </footer>
@@ -1402,8 +1604,20 @@
         let appState = {
             isMuted: localStorage.getItem('muted') === 'true',
             isDarkMode: true,
-            isLowBlur: false
+            isLowBlur: false,
+            isMobile: window.innerWidth <= 768,
+            isSmallMobile: window.innerWidth <= 480
         };
+
+        // Update mobile state on resize (debounced)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                appState.isMobile = window.innerWidth <= 768;
+                appState.isSmallMobile = window.innerWidth <= 480;
+            }, 150);
+        }, { passive: true });
 
         // ============================================
         // THEME MANAGEMENT (random per load)
@@ -1566,13 +1780,16 @@
                 }
                 osc.start(now);
                 osc.stop(now + (type === 'toggle' ? 0.1 : 0.5));
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // ============================================
         // ANIMATIONS
         // ============================================
         function createConfetti() {
+            // Skip confetti on mobile for performance
+            if (appState.isMobile) return;
+
             for (let i = 0; i < 40; i++) {
                 const conf = document.createElement('div');
                 conf.className = 'confetti';
@@ -1603,7 +1820,7 @@
 
         elements.dropZone.addEventListener('dragleave', () => {
             elements.dropZone.classList.remove('dragover');
-        });
+        }, { passive: true });
 
         elements.dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -1627,7 +1844,7 @@
 
                 const MB = file.size / (1024 * 1024);
                 elements.fileSizeWarning.classList.toggle('show', MB > 5);
-                
+
                 const estimatedMs = MB * 500;
                 elements.timeValue.textContent = Math.ceil(estimatedMs / 1000);
                 elements.estimatedTime.classList.add('show');
@@ -1697,35 +1914,35 @@
             if (e.target === elements.livePreviewModal) {
                 elements.livePreviewModal.classList.remove('active');
             }
-        });
+        }, { passive: true });
 
         // ============================================
         // FORM SUBMISSION
         // ============================================
         elements.uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             elements.progressContainer.classList.add('active');
             elements.submitBtn.classList.add('processing');
             elements.submitBtn.innerHTML = '<span class="spinner"></span>Processing...';
             elements.submitBtn.disabled = true;
             playSound('toggle');
-            
+
             const formData = new FormData(elements.uploadForm);
             if (elements.aiToggle) {
                 formData.set('mode', elements.aiToggle.checked ? 'gemini' : 'standard');
             } else {
                 formData.set('mode', 'standard');
             }
-            
+
             try {
                 const response = await fetch('/upload', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     if (data.ai_fallback) {
                         alert('AI mode failed or timed out. Generated standard notes instead.');
@@ -1736,15 +1953,15 @@
                         elements.submitBtn.classList.remove('processing');
                         elements.submitBtn.textContent = 'Generate Smart Notes';
                         elements.submitBtn.disabled = true;
-                        
+
                         elements.successAnimation.style.display = 'block';
                         createConfetti();
                         playSound('success');
-                        
+
                         setTimeout(() => {
                             elements.successAnimation.style.display = 'none';
                         }, 2000);
-                        
+
                         // Set up download buttons
                         document.getElementById('openNewTab').onclick = () => {
                             window.open(data.preview_url, '_blank');
@@ -1758,11 +1975,11 @@
                             elements.submitBtn.textContent = 'Generate Smart Notes';
                             elements.submitBtn.disabled = false;
                             elements.progressContainer.classList.remove('active');
-                            
+
                             // Trigger form submit to regenerate
                             elements.uploadForm.dispatchEvent(new Event('submit'));
                         };
-                        
+
                         elements.downloadOptions.classList.add('show');
                         addToHistory(data.original_name);
                     }, 1500);
@@ -1772,7 +1989,7 @@
                     elements.submitBtn.classList.remove('processing');
                     elements.submitBtn.textContent = 'Generate Smart Notes';
                     elements.submitBtn.disabled = false;
-                    
+
                     alert('Error: ' + (data.error || 'Conversion failed'));
                 }
             } catch (error) {
@@ -1780,7 +1997,7 @@
                 elements.submitBtn.classList.remove('processing');
                 elements.submitBtn.textContent = 'Generate Smart Notes';
                 elements.submitBtn.disabled = false;
-                
+
                 alert('Error: ' + error.message);
             }
         });
