@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Smart Notes Generator - Convert PDFs and text files to interactive HTML learning materials">
-    <meta name="author" content="@it.exper7">
-    <title>Smart Notes Generator</title>
+        content="Smartify">
+    <meta name="author" content="Smartify">
+    <title>Smartify Notes</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.ico">
     <style>
         /* ============================================
@@ -1465,9 +1465,12 @@
 <body>
     <div class="container">
         <header>
-            <h1>📚 Smartify</h1>
-            <p class="subtitle">✨ Transform PDFs into Interactive Learning Materials</p>
-        </header>
+        <div style="display: inline-block; background: rgba(45, 212, 191, 0.1); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--accent); margin-bottom: 1rem; font-weight: bold;">
+            Kenya Science & Engineering Fair 2026
+        </div>
+        <h1>Kisii School Smart Notes AI</h1>
+        <div class="subtitle">Transforming Study Materials into Interactive Learning Experiences</div>
+    </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -1564,10 +1567,10 @@
     <footer class="app-footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <span class="footer-text">Galvaniy Technologies</span>
+                <span class="footer-text">Kisii School</span>
             </div>
             <div class="footer-credit">
-                <strong></strong>
+                Built for <strong style="color: var(--accent);">KSEF 2026</strong>
             </div>
         </div>
     </footer>
@@ -1929,23 +1932,47 @@
             playSound('toggle');
 
             const formData = new FormData(elements.uploadForm);
+            const mode = elements.aiToggle && elements.aiToggle.checked ? 'gemini' : 'standard';
+            console.log(`[Smart Notes] Starting upload. Mode: ${mode}`);
+            
             if (elements.aiToggle) {
-                formData.set('mode', elements.aiToggle.checked ? 'gemini' : 'standard');
+                formData.set('mode', mode);
             } else {
                 formData.set('mode', 'standard');
             }
 
+            // Dynamic feedback timer
+            const startTime = Date.now();
+            const progressTimer = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                let msg = '<span class="spinner"></span>Processing...';
+                
+                if (elapsed > 5) msg = '<span class="spinner"></span>Still working...';
+                if (elapsed > 15) msg = '<span class="spinner"></span>Connecting to AI...';
+                if (elapsed > 30) msg = '<span class="spinner"></span>Network busy, retrying...';
+                if (elapsed > 60) msg = '<span class="spinner"></span>Taking time, please wait...';
+                
+                elements.submitBtn.innerHTML = msg;
+            }, 1000);
+
             try {
+                console.log('[Smart Notes] Sending request to /upload...');
                 const response = await fetch('/upload', {
                     method: 'POST',
                     body: formData
                 });
-
+                
+                clearInterval(progressTimer);
                 const data = await response.json();
+                console.log('[Smart Notes] Response received:', data);
 
                 if (data.success) {
                     if (data.ai_fallback) {
-                        alert('AI mode failed or timed out. Generated standard notes instead.');
+                        console.warn('[Smart Notes] AI mode failed or timed out. Falling back to standard generation.');
+                    } else if (data.ai_used) {
+                        console.log('[Smart Notes] AI generation successful.');
+                    } else {
+                        console.log('[Smart Notes] Standard generation successful.');
                     }
                     // Success - show confetti and download options
                     setTimeout(() => {
@@ -1998,7 +2025,9 @@
                 elements.submitBtn.textContent = 'Generate Smart Notes';
                 elements.submitBtn.disabled = false;
 
+                clearInterval(progressTimer);
                 alert('Error: ' + error.message);
+                console.error('[Smart Notes] Upload error:', error);
             }
         });
 

@@ -31,12 +31,16 @@ class Config:
 
     # Gemini configuration
     # Temporary hardcoded key for local testing (replace/remove in production)
-    GEMINI_API_KEY: str = os.environ.get('GEMINI_API_KEY', '')
+    GEMINI_API_KEY: str = os.environ.get('GEMINI_API_KEY', 'auto_enable_for_custom_gateway')
     GEMINI_PREFERRED_MODEL: str = os.environ.get('GEMINI_PREFERRED_MODEL', 'gemini-2.5-flash')
     GEMINI_FALLBACK_MODEL: str = os.environ.get('GEMINI_FALLBACK_MODEL', 'gemini-2.0-flash')
-    GEMINI_TIMEOUT_SECONDS: float = float(os.environ.get('GEMINI_TIMEOUT_SECONDS', '240'))
+    GEMINI_TIMEOUT_SECONDS: float = float(os.environ.get('GEMINI_TIMEOUT_SECONDS', '600'))
+    # Increased to 32K - maximum for gemini-2.5-flash
     # Increased to 32K - maximum for gemini-2.5-flash
     GEMINI_MAX_OUTPUT_TOKENS: int = int(os.environ.get('GEMINI_MAX_OUTPUT_TOKENS', '32768'))
+
+    # Custom AI Gateway Configuration
+    CUSTOM_AI_API_URL: Optional[str] = os.environ.get('CUSTOM_AI_API_URL')
     
     def __post_init__(self):
         """Validate and create necessary directories"""

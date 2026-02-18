@@ -1,0 +1,1070 @@
+Based on the content of `1computational_thinking_39fd0850.txt`, here is the complete HTML document.
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computational Thinking</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-spot-1: rgba(56, 189, 248, 0.2);
+            --bg-spot-2: rgba(234, 179, 8, 0.18);
+            --bg-spot-3: rgba(34, 197, 94, 0.18);
+            --glass-bg: rgba(30, 41, 59, 0.65);
+            --glass-active: rgba(56, 189, 248, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.4);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #eab308;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, var(--bg-spot-1) 0, transparent 50%),
+                radial-gradient(at 50% 0%, var(--bg-spot-2) 0, transparent 50%),
+                radial-gradient(at 100% 0%, var(--bg-spot-3) 0, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Layout --- */
+        header {
+            padding: 0.6rem 1rem;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Main Content Area --- */
+        #content-viewport {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 0.8rem;
+            padding-bottom: 5rem;
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        /* --- Cards & Text --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin: 1rem 0 0.5rem;
+        }
+
+        p,
+        li {
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Special Elements --- */
+        .definition-box {
+            border-left: 4px solid var(--accent);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .definition-title {
+            color: var(--accent);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .theorem-box {
+            border-left: 4px solid var(--warning);
+            background: rgba(234, 179, 8, 0.1);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .theorem-title {
+            color: var(--warning);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .example-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .example-badge {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            padding: 0.3rem 0.5rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-track {
+            display: flex;
+            align-items: stretch;
+            gap: 0.4rem;
+            width: 100%;
+            overflow-x: auto;
+            padding: 0 0.2rem;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-track::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-track::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            min-width: 100px;
+            height: 55px;
+            padding: 6px 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            scroll-snap-align: center;
+        }
+
+        .nav-icon {
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-item.active .nav-icon {
+            text-shadow: 0 0 10px var(--accent);
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-8px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            75% {
+                transform: translateY(-4px);
+            }
+        }
+
+        .nav-item.active {
+            animation: bounce 0.5s ease-out;
+        }
+
+        /* --- TOC --- */
+        #toc-panel {
+            position: sticky;
+            top: 12px;
+            margin: 0 auto 1rem auto;
+            max-width: 800px;
+            max-height: 10vh;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+            overflow-y: auto;
+        }
+
+        #toc-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #toc-panel::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+        }
+
+        #toc-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #toc-panel.hidden {
+            display: none;
+        }
+
+        .toc-title {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.35rem;
+        }
+
+        #toc-list a {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding: 4px 0;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        #toc-list a:hover {
+            color: var(--accent);
+        }
+
+        #toc-list a.toc-h3 {
+            padding-left: 12px;
+            font-size: 0.9rem;
+        }
+
+        /* --- Intro Overlay --- */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            z-index: 300;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        #intro-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-text {
+            font-size: 2.6rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #fff, #9ca3af);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1.2s ease forwards;
+        }
+
+        /* --- Loading Overlay & Progress --- */
+        #load-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0;
+            background: linear-gradient(90deg, var(--accent), var(--warning), var(--success));
+            box-shadow: 0 0 10px var(--accent);
+            transition: width 0.4s ease;
+            z-index: 200;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(6px);
+            z-index: 150;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: opacity 0.3s ease;
+        }
+
+        #loading-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body><div id="intro-overlay" aria-hidden="true"><div class="intro-text">Smart Notes Generator</div></div>
+<div id="load-progress"></div>
+<div id="loading-overlay" aria-live="polite" aria-busy="true"><div class="spinner" aria-hidden="true"></div><div>Loading notes…</div></div>
+<header><h1 id="header-title">Smart Notes</h1><div class="subtitle">Interactive Learning Experience</div></header>
+<div id="content-viewport">
+    <aside id="toc-panel" class="hidden"><div id="toc-list"></div></aside>
+    <div class="tab-section active" id="tab-1">
+        
+
+    <header>
+        <h1>Computational Thinking</h1>
+    </header>
+
+    <main>
+        <section>
+            <p>Computational thinking is the process of approaching a problem in a systematic manner and creating and expressing a solution such that it can be carried out by a computer. There are four key techniques (cornerstones) to computational thinking:</p>
+            <ul>
+                <li><strong>Decomposition</strong> – breaking down a complex problem or system into smaller, more manageable parts</li>
+                <li><strong>Pattern recognition</strong> – looking for similarities among and within problems</li>
+                <li><strong>Abstraction</strong> – focusing on the important information only, ignoring irrelevant detail</li>
+                <li><strong>Algorithms</strong> – developing a step-by-step solution to the problem, or the rules to follow to solve the problem</li>
+            </ul>
+            <p>Thinking computationally is not programming. Simply put, programming tells a computer what to do and how to do it. Computational thinking enables you to work out exactly what to tell the computer to do usually by using a programming language.</p>
+        </section>
+
+        <section>
+            <h2>Data Types</h2>
+            <p>A data type in a programming language is a set of data with predefined values. Examples of data types are: integer, floating point, unit number, character, string, etc. Because the set of values are predefined, the data types can have pre-allocated memory size, usually given in bytes, in advance.</p>
+            <p>There are two types of data types:</p>
+            <ul>
+                <li>System-defined data types (also called Primitive data types)</li>
+                <li>User-defined data types</li>
+            </ul>
+            <p>The number of bytes allocated for each primitive data type depends on the programming languages, the compiler and the operating system. For the same primitive data type, different languages may use different sizes. Depending on the size of the data types, the total available values (domain) will also change.</p>
+            <p>User defined data types are so called because the user is allowed to define their own datatypes. These datatypes must however must be defined in terms of the primitive data types. Examples of user defined data types can include linked lists, stacks, trees, arrays, students, staff etc.</p>
+
+            <h3>Primitive Data Types</h3>
+            <p>The primitive data types are known as basic data types. These data types are directly operated upon by the machine instructions. Normally, primitive data types have different representation on different computers. These data types can be grouped into scalar data types and compound data types.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Primitive data type</th>
+                        <th colspan="2">User defined data type</th>
+                    </tr>
+                    <tr>
+                        <th>Scalar data type</th>
+                        <th>Compound data type</th>
+                        <th>Scalar</th>
+                        <th>Compound</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>integer</td>
+                        <td>array</td>
+                        <td>enum</td>
+                        <td>array</td>
+                    </tr>
+                    <tr>
+                        <td>float</td>
+                        <td>record</td>
+                        <td>pointer</td>
+                        <td>structs</td>
+                    </tr>
+                    <tr>
+                        <td>char</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                     <tr>
+                        <td>pointer</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h3>Scalar Data Types</h3>
+            <p>Scalar data types instantiate to single values. Examples of scalar data types include:</p>
+            <ul>
+                <li>Integer</li>
+                <li>Float</li>
+                <li>Character</li>
+                <li>Pointer</li>
+            </ul>
+
+            <h4>Integer</h4>
+            <p>The integers are signed or unsigned whole numbers with the specified range such as 5, 39, -1917, 0 etc. They have no fractional parts. Integers can be positive or negative but whether or not they can have negative values, it depends upon the integer types.</p>
+
+            <h4>Float</h4>
+            <p>Float refers floating point or real number. It can hold a real number or a number having a fractional part like 3.112 or 588.001 etc. The decimal point signals that it is a floating point number, not an integer. The number 15 is an integer but 15.0 is a floating point number.</p>
+
+            <h4>Character</h4>
+            <p>It can store any member of the basic character set. If a character from this set is stored in a character variable, its value is equivalent to the integer code of that character basically known as ASCII code. It can hold one letter/symbol like a, B, d etc. Characters can also be of different types.</p>
+
+            <h4>Pointer</h4>
+            <p>A pointer is a variable-like name whose value points to or represents a storage location in memory (RAM) which is sometimes referred to as a cell. RAM contains many cells to store values. Each cell in memory is 1 byte and has a unique address (pointer) to identify it. The memory address is always an unsigned integer.</p>
+        </section>
+
+        <section>
+            <h3>Compound Data Types</h3>
+            <p>Compound data types instantiate to a collection of scalar data type values. Examples include arrays and tuples.</p>
+
+            <h4>Arrays</h4>
+            <p>Arrays are the set of homogeneous data elements stored in RAM. So, they can hold only one type of data. The data may be all integers, all floating numbers or all characters. Values in an array are identified using array name with subscripts. Single sub-scripted variables are known as a one-dimensional array or linear array; two sub-scripted variables are referred as a two-dimensional array. Higher order dimensionality such as N is by extension represented with N sub-scripted variables.</p>
+
+            <h4>Records</h4>
+            <p>A record also referred to as struct and in some programming languages, is a complex data type that is built up of other items of data (each of which has its own type). For example, the following information could be associated with student:</p>
+            <ul>
+                <li>index number (of type string)</li>
+                <li>name (of type string)</li>
+                <li>year (of type integer) etc.</li>
+            </ul>
+            <p>Unlike arrays, records have heterogeneous data. The data elements of the record are referred to as fields. Thus the above example will be a record with three fields: Index number, name, year.</p>
+        </section>
+
+        <section>
+            <h2>User Defined Data Types</h2>
+            <p>The user defined data types are highly developed complex data types. Basically, these are developed from the primitive data types. The non-primitive data type is responsible for organizing the group of homogeneous and heterogeneous data elements. From this organisational point of view they are actually data structures in the sense that they are used to organise the primitive types. Examples of Non-primitive data types include:</p>
+            <ul>
+                <li>enum</li>
+                <li>struct</li>
+            </ul>
+            <p>While these data types are very similar to the compound data types, they usually allow users to specify methods associated with the data types as part of the type specification. This allows the user to have control over arbitrary composition of the data types and the behaviour of the data type thus literary defining a new type.</p>
+            <p><strong>Enum</strong> provides a way to have multiple data types only one of which is required at a time. <strong>Struct</strong> provides for composite data type very similar to a record. Usually the difference is that unlike struct, there is no provision to provide methods that define the associated behaviour of the record.</p>
+        </section>
+
+        <section>
+            <h2>Abstract Data Types</h2>
+            <p>All primitive data types (int, float, etc.) support basic operations such as addition and subtraction. The system provides the implementations for the primitive data types. Generally, when we combine the data structures with their operations we call these Abstract Data Types (ADTs). An ADT consists of two parts:</p>
+            <ol>
+                <li>Declaration of data</li>
+                <li>Declaration of operations</li>
+            </ol>
+            <p>The user has to ensure the operations are implemented for the ADT to be useful. Commonly used ADTs include: Linked Lists, Stacks, Queues, Priority Queues, Binary Trees, Dictionaries, Disjoint Sets (Union and Find), Hash Tables, Graphs, and many others. User-defined data types can also be declared as abstract data types and then followed by an implementation of the operations.</p>
+        </section>
+
+        <section>
+            <h2>Programs</h2>
+            <p>Programs can be viewed as consisting of data structures and algorithms transformed through coding to be executable on a computer. Coding is basically the process of creating codes from one language to another one. Typically data structures and algorithms may be expressed in logical or mathematical languages. Coding then transforms them into programs expressed in a specific programming language such as C/C++, Python, Haskell or Prolog.</p>
+            <p>Basically, the term data structure and algorithm are somehow related to each other. A set of a well-defined algorithm and data structure makes a computer program efficient. According to Wirth (1976):</p>
+            <blockquote>
+                Algorithm + Data Structure = Program
+            </blockquote>
+            <p>A program can be made using a different data structure to produce the same output. But the efficiency of the program will depend on the choice of the best data structure to create that particular program. We have a classification of data structures to choose from to make this happen.</p>
+        </section>
+
+        <section>
+            <h2>Data Structures</h2>
+            <p>From a computing viewpoint, a data structure is basically a technique of organizing and storing of different types of data items in computer memory, and in some cases also the maintaining of the logical relationship existing between individual data elements.</p>
+            <p>From a mathematical point of view, a Data structure can also be defined as a mathematical or logical model, which relates to a particular organization of different data elements.</p>
+
+            <h3>Specification of Data Structure</h3>
+            <ul>
+                <li>Organization of data</li>
+                <li>Accessing methods</li>
+                <li>Degree of associativity</li>
+                <li>Processing alternatives for information</li>
+            </ul>
+            <p>Data structures are considered as the main building blocks of a computer program. So, at the time of selection of data structure, efficiency and adequacy of the data structure will require that:</p>
+            <ol>
+                <li>The data structure be powerful enough to handle the different relationship existing between the data.</li>
+                <li>The structure of data also to be simple, so that we can efficiently process data when required.</li>
+            </ol>
+
+            <h3>Classification of Data Structures</h3>
+            <p>The classification of data structure mainly consists of:</p>
+            <ul>
+                <li>arrays</li>
+                <li>lists</li>
+            </ul>
+
+            <h4>Arrays</h4>
+            <p>Arrays have already been presented also as user compound data types. As data structures arrays can be organised as multidimensional arrays. A multidimensional array structure is just a single array organised as a sequence of 1-dimensional arrays.</p>
+
+            <h4>Lists</h4>
+            <p>A list is a collection of a variable number of data items. Every element on a list contains at least two fields, one is used to store data and the other one is used for storing the address of next element.</p>
+
+            <h4>Linear Linked Lists</h4>
+            <p>Lists can be linear or non-linear. The linear lists involve a single level of data elements and represent the linear relationship where each data element is linked to only one other element. Therefore, we can traverse all the elements in single run only. Linear data structures are easy to implement because computer memory is arranged in a linear way. Its examples are array, stack, queue, linked list, etc. On the other hand, the non-linear lists is said to be multi-level data structure constitute a hierarchical relationship among the data. Here a data element can be linked to several other data elements. Traversing the list will typically require backtracking. Examples of non linear lists include trees and graphs.</p>
+
+            <h3>Linear Lists</h3>
+            <p>Under linear lists we include:</p>
+            <ul>
+                <li>stacks</li>
+                <li>queues</li>
+            </ul>
+
+            <h4>Stack</h4>
+            <p>Like arrays, a stack is also defined as an ordered collection of elements. A stack is a linear data structure having a special feature that we can delete and insert elements from only one end, referred as TOP of the stack. The stack is also known as Last In First Out (LIFO) type of data structure for this behaviour.</p>
+            <p>When we perform insertion or deletion operation on a stack, its base remains unchanged but the top of the stack changes. Insertion in a stack is called Push and deletion of elements from the stack is known as Pop.</p>
+            <p>We can implement a stack using 2 ways:</p>
+            <ul>
+                <li>Static implementation (using arrays)</li>
+                <li>Dynamic implementation (using pointers)</li>
+            </ul>
+
+            <h4>Queues</h4>
+            <p>Queues are also linear data structures. But unlike stacks, queues are the First In First Out (FIFO) type of data structures. We can insert an element in a queue from the REAR end but we have to remove an element from the FRONT end.</p>
+            <p>We can also implement queues using 2 ways:</p>
+            <ul>
+                <li>Using arrays</li>
+                <li>Using pointers</li>
+            </ul>
+
+            <h3>Nonlinear Lists</h3>
+            <p>Under nonlinear lists we include:</p>
+            <ul>
+                <li>graphs</li>
+                <li>trees</li>
+            </ul>
+
+            <h4>Trees</h4>
+            <p>Trees contain a finite set of data items referred to as nodes. We can represent a hierarchical relationship between the data elements using trees.</p>
+            <p>A Tree has the following characteristics:</p>
+            <ul>
+                <li>The top item in a hierarchy of a tree is referred as the root of the tree.</li>
+                <li>The remaining data elements are partitioned into a number of mutually exclusive subsets and each subset is itself a tree known as the subtree.</li>
+                <li>Unlike natural trees, trees in the data structure always grow in length towards the bottom.</li>
+            </ul>
+
+            <h4>Graph</h4>
+            <p>Graphs are capable of representing different types of physical structures. Apart from computer science, they are used broadly in the fields of Geography, Chemistry & Engineering Sciences. A graph is normally a combination of the set of vertices V and set of edges E.</p>
+            <p>The different types of Graphs are:</p>
+            <ol>
+                <li>Directed Graph</li>
+                <li>Non-directed Graph</li>
+                <li>Connected Graph</li>
+                <li>Non-connected Graph</li>
+                <li>Simple Graph</li>
+                <li>Multi-Graph</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Algorithm</h2>
+            <p>No agreed-to definition of "algorithm" exists. A simple definition: A set of instructions for solving a problem. The algorithm is either implemented by a program or simulated by a program. Algorithms often have steps that iterate (repeat) or require decisions such as logic or comparison.</p>
+            <p>A leading computer scientist, Knuth has given a list of five properties that are widely accepted as requirements for an algorithm:</p>
+            <ol>
+                <li><strong>Finiteness:</strong> "An algorithm must always terminate after a finite number of steps"</li>
+                <li><strong>Definiteness:</strong> "Each step of an algorithm must be precisely defined; the actions to be carried out must be rigorously and unambiguously specified for each case"</li>
+                <li><strong>Input:</strong> "...quantities which are given to it initially before the algorithm begins. These inputs are taken from specified sets of objects"</li>
+                <li><strong>Output:</strong> "...quantities which have a specified relation to the inputs"</li>
+                <li><strong>Effectiveness:</strong> "... all of the operations to be performed in the algorithm must be sufficiently basic that they can in principle be done exactly and in a finite length of time by a man using paper and pencil"</li>
+            </ol>
+            <p>Algorithms are essential to the way computers process information, because a computer program is essentially an algorithm that tells the computer what specific steps to perform (in what specific order) in order to carry out a specified task, such as calculating employees' paychecks or printing students' report cards.</p>
+            <p>Typically, when an algorithm is associated with processing information, data is read from an input source or device, written to an output sink or device, and/or stored for further processing. Stored data is regarded as part of the internal state of the entity performing the algorithm. In practice, the state is stored in a data structure.</p>
+            <p>For any such computational process, the algorithm must be rigorously defined: specified in the way it applies in all possible circumstances that could arise. That is, any conditional steps must be systematically dealt with, case-by-case; the criteria for each case must be clear (and computable).</p>
+            <p>Because an algorithm is a precise list of precise steps, the order of computation will almost always be critical to the functioning of the algorithm. Instructions are usually assumed to be listed explicitly, and are described as starting 'from the top' and going 'down to the bottom', an idea that is described more formally by flow of control.</p>
+            <p>So far, this discussion of the formalization of an algorithm has assumed the premises of imperative programming. This is the most common conception, and it attempts to describe a task in discrete, 'mechanical' means. Unique to this conception of formalized algorithms is the assignment operation, setting the value of a variable. It derives from the intuition of 'memory' as a scratchpad. Alternate conceptions of what constitutes an algorithm are offered by functional programming and logic programming.</p>
+
+            <h3>Classification of Algorithms</h3>
+            <p>There are various ways of classifying algorithms. We will look at the following ways of classification:</p>
+            <ul>
+                <li>Purpose</li>
+                <li>Implementation</li>
+                <li>Design paradigm</li>
+                <li>Complexity</li>
+            </ul>
+
+            <h4>Classification by Purpose</h4>
+            <p>Each algorithm has a goal, for example, the purpose of the Quick Sort algorithm is to sort data in ascending or descending order. But the number of goals is infinite, and we have to group them by kind of purposes.</p>
+
+            <h4>Classification by Implementation</h4>
+            <p>An algorithm may be implemented according to different basic principles.</p>
+            <ul>
+                <li><strong>Recursive or iterative:</strong> A recursive algorithm is one that calls itself repeatedly until a certain condition matches. It is a method common to functional programming. Iterative algorithms use repetitive constructs like loops. Some problems are better suited for one implementation or the other. For example, the towers of hanoi problem is well understood in recursive implementation. Every recursive version has an iterative equivalent, and vice versa.</li>
+                <li><strong>Logical or procedural:</strong> An algorithm may be viewed as controlled logical deduction. A logic component expresses the axioms which may be used in the computation and a control component determines the way in which deduction is applied to the axioms. This is the basis of the logic programming. In pure logic programming languages the control component is fixed and algorithms are specified by supplying only the logic component.</li>
+                <li><strong>Serial or parallel:</strong> Algorithms are usually discussed with the assumption that computers execute one instruction of an algorithm at a time. This is a serial algorithm, as opposed to parallel algorithms, which take advantage of computer architectures to process several instructions at once. They divide the problem into sub-problems and pass them to several processors. Iterative algorithms are generally parallelizable. Sorting algorithms can be parallelized efficiently.</li>
+                <li><strong>Deterministic or non-deterministic:</strong> Deterministic algorithms solve the problem with a predefined process whereas non-deterministic algorithm must perform guesses of best solution at each step through the use of heuristics.</li>
+            </ul>
+
+            <h4>Classification by Design Paradigm</h4>
+            <p>A design paradigm is a domain in research or class of problems that requires a dedicated kind of algorithm:</p>
+            <ul>
+                <li><strong>Divide and conquer:</strong> Divide-and-conquer is a general algorithms design technique which work according to the following general plan:
+                    <ul>
+                        <li>A problem is divided into several subproblems of the same type, ideally of about equal size.</li>
+                        <li>The subproblems are solved (typically recursively, though sometimes a different algorithm is employed, especially when subproblems become small enough).</li>
+                        <li>If necessary, the solutions to the subproblems are combined to get a solution to the original problem.</li>
+                    </ul>
+                </li>
+                <li><strong>Dynamic programming:</strong> Dynamic programming is a technique for solving problems with overlapping subproblems. Typically, these subproblems arise from a recurrence relating a given problem’s solution to solutions of its smaller subproblems. Rather than solving overlapping subproblems again and again, dynamic programming suggests solving each of the smaller subproblems only once and recording the results in a table from which a solution to the original problem can then be obtained.
+                    <ul>
+                        <li>The main difference with the "divide and conquer" approach is, subproblems are independent in divide and conquer, where as the overlap of subproblems occur in dynamic programming.</li>
+                        <li>Dynamic programming and memoization go together. The difference with straightforward recursion is in caching or memoization of recursive calls. Where subproblems are independent, this is useless. By using memoization or maintaining a table of subproblems already solved, dynamic programming reduces the exponential nature of many problems to polynomial complexity.</li>
+                    </ul>
+                </li>
+                <li><strong>The greedy method:</strong> A greedy method is a design technique that is mainly applicable to optimization problems only. The greedy approach suggests constructing a solution through choices of next steps, in a sequence of steps, each expanding a partially constructed solution obtained so far, until a complete solution to the problem is reached. On each step the choice made must be:
+                    <ul>
+                        <li>feasible, i.e., it has to satisfy the problem’s constraints</li>
+                        <li>locally optimal, i.e., it has to be the best local choice among all feasible choices available on that step</li>
+                        <li>irrevocable, i.e., once made, it cannot be changed on subsequent steps of the algorithm</li>
+                    </ul>
+                </li>
+                <li><strong>Linear programming:</strong> The problem is expressed as a set of linear inequalities and then an attempt is made to maximize or minimize the inputs. This can solve many problems such as the maximum flow for directed graphs, notably by using the simplex algorithm. A complex variant of linear programming is called integer programming, where the solution space is restricted to all integers.</li>
+                <li><strong>Reduction also called transform and conquer:</strong> Solve a problem by transforming it into another problem. A simple example: finding the median in an unsorted list is first translating this problem into sorting problem and finding the middle element in sorted list. The main goal of reduction is finding the simplest transformation possible.</li>
+                <li><strong>Using graphs:</strong> Many problems, such as playing chess, can be modeled as problems on graphs. Graph exploration algorithms are used. This category also includes the search algorithms and backtracking.</li>
+                <li><strong>The probabilistic and heuristic paradigm:</strong>
+                    <ul>
+                        <li><strong>Probabilistic:</strong> Those that make some choices randomly.</li>
+                        <li><strong>Genetic:</strong> Attempt to find solutions to problems by mimicking biological evolutionary processes, with a cycle of random mutations yielding successive generations of "solutions". Thus, they emulate reproduction and "survival of the fittest".</li>
+                        <li><strong>Heuristic:</strong> Whose general purpose is not to find an optimal solution, but an approximate solution where the time or resources to find a perfect solution are not practical.</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>Classification by Complexity</h4>
+            <p>Algorithms can also be classified by computational complexity. Computational complexity refers to the quantity of resources that is time and space that is needed by an algorithm on the basis of the size i.e quantity of of its input. Space size here refers to memory capacity. Algorithms can be classified as being:</p>
+            <ul>
+                <li><strong>Constant</strong> – which means the resources required are independent of the size of the input</li>
+                <li><strong>Logarithmic</strong> – which means the resources required are proportional to the logarithm of the size of the input</li>
+                <li><strong>Linear</strong> – which means the resources required are directly proportional to the size of the input</li>
+                <li><strong>Quadratic</strong> – which means the resources required are proportional to the square of the size of the input</li>
+                <li><strong>Exponential</strong> – which means the resources required are proportional to the exponent of the input</li>
+                <li><strong>Factorial</strong> – which means the resources required are proportional to the factorial of the size of input</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <h2>References</h2>
+        <ol>
+            <li>Levitin, Anany (2012). Introduction to the design & analysis of algorithms, 3rd edition. Pearson Education, Inc.</li>
+            <li>Debarshi Das (2018). Classification of Data Structure with Diagram – Data Structure Notes. <a href="https://www.csetutor.com/classification-of-data-structure-with-diagram/">https://www.csetutor.com/classification-of-data-structure-with-diagram/</a> Last accessed 15/1/2020.</li>
+            <li>Classification of Algorithms. <a href="https://www.scriptol.com/programming/algorithms-classification.php">https://www.scriptol.com/programming/algorithms-classification.php</a> Last accessed 15/1/2020.</li>
+            <li>Mean, Median, Mode, and Range. <a href="https://www.purplemath.com/modules/meanmode.htm">https://www.purplemath.com/modules/meanmode.htm</a> Last accessed 16/1/2020.</li>
+            <li>Introduction to computational thinking. <a href="https://www.bbc.co.uk/bitesize/guides/zp92mp3/revision/1">https://www.bbc.co.uk/bitesize/guides/zp92mp3/revision/1</a> Last accessed 17/1/2020</li>
+            <li>N. Wirth (1976). Prentice Hall</li>
+        </ol>
+    </footer>
+
+
+    </div>
+</div>
+<nav class="bottom-nav"><div class="nav-track" id="nav-track">
+    <a class="nav-item active" data-title="Part 1" tabindex="0" role="button"><span class="nav-icon">📚</span><span>Part 1</span></a>
+</div></nav>
+<script>'use strict';
+
+        // === THEME MANAGEMENT ===
+        const themes = [
+            {
+                name: 'Emerald & Sand',
+                vars: {
+                    '--bg-dark': '#0c0f14',
+                    '--bg-spot-1': 'rgba(32, 201, 151, 0.2)',
+                    '--bg-spot-2': 'rgba(242, 214, 162, 0.18)',
+                    '--bg-spot-3': 'rgba(83, 191, 168, 0.18)',
+                    '--accent': '#20c997',
+                    '--accent-glow': 'rgba(32, 201, 151, 0.42)',
+                    '--glass-active': 'rgba(32, 201, 151, 0.15)',
+                    '--warning': '#f2d6a2',
+                    '--success': '#20c997'
+                }
+            },
+            {
+                name: 'Indigo & Amber',
+                vars: {
+                    '--bg-dark': '#0b1026',
+                    '--bg-spot-1': 'rgba(88, 101, 242, 0.2)',
+                    '--bg-spot-2': 'rgba(245, 165, 36, 0.18)',
+                    '--bg-spot-3': 'rgba(157, 191, 249, 0.18)',
+                    '--accent': '#5865f2',
+                    '--accent-glow': 'rgba(88, 101, 242, 0.45)',
+                    '--glass-active': 'rgba(88, 101, 242, 0.15)',
+                    '--warning': '#f5a524',
+                    '--success': '#5865f2'
+                }
+            },
+            {
+                name: 'Ruby & Champagne',
+                vars: {
+                    '--bg-dark': '#0e0b16',
+                    '--bg-spot-1': 'rgba(225, 29, 72, 0.22)',
+                    '--bg-spot-2': 'rgba(246, 227, 197, 0.16)',
+                    '--bg-spot-3': 'rgba(133, 76, 117, 0.18)',
+                    '--accent': '#e11d48',
+                    '--accent-glow': 'rgba(225, 29, 72, 0.42)',
+                    '--glass-active': 'rgba(225, 29, 72, 0.15)',
+                    '--warning': '#f6e3c5',
+                    '--success': '#e11d48'
+                }
+            },
+            {
+                name: 'Forest & Copper',
+                vars: {
+                    '--bg-dark': '#0c1c17',
+                    '--bg-spot-1': 'rgba(60, 182, 165, 0.2)',
+                    '--bg-spot-2': 'rgba(217, 119, 87, 0.18)',
+                    '--bg-spot-3': 'rgba(86, 174, 120, 0.18)',
+                    '--accent': '#3cb6a5',
+                    '--accent-glow': 'rgba(60, 182, 165, 0.42)',
+                    '--glass-active': 'rgba(60, 182, 165, 0.15)',
+                    '--warning': '#d97757',
+                    '--success': '#3cb6a5'
+                }
+            },
+            {
+                name: 'Cyan & Coral',
+                vars: {
+                    '--bg-dark': '#0a1618',
+                    '--bg-spot-1': 'rgba(6, 182, 212, 0.2)',
+                    '--bg-spot-2': 'rgba(255, 107, 107, 0.18)',
+                    '--bg-spot-3': 'rgba(34, 150, 243, 0.18)',
+                    '--accent': '#06b6d4',
+                    '--accent-glow': 'rgba(6, 182, 212, 0.42)',
+                    '--glass-active': 'rgba(6, 182, 212, 0.15)',
+                    '--warning': '#ff6b6b',
+                    '--success': '#06b6d4'
+                }
+            },
+            {
+                name: 'Violet & Gold',
+                vars: {
+                    '--bg-dark': '#0f0c1a',
+                    '--bg-spot-1': 'rgba(167, 139, 250, 0.2)',
+                    '--bg-spot-2': 'rgba(251, 191, 36, 0.18)',
+                    '--bg-spot-3': 'rgba(139, 92, 246, 0.18)',
+                    '--accent': '#a78bfa',
+                    '--accent-glow': 'rgba(167, 139, 250, 0.42)',
+                    '--glass-active': 'rgba(167, 139, 250, 0.15)',
+                    '--warning': '#fbbf24',
+                    '--success': '#a78bfa'
+                }
+            }
+        ];
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            Object.entries(theme.vars).forEach(([key, value]) => root.style.setProperty(key, value));
+        }
+
+        function initTheme() {
+            const theme = themes[Math.floor(Math.random() * themes.length)];
+            applyTheme(theme);
+        }
+
+        // Initialize theme immediately on page load
+        initTheme();
+
+        // === HAPTIC FEEDBACK ===
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audioInitialized = false;
+
+        function initAudio() {
+            if (!audioInitialized && audioContext.state === 'suspended') {
+                audioContext.resume();
+                audioInitialized = true;
+            }
+        }
+
+        function playThumpSound() {
+            try {
+                initAudio();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Very low frequency thump
+                oscillator.frequency.value = 80;
+                oscillator.type = 'sine';
+                
+                // Quick attack and decay for thump effect
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) {
+                console.log('Audio feedback not available');
+            }
+        }
+
+        // === HAPTIC FEEDBACK ===
+        function triggerHaptic(intensity = 'medium') {
+            try {
+                if ('vibrate' in navigator) {
+                    const duration = intensity === 'light' ? 15 : intensity === 'medium' ? 30 : 50;
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // Haptic not supported
+            }
+        }
+
+        function triggerFeedback() {
+            // Audio feedback - low thump
+            playThumpSound();
+            
+            // Haptic feedback
+            triggerHaptic('light');
+        }
+
+        // === TAB SWITCHING ===
+        function switchTab(id, title) {
+            try {
+                triggerFeedback();
+                
+                document.getElementById('header-title').textContent = title;
+
+                // Hide all tabs
+                document.querySelectorAll('.tab-section').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                // Show selected tab
+                const tab = document.getElementById('tab-' + id);
+                if (tab) {
+                    tab.classList.add('active');
+                }
+
+                // Update nav
+                document.querySelectorAll('.nav-item').forEach((el, i) => {
+                    el.classList.toggle('active', i === id - 1);
+                });
+
+                scrollActiveNavIntoView();
+
+                // Scroll to top
+                document.getElementById('content-viewport').scrollTop = 0;
+
+                // Rebuild TOC for the active tab
+                buildTOC();
+            } catch (e) {
+                console.error('Tab switch error:', e);
+            }
+        }
+
+        function scrollActiveNavIntoView() {
+            try {
+                const track = document.getElementById('nav-track');
+                const activeNav = document.querySelector('.nav-item.active');
+                if (!track || !activeNav) return;
+
+                const trackRect = track.getBoundingClientRect();
+                const itemRect = activeNav.getBoundingClientRect();
+                if (itemRect.left < trackRect.left || itemRect.right > trackRect.right) {
+                    activeNav.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            } catch (err) {
+                console.error('Nav scroll error:', err);
+            }
+        }
+
+        // === TOC BUILDER ===
+        function slugify(text) {
+            return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 60) || 'section';
+        }
+
+        function buildTOC() {
+            const tocPanel = document.getElementById('toc-panel');
+            const tocList = document.getElementById('toc-list');
+            const activeTab = document.querySelector('.tab-section.active');
+            if (!tocPanel || !tocList || !activeTab) return;
+
+            const headings = activeTab.querySelectorAll('h2, h3');
+            if (!headings.length) {
+                tocPanel.classList.add('hidden');
+                tocList.innerHTML = '';
+                return;
+            }
+
+            const items = [];
+            headings.forEach((h, idx) => {
+                if (!h.id) {
+                    h.id = `${slugify(h.textContent)}-${idx}`;
+                }
+                const levelClass = h.tagName.toLowerCase();
+                items.push(`<a class="toc-${levelClass}" href="#${h.id}">${h.textContent}</a>`);
+            });
+
+            tocList.innerHTML = items.join('');
+            tocPanel.classList.remove('hidden');
+        }
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('loading-overlay');
+            const progress = document.getElementById('load-progress');
+            const intro = document.getElementById('intro-overlay');
+
+            // Kick off progress animation
+            requestAnimationFrame(() => {
+                progress.style.width = '70%';
+            });
+
+            // Initialize first tab
+            const firstTab = document.querySelector('.tab-section');
+            if (firstTab) {
+                firstTab.classList.add('active');
+                const firstNav = document.querySelector('.nav-item');
+                if (firstNav) firstNav.classList.add('active');
+            }
+
+            // Build TOC after initial content is present
+            buildTOC();
+
+            // Keep the initially active item in view
+            scrollActiveNavIntoView();
+
+            // Add click handlers to nav items
+            document.querySelectorAll('.nav-item').forEach((item, index) => {
+                item.addEventListener('click', (evt) => {
+                    switchTab(index + 1, item.dataset.title || `Part ${index + 1}`);
+                });
+
+                item.addEventListener('touchstart', () => {
+                    initAudio(); // Initialize audio on first touch
+                }, { passive: true });
+
+                item.addEventListener('keydown', (evt) => {
+                    if (evt.key === 'Enter' || evt.key === ' ') {
+                        evt.preventDefault();
+                        switchTab(index + 1, item.dataset.title || `Part ${index + 1}`);
+                    }
+                });
+            });
+
+            // Finish loading animation
+            window.addEventListener('load', () => {
+                progress.style.width = '100%';
+                setTimeout(() => {
+                    if (overlay) overlay.classList.add('hide');
+                    setTimeout(() => overlay?.remove(), 400);
+                }, 200);
+
+                // Fade out intro overlay
+                setTimeout(() => {
+                    if (intro) intro.classList.add('hide');
+                    setTimeout(() => intro?.remove(), 900);
+                }, 300);
+            });
+        });
+    </script></body>
+</html>

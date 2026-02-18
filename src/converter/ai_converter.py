@@ -11,6 +11,9 @@ from converter.pdf_to_html import parse_pdf
 logger = logging.getLogger(__name__)
 
 
+
+from converter import custom_ai_api
+
 class GeminiUnavailable(Exception):
     """Raised when Gemini cannot be used or is misconfigured."""
 
@@ -120,7 +123,6 @@ def _build_model(api_key: str, preferred_model: str, fallback_model: str):
 
 
 def _build_complete_html_prompt(template_content: str, is_educational: bool) -> str:
-    analogies = "- Includes analogies and explanations to make concepts clear" if is_educational else "- Presents content in a clear, structured format"
     return (
         "You are an expert at creating complete, standalone HTML pages.\n\n"
         "REFERENCE TEMPLATE (maintain structure, navigation, and overall look):\n"
@@ -131,17 +133,84 @@ def _build_complete_html_prompt(template_content: str, is_educational: bool) -> 
         "- Has tabbed navigation for sections/chapters\n"
         "- Uses color-coded boxes: definitions (blue), theorems (pink), examples (cyan)\n"
         "- Is mobile responsive and works offline\n"
-        f"{analogies}\n\n"
+        "- ENRICH CONTENT WITH ANALOGIES AND REAL-WORLD EXAMPLES to explain complex concepts (even if not in source)\n\n"
         "CRITICAL REQUIREMENTS:\n"
         "1. Output only valid HTML from <!DOCTYPE html> to </html>\n"
         "2. Do not emit placeholders like 'content goes here'\n"
-        "3. Inline all CSS and JavaScript including tab switching logic\n"
-        "4. MUST include bottom navigation bar: <nav class='bottom-nav'><div class='nav-track' id='nav-track'>...</div></nav>\n"
-        "5. MUST include complete JavaScript with switchTab(), buildTOC(), and initialization\n"
+        "3. USE THE CLASSES: 'glass-panel', 'definition-box', 'theorem-box', 'example-box' for content.\n"
+        "4. The CSS and JS will be injected by the system, but you must output the correct HTML structure and classes.\n"
+        "5. MUST include bottom navigation bar: <nav class='bottom-nav'><div class='nav-track' id='nav-track'>...</div></nav>\n"
         "6. Create nav items for each major section/chapter\n"
-        "7. Include all template styles and functionality\n"
         "Begin generating the complete HTML now."
     )
+
+def _enforce_template_styling(html_content: str, template_content: str) -> str:
+    """
+    Forcefully inject the template's CSS and JS into the generated HTML.
+    This guarantees the 'Glassmorphism' look even if the AI hallucinates different styles.
+    """
+    # Extract CSS from template
+    css_match = re.search(r'<style>(.*?)</style>', template_content, re.DOTALL)
+    if not css_match:
+        logger.warning("Could not extract CSS from template")
+        return html_content
+    
+    template_css = css_match.group(1)
+    
+    # Replace/Inject CSS in generated HTML
+    if '<style>' in html_content:
+        # Replace existing style
+        html_content = re.sub(r'<style>.*?</style>', f'<style>{template_css}</style>', html_content, flags=re.DOTALL)
+    else:
+        # Inject into head
+        html_content = html_content.replace('</head>', f'<style>{template_css}</style></head>')
+
+    # Inject the Theme Management and UI Logic JS from template
+    # We look for the main script block at the end of the template
+    js_match = re.search(r'<script>\s*\'use strict\';(.*)</script>', template_content, re.DOTALL)
+    if js_match:
+        template_js = js_match.group(1)
+        # Replace the simple fallback script or existing script with the full template logic
+        html_content = re.sub(r'<script>.*?</script>\s*</body>', f'<script>\'use strict\';{template_js}</script></body>', html_content, flags=re.DOTALL)
+        
+    # FORCE STRUCTURE INJECTION
+    # If the AI didn't output the tab-section structure (common in fallback models), we must wrap the content.
+    # We look for the content between <body> and <nav> (or script/footer)
+    if 'id="content-viewport"' not in html_content:
+        logger.warning("AI output missing content-viewport; injecting structure wrapper")
+        
+        # 1. Extract body content key parts
+        body_content_match = re.search(r'<body[^>]*>(.*?)</body>', html_content, re.DOTALL | re.IGNORECASE)
+        if body_content_match:
+            inner_body = body_content_match.group(1)
+            
+            # Remove existing scripts and navs from inner body to avoid duplication/nesting issues
+            inner_body = re.sub(r'<script.*?</script>', '', inner_body, flags=re.DOTALL | re.IGNORECASE)
+            inner_body = re.sub(r'<nav.*?</nav>', '', inner_body, flags=re.DOTALL | re.IGNORECASE)
+            
+            # 2. Build the structural wrapper
+            # We treat the entire generated text as "Part 1" if it wasn't split by chances
+            wrapper = (
+                '<div id="intro-overlay" aria-hidden="true"><div class="intro-text">Smart Notes Generator</div></div>\n'
+                '<div id="load-progress"></div>\n'
+                '<div id="loading-overlay" aria-live="polite" aria-busy="true"><div class="spinner" aria-hidden="true"></div><div>Loading notes…</div></div>\n'
+                '<header><h1 id="header-title">Smart Notes</h1><div class="subtitle">Interactive Learning Experience</div></header>\n'
+                '<div id="content-viewport">\n'
+                '    <aside id="toc-panel" class="hidden"><div id="toc-list"></div></aside>\n'
+                '    <div class="tab-section active" id="tab-1">\n'
+                f'        {inner_body}\n'
+                '    </div>\n'
+                '</div>\n'
+                '<nav class="bottom-nav"><div class="nav-track" id="nav-track">\n'
+                '    <a class="nav-item active" data-title="Part 1" tabindex="0" role="button"><span class="nav-icon">📚</span><span>Part 1</span></a>\n'
+                '</div></nav>\n'
+                f'<script>\'use strict\';{template_js}</script>'
+            )
+            
+            # 3. Replace body content with wrapped content
+            html_content = re.sub(r'<body[^>]*>.*?</body>', f'<body>{wrapper}</body>', html_content, flags=re.DOTALL | re.IGNORECASE)
+    
+    return html_content
 
 
 def _generate_complete_html(model, uploaded_file, prompt: str, timeout: float, max_output_tokens: int) -> List[str]:
@@ -177,6 +246,12 @@ def _stitch_html_responses(responses: List[str]) -> str:
     combined = re.sub(r'<!--\s*END BATCH[^>]*-->', '', combined, flags=re.IGNORECASE | re.DOTALL)
     # Remove common placeholder comments
     combined = re.sub(r"<!--\s*AI GENERATED CONTENT GOES HERE\s*-->", "", combined, flags=re.IGNORECASE)
+    
+    # Strip conversational filler before the HTML start
+    match = re.search(r'<!DOCTYPE html>', combined, re.IGNORECASE)
+    if match:
+        combined = combined[match.start():]
+        
     return combined.strip()
 
 
@@ -373,33 +448,80 @@ def generate_ai_notes(
 
     template_content = template_path.read_text(encoding='utf-8')
 
-    model = _build_model(api_key, preferred_model, fallback_model)
-
+    # Initialize variables for fallback scope
     use_file_api = True
     text_content = ""
     uploaded_file = None
+    model = None
+    prompt = ""
 
+    # Try Gemini generation flow
     try:
-        uploaded_file = _upload_pdf_to_gemini(pdf_path, api_key)
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("File API unavailable: %s", exc)
-        use_file_api = False
-        _play_feedback_beep('fallback_text')
-        text_content = parse_pdf(pdf_path)
+        # 1. Initialize Model
+        model = _build_model(api_key, preferred_model, fallback_model)
 
-    content_type = _detect_content_type(text_content)
-    prompt = _build_complete_html_prompt(template_content, is_educational=content_type == "educational")
+        # 2. Upload File (if PDF)
+        try:
+            uploaded_file = _upload_pdf_to_gemini(pdf_path, api_key)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("File API unavailable: %s", exc)
+            use_file_api = False
+            _play_feedback_beep('fallback_text')
+            text_content = parse_pdf(pdf_path)
 
-    try:
+        # 3. Build Prompt
+        if not text_content and not use_file_api:
+             # If upload failed and we haven't parsed text yet, we must parse now for prompt context detection
+             text_content = parse_pdf(pdf_path)
+        
+        content_type = _detect_content_type(text_content)
+        prompt = _build_complete_html_prompt(template_content, is_educational=content_type == "educational")
+
+        # 4. Generate Content
         if use_file_api and uploaded_file is not None:
             responses = _generate_complete_html(model, uploaded_file, prompt, timeout_seconds, max_output_tokens)
         else:
             responses = _generate_complete_html_from_text(model, prompt, text_content, timeout_seconds, max_output_tokens)
     except Exception as exc:  # noqa: BLE001
         _play_feedback_beep('error')
-        raise GeminiUnavailable(f"Gemini generation failed: {exc}") from exc
+        logger.warning(f"Gemini generation failed: {exc}")
+        
+        # Fallback to Custom AI Gateway
+        logger.info("Attempting fallback to Custom AI Gateway...")
+        try:
+            # 1. Upload file
+            logger.info(f"Uploading {pdf_path} to Custom API...")
+            upload_resp = custom_ai_api.upload_file(pdf_path)
+            file_ref = upload_resp.get('filename') or upload_resp.get('extracted_txt')
+            
+            if not file_ref:
+                raise custom_ai_api.CustomAPIUnavailable("Upload response missing file reference")
+                
+            # 2. Generate content
+            logger.info(f"Generating content via Custom API for {file_ref}...")
+            # We strictly need HTML, so let's prepend the prompt requirement
+            custom_prompt = "Generate the COMPLETE HTML document as requested below.\n" + prompt
+            custom_response_text = custom_ai_api.generate_completion(custom_prompt, file_ref)
+            
+            if not custom_response_text:
+                raise custom_ai_api.CustomAPIUnavailable("Custom API returned empty response")
+                
+            responses = [custom_response_text]
+            logger.info("Custom API generation successful")
+            
+        except Exception as custom_exc:
+            logger.warning(f"Custom AI Gateway fallback failed: {custom_exc}")
+            # Re-raise the original Gemini exception (or a generic one) to trigger regex fallback in routes.py
+            raise GeminiUnavailable(f"Both Gemini and Custom API failed. Gemini error: {exc}") from exc
 
     final_html = _stitch_html_responses(responses)
+    
+    # FORCE STYLING INJECTION
+    try:
+        final_html = _enforce_template_styling(final_html, template_content)
+    except Exception as e:
+        logger.error(f"Failed to enforce template styling: {e}")
+
     final_html = _ensure_navigation_and_scripts(final_html)
 
     if not _validate_html_structure(final_html):
